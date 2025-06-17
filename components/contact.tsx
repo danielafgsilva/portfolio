@@ -1,10 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button" // Import buttonVariants
+import { cn } from "@/lib/utils" // Import cn
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Download } from "lucide-react" // Or FileText if you prefer for "View"
+import { Download } from 'lucide-react'
 
 export function Contact() {
   return (
@@ -36,11 +37,23 @@ export function Contact() {
               </Button>
             </form>
             <div className="mt-8 text-center">
-              {/* Changed variant to default (by removing variant="outline") and added size="lg" */}
-              <Button size="lg" asChild>
-                <a href="/cv" target="_blank" rel="noopener noreferrer">
-                  <Download className="mr-2 h-4 w-4" />
+              <Button
+                size="lg"
+                asChild // Ensures the <a> tag is the actual rendered element
+              >
+                <a
+                  href="/cv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  // Explicitly apply button classes here.
+                  // The Button component with asChild should pass its classes,
+                  // but this makes sure the <a> tag itself is styled.
+                  // We use cn() to merge with classes from the parent Button.
+                  // The variant is default, size is lg.
+                  className={cn(buttonVariants({ variant: "default", size: "lg" }))}
+                >
                   View CV
+                  <Download className="ml-2 h-4 w-4" />
                 </a>
               </Button>
             </div>
