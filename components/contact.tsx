@@ -5,7 +5,7 @@ import { Button, buttonVariants } from "@/components/ui/button" // Import button
 import { cn } from "@/lib/utils" // Import cn
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Download } from 'lucide-react'
+import { Download } from "lucide-react"
 
 export function Contact() {
   return (
