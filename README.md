@@ -1,7 +1,5 @@
 # Daniela Silva - Personal Portfolio
 
-![Daniela Silva Portfolio](https://daniela-silva-portfolio.vercel.app/images/daniela-silva.jpg)
-
 Welcome to the source code for my personal portfolio website. This project showcases my skills, experience, and projects as a Junior Web Developer and UX/UI Designer. It's built with a modern tech stack and focuses on a clean, elegant user experience with smooth animations.
 
 **Live Site:** [daniela-silva-portfolio.vercel.app](https://daniela-silva-portfolio.vercel.app/)
