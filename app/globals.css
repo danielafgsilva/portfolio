@@ -103,3 +103,19 @@
 .animate-blob {
   animation: blob 7s infinite;
 }
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .cv-page {
+    --background: 255 255 255 !important;
+    --foreground: 0 0 0 !important;
+    background-color: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

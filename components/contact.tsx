@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Download } from "lucide-react"
+import { Download } from "lucide-react" // Or FileText if you prefer for "View"
 
 export function Contact() {
   return (
@@ -36,10 +36,11 @@ export function Contact() {
               </Button>
             </form>
             <div className="mt-8 text-center">
-              <Button variant="outline" asChild>
-                <a href="/daniela-silva-cv.pdf" download>
+              {/* Changed variant to default (by removing variant="outline") and added size="lg" */}
+              <Button size="lg" asChild>
+                <a href="/cv" target="_blank" rel="noopener noreferrer">
                   <Download className="mr-2 h-4 w-4" />
-                  Download CV
+                  View CV
                 </a>
               </Button>
             </div>
