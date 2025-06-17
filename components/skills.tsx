@@ -1,13 +1,12 @@
 "use client"
 
 import type React from "react"
-
 import { motion } from "framer-motion"
-import { Code, Wrench, Languages } from "lucide-react"
+import { Code, Wrench, LanguagesIcon } from "lucide-react" // Changed Languages to LanguagesIcon
 
 const skillsData = {
   programming: ["HTML", "CSS", "JavaScript", "PHP", "React", "Next.js"],
-  tools: ["WordPress", "Figma", "GitHub", "Supabase", "Docker"],
+  tools: ["WordPress", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind"],
   languages: ["English (Professional)", "Portuguese (Native)"],
 }
 
@@ -48,9 +47,9 @@ export function Skills() {
         >
           <h2 className="text-3xl font-bold tracking-tight text-center sm:text-4xl">Skills</h2>
           <div className="mt-16 grid md:grid-cols-1 lg:grid-cols-3 gap-8">
-            <SkillCategory title="Programming" skills={skillsData.programming} icon={<Code size={24} />} />
+            <SkillCategory title="Programming Languages" skills={skillsData.programming} icon={<Code size={24} />} />
             <SkillCategory title="Tools & Platforms" skills={skillsData.tools} icon={<Wrench size={24} />} />
-            <SkillCategory title="Languages" skills={skillsData.languages} icon={<Languages size={24} />} />
+            <SkillCategory title="Languages" skills={skillsData.languages} icon={<LanguagesIcon size={24} />} />
           </div>
         </motion.div>
       </div>

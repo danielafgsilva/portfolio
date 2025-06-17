@@ -9,19 +9,20 @@ const projects = [
   {
     title: "Twovest",
     description:
-      "A platform for collaborative investment, designed to simplify group financial decisions. Focused on intuitive UI and real-time data visualization.",
+      "Developed Twovest, a fashion platform that promotes sustainability and ethical consumption, focusing on second-hand clothing, which encourages environmentally conscious shopping habits. Designed an intuitive user interface using Figma, which significantly enhanced customer interaction and satisfaction by making navigation smoother. Improved the overall user experience, which contributed to higher engagement rates and increased customer loyalty.",
     image: "/images/twovest-cover.png",
-    tech: ["Next.js", "React", "Tailwind CSS", "Supabase"],
+    tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
     liveUrl: "https://twovest.com/",
   },
   {
-    title: "Gomes Rego & Associados",
+    title: "Gomes Rego & Associados Website",
     description:
-      "A professional and elegant website for a law firm, emphasizing clarity, trust, and accessibility. Built with a clean design and easy navigation.",
+      "Designed a professional website for Gomes Rego & Associados, which enhanced the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information, which improved overall client engagement. Implemented responsive design features, ensuring the website is accessible across various devices, which helped reach a broader audience. Integrated clear calls-to-action, guiding potential clients through their journey, ultimately increasing inquiry rates.",
     image: "/images/gomes-rego-cover.png",
-    tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
+    tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"], // Assuming from previous, add Figma if applicable
     liveUrl: "https://gomes-rego-website.vercel.app/",
   },
+  // Slooze challenge is more of an experience item, already added there.
 ]
 
 export function Projects() {
@@ -34,7 +35,7 @@ export function Projects() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl font-bold tracking-tight text-center sm:text-4xl">Projects</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-center sm:text-4xl">Highlighted Projects</h2>
           <div className="mt-16 grid gap-12 md:grid-cols-1 lg:gap-16">
             {projects.map((project, index) => (
               <motion.div
@@ -58,7 +59,7 @@ export function Projects() {
                 </div>
                 <div className="w-full md:w-1/2">
                   <h3 className="text-2xl font-bold">{project.title}</h3>
-                  <p className="mt-4 text-gray-600 dark:text-gray-300">{project.description}</p>
+                  <p className="mt-4 text-muted-foreground">{project.description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {project.tech.map((tech) => (
                       <span

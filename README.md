@@ -1,30 +1,62 @@
-# Portfolio
+# Daniela Silva - Personal Portfolio
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+![Daniela Silva Portfolio](https://daniela-silva-portfolio.vercel.app/images/daniela-silva.jpg)
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/danielafgsilvas-projects/v0-portfolio)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/VLtw7KuaeN0)
+Welcome to the source code for my personal portfolio website. This project showcases my skills, experience, and projects as a Junior Web Developer and UX/UI Designer. It's built with a modern tech stack and focuses on a clean, elegant user experience with smooth animations.
 
-## Overview
+**Live Site:** [daniela-silva-portfolio.vercel.app](https://daniela-silva-portfolio.vercel.app/)
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+---
 
-## Deployment
+## ✨ Features
 
-Your project is live at:
+-   **Fully Responsive Design:** Adapts beautifully to all screen sizes, from mobile to desktop.
+-   **Dark/Light Mode:** A theme toggle for user preference.
+-   **Smooth Animations:** Built with Framer Motion for elegant page transitions and micro-interactions.
+-   **Single-Page Layout:** Easy and intuitive navigation through all sections.
+-   **Component-Based Architecture:** Built with reusable React components for maintainability.
+-   **SEO Optimized:** Structured for search engine visibility.
 
-**[https://vercel.com/danielafgsilvas-projects/v0-portfolio](https://vercel.com/danielafgsilvas-projects/v0-portfolio)**
+---
 
-## Build your app
+## 🛠️ Tech Stack
 
-Continue building your app on:
+-   **Framework:** [Next.js](https://nextjs.org/)
+-   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+-   **Animations:** [Framer Motion](https://www.framer.com/motion/)
+-   **Icons:** [Lucide React](https://lucide.dev/)
+-   **Deployment:** [Vercel](https://vercel.com/)
 
-**[https://v0.dev/chat/projects/VLtw7KuaeN0](https://v0.dev/chat/projects/VLtw7KuaeN0)**
+---
 
-## How It Works
+## 🚀 Getting Started
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+To run this project locally, follow these steps:
+
+1.  **Clone the repository:**
+    \`\`\`bash
+    git clone https://github.com/your-github-username/daniela-silva-portfolio.git
+    cd daniela-silva-portfolio
+    \`\`\`
+
+2.  **Install dependencies:**
+    \`\`\`bash
+    npm install
+    \`\`\`
+
+3.  **Run the development server:**
+    \`\`\`bash
+    npm run dev
+    \`\`\`
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+---
+
+## ☁️ Deployment
+
+This project is deployed and hosted on [Vercel](https://vercel.com/). Any pushes to the `main` branch will trigger a new deployment automatically.
+
+---
+
+Thank you for visiting!

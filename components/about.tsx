@@ -12,6 +12,9 @@ export function About() {
     { icon: <Lightbulb size={24} />, text: "Innovative" },
   ]
 
+  const aboutText =
+    "Junior Web Developer with a strong focus on front-end development and user interface design, showcasing a solid work ethic and adaptability. Demonstrated ability to create engaging web solutions that enhance user experience and performance, contributing fresh perspectives and a passion for learning. Offers a commitment to innovation and continuous improvement, ready to make a meaningful impact in web development projects."
+
   return (
     <section id="about" className="py-24 sm:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,11 +43,7 @@ export function About() {
               </div>
             </motion.div>
             <div className="md:col-span-2">
-              <p className="text-lg text-muted-foreground">
-                I am a Junior Web Developer with a strong focus on front-end development and user interface design. My
-                journey into tech is driven by a passion for creating meaningful and user-centered web experiences. I
-                pride myself on a solid work ethic, adaptability, and a constant desire to learn and grow.
-              </p>
+              <p className="text-lg text-muted-foreground">{aboutText}</p>
               <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-6">
                 {personalTraits.map((trait, index) => (
                   <motion.div

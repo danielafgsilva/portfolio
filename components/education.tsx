@@ -5,14 +5,14 @@ import { GraduationCap } from "lucide-react"
 
 const education = [
   {
-    degree: "Master's in Web Communication and Technologies",
+    degree: "Web Communication and Technologies | Master's degree",
     institution: "Universidade de Aveiro",
-    date: "Sep 2023 - Present",
+    date: "09/2023 – Present", // Assuming ongoing based on CV structure
   },
   {
-    degree: "Licentiate in Audiovisual and Communication Technology",
-    institution: "ESMAE",
-    date: "Sep 2020 - Jul 2023",
+    degree: "Audiovisual and Communication Technology | Licentiate degree",
+    institution: "Escola Superior de Media Artes e Design",
+    date: "10/2020 – 07/2023",
   },
 ]
 

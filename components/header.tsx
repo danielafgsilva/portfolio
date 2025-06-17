@@ -17,10 +17,13 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Updated navLinks to include all major sections
   const navLinks = [
     { href: "#about", label: "About" },
     { href: "#experience", label: "Experience" },
     { href: "#projects", label: "Projects" },
+    { href: "#skills", label: "Skills" },
+    { href: "#education", label: "Education" },
     { href: "#contact", label: "Contact" },
   ]
 
@@ -38,12 +41,12 @@ export function Header() {
           <Link href="/" className="text-2xl font-bold text-foreground">
             Daniela Silva
           </Link>
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.label}
               </Link>
@@ -53,7 +56,7 @@ export function Header() {
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden ml-4 text-gray-600 dark:text-gray-300"
+              className="md:hidden ml-4 text-muted-foreground"
               aria-label="Toggle menu"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
