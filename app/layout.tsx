@@ -1,11 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
-import "./globals.css" // Assuming globals.css is in the app directory
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Daniela Silva Portfolio", // Updated title
-  description: "Personal portfolio for Daniela Silva, Junior Web Developer and UX/UI Designer.",, // Optional: Updated description
-  // generator: 'v0.dev', // Optional: You can keep or remove this
+  title: "Daniela's Portfolio", // Updated title
+  description: "Personal portfolio for Daniela Silva, Junior Web Developer and UX/UI Designer.",
     generator: 'v0.dev'
 }
 

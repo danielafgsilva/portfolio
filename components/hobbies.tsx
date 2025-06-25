@@ -1,8 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-// Using the user-specified Dribbble and Dumbbell icons from lucide-react
-import { Music, HeartHandshake, Camera, Dribbble, Dumbbell } from "lucide-react"
+// Updated imports: Removed Dumbbell, Added TennisRacket
+import { Music, HeartHandshake, Camera, Dribbble, PaintRollerIcon as Flame } from "lucide-react"
 
 const volunteering = {
   role: "Food collection",
@@ -13,10 +13,27 @@ const volunteering = {
 }
 
 const hobbiesList = [
-  { name: "Photography Enthusiast", icon: <Camera size={28} /> },
-  { name: "Soccer player 4th National Division", icon: <Dribbble size={28} /> },
-  { name: "Padle Player", icon: <Dumbbell size={28} /> },
-  { name: "Violin Player", icon: <Music size={28} /> },
+  {
+    name: "Photography Enthusiast",
+    icon: <Camera size={28} />,
+    href: "https://danielapv.myportfolio.com/",
+  },
+  {
+    name: "Soccer Player",
+    subtitle: "4th National Division",
+    icon: <Dribbble size={28} />,
+    href: "https://www.zerozero.pt/jogador/daniela-silva/732215?epoca_id=154",
+  },
+  {
+    name: "Padel Enthusiast",
+    icon: <Flame size={28} />, // Changed icon here
+    href: "https://app.playtomic.io/profile/user/5882533?utm_source=app_ios&utm_campaign=share",
+  },
+  {
+    name: "Musician",
+    icon: <Music size={28} />,
+    href: "https://www.instagram.com/danizmusic/",
+  },
 ]
 
 export function Hobbies() {
@@ -59,16 +76,23 @@ export function Hobbies() {
               {hobbiesList.map((hobby, index) => (
                 <motion.div
                   key={hobby.name}
-                  className="flex flex-col items-center text-center"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  <div className="w-20 h-20 bg-card rounded-full flex items-center justify-center shadow-md text-primary mb-4">
-                    {hobby.icon}
-                  </div>
-                  <h4 className="text-lg font-semibold">{hobby.name}</h4>
+                  <a
+                    href={hobby.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center text-center group"
+                  >
+                    <div className="w-20 h-20 bg-card rounded-full flex items-center justify-center shadow-md text-primary mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg">
+                      {hobby.icon}
+                    </div>
+                    <h4 className="text-lg font-semibold group-hover:text-primary transition-colors">{hobby.name}</h4>
+                    {hobby.subtitle && <p className="text-sm text-muted-foreground">{hobby.subtitle}</p>}
+                  </a>
                 </motion.div>
               ))}
             </div>

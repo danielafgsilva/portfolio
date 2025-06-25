@@ -9,20 +9,19 @@ const projects = [
   {
     title: "Twovest",
     description:
-      "Developed Twovest, a fashion platform that promotes sustainability and ethical consumption, focusing on second-hand clothing, which encourages environmentally conscious shopping habits. Designed an intuitive user interface using Figma, which significantly enhanced customer interaction and satisfaction by making navigation smoother. Improved the overall user experience, which contributed to higher engagement rates and increased customer loyalty.",
-    image: "/images/twovest-cover.png",
+      "Developed Twovest, a fashion platform that promotes sustainability and ethical consumption, focusing on second-hand clothing. Designed an intuitive user interface using Figma, which significantly enhanced customer interaction and satisfaction. Improved the overall user experience, contributing to higher engagement rates and increased customer loyalty.",
+    video: "/videos/twovest-promo-v2.mov", // Updated video source
     tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
     liveUrl: "https://twovest.com/",
   },
   {
     title: "Gomes Rego & Associados Website",
     description:
-      "Designed a professional website for Gomes Rego & Associados, which enhanced the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information, which improved overall client engagement. Implemented responsive design features, ensuring the website is accessible across various devices, which helped reach a broader audience. Integrated clear calls-to-action, guiding potential clients through their journey, ultimately increasing inquiry rates.",
+      "Designed a professional website for Gomes Rego & Associados, enhancing the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information. Implemented responsive design features and integrated clear calls-to-action, increasing inquiry rates.",
     image: "/images/gomes-rego-cover.png",
-    tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"], // Assuming from previous, add Figma if applicable
-    liveUrl: "https://gomes-rego-website.vercel.app/",
+    tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
+    status: "In Progress",
   },
-  // Slooze challenge is more of an experience item, already added there.
 ]
 
 export function Projects() {
@@ -48,13 +47,24 @@ export function Projects() {
               >
                 <div className={`w-full md:w-1/2 ${index % 2 !== 0 ? "md:order-2" : ""}`}>
                   <div className="overflow-hidden rounded-lg shadow-xl aspect-[5/3] bg-muted/50">
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      alt={project.title}
-                      width={500}
-                      height={300}
-                      className="w-full h-full object-cover object-center transition-transform duration-500 ease-in-out group-hover:scale-105"
-                    />
+                    {project.video ? (
+                      <video
+                        src={project.video}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
+                      />
+                    ) : (
+                      <Image
+                        src={project.image || "/placeholder.svg"}
+                        alt={project.title}
+                        width={500}
+                        height={300}
+                        className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="w-full md:w-1/2">
@@ -70,14 +80,23 @@ export function Projects() {
                       </span>
                     ))}
                   </div>
-                  <Link
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-flex items-center gap-2 text-primary dark:text-primary font-semibold hover:underline"
-                  >
-                    View Live Site <ExternalLink size={18} />
-                  </Link>
+                  <div className="mt-6">
+                    {project.status ? (
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/50">
+                        <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                        <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{project.status}</p>
+                      </div>
+                    ) : (
+                      <Link
+                        href={project.liveUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-primary dark:text-primary font-semibold hover:underline"
+                      >
+                        View Live Site <ExternalLink size={18} />
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             ))}

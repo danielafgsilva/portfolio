@@ -110,10 +110,11 @@
     print-color-adjust: exact;
   }
   .cv-page {
-    --background: 255 255 255 !important;
-    --foreground: 0 0 0 !important;
-    background-color: white !important;
-    color: black !important;
+    /* Corrected HSL values for print */
+    --background: 0 0% 100% !important; /* White */
+    --foreground: 0 0% 0% !important; /* Black */
+    background-color: hsl(var(--background)) !important; /* Ensure it uses the variable */
+    color: hsl(var(--foreground)) !important; /* Ensure it uses the variable */
   }
   .no-print {
     display: none !important;
