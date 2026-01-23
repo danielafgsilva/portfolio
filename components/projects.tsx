@@ -7,10 +7,18 @@ import { ExternalLink } from "lucide-react"
 
 const projects = [
   {
+    title: "Dogwarts Website",
+    description:
+      "Developed a modern website for Dogwarts, a canine care service platform. Built using Next.js, TypeScript, and Tailwind CSS with a role-based UI. Integrated with backend services and Sanity CMS for content management, creating an intuitive experience for both dog owners and service providers.",
+    image: "/images/dogwarts-cover.png",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
+    status: "In Progress",
+  },
+  {
     title: "Twovest",
     description:
       "Developed Twovest, a fashion platform that promotes sustainability and ethical consumption, focusing on second-hand clothing. Designed an intuitive user interface using Figma, which significantly enhanced customer interaction and satisfaction. Improved the overall user experience, contributing to higher engagement rates and increased customer loyalty.",
-    video: "/videos/twovest-promo-v2.mov", // Updated video source
+    image: "/images/twovest-cover.png",
     tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
     liveUrl: "https://twovest.com/",
   },
@@ -47,24 +55,13 @@ export function Projects() {
               >
                 <div className={`w-full md:w-1/2 ${index % 2 !== 0 ? "md:order-2" : ""}`}>
                   <div className="overflow-hidden rounded-lg shadow-xl aspect-[5/3] bg-muted/50">
-                    {project.video ? (
-                      <video
-                        src={project.video}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
-                      />
-                    ) : (
-                      <Image
-                        src={project.image || "/placeholder.svg"}
-                        alt={project.title}
-                        width={500}
-                        height={300}
-                        className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
-                      />
-                    )}
+                    <Image
+                      src={project.image || "/placeholder.svg"}
+                      alt={project.title}
+                      width={500}
+                      height={300}
+                      className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
+                    />
                   </div>
                 </div>
                 <div className="w-full md:w-1/2">

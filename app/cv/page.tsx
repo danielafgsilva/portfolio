@@ -1,5 +1,12 @@
 import type React from "react"
-import { Github, Linkedin, Mail, Phone, Globe, MapPin } from "lucide-react"
+import type { Metadata } from "next"
+import { Github, Linkedin, Mail, Phone, Globe, MapPin, Download } from "lucide-react"
+import { DownloadCVButton } from "@/app/cv/download-button"
+
+export const metadata: Metadata = {
+  title: "CV - Daniela Silva",
+  description: "Curriculum Vitae for Daniela Silva.",
+}
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-8">
@@ -16,18 +23,18 @@ const ExperienceItem = ({
   description,
   link,
 }: { role: string; company: string; date: string; location: string; description: string[]; link?: string }) => (
-  <div className="mb-6">
-    <div className="flex justify-between items-baseline">
+  <div className="mb-6 p-6 bg-muted/30 dark:bg-muted/20 border-2 border-primary/20 dark:border-primary/30 rounded-xl shadow-lg hover:shadow-xl hover:border-primary/40 dark:hover:border-primary/50 transition-all duration-300">
+    <div className="flex justify-between items-baseline mb-2">
       <h3 className="text-xl font-semibold">{role}</h3>
-      <p className="text-sm text-muted-foreground">{date}</p>
+      <p className="text-sm text-muted-foreground font-medium">{date}</p>
     </div>
-    <div className="flex justify-between items-baseline">
-      <p className="font-medium text-primary">{company}</p>
+    <div className="flex justify-between items-baseline mb-4">
+      <p className="font-medium text-primary text-lg">{company}</p>
       <p className="text-sm text-muted-foreground">{location}</p>
     </div>
-    <ul className="list-disc list-inside mt-2 text-muted-foreground space-y-1">
+    <ul className="list-disc list-inside text-muted-foreground space-y-1.5 ml-2">
       {description.map((item, index) => (
-        <li key={index}>{item}</li>
+        <li key={index} className="leading-relaxed">{item}</li>
       ))}
     </ul>
     {link && (
@@ -35,7 +42,7 @@ const ExperienceItem = ({
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-sm text-primary hover:underline mt-1 inline-block"
+        className="text-sm text-primary hover:underline mt-3 inline-block font-medium"
       >
         View Project
       </a>
@@ -45,11 +52,15 @@ const ExperienceItem = ({
 
 export default function CVPage() {
   return (
-    <div className="max-w-4xl mx-auto p-8 sm:p-12 bg-background text-foreground font-sans">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
+    <div className="max-w-6xl mx-auto p-8 sm:p-12 bg-background text-foreground font-sans">
+      <div className="mb-6 flex justify-end no-print">
+        <DownloadCVButton />
+      </div>
+      <div id="cv-print-content">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
         <div>
-          <h1 className="text-5xl font-extrabold">Daniela Silva</h1>
-          <p className="text-xl text-muted-foreground mt-1">Junior Web Developer & UX/UI Designer</p>
+          <h1 className="text-6xl md:text-7xl font-extrabold font-harmony uppercase">DANIELA SILVA</h1>
+          <p className="text-xl text-muted-foreground mt-1">Junior Full-Stack Developer | Front-End Oriented</p>
         </div>
         <div className="text-sm mt-4 sm:mt-0 sm:text-right space-y-1">
           <p className="flex items-center justify-end gap-2">
@@ -84,14 +95,30 @@ export default function CVPage() {
 
       <Section title="About">
         <p className="text-muted-foreground">
-          Junior Web Developer with a strong focus on front-end development and user interface design, showcasing a
-          solid work ethic and adaptability. Demonstrated ability to create engaging web solutions that enhance user
-          experience and performance, contributing fresh perspectives and a passion for learning. Offers a commitment to
-          innovation and continuous improvement, ready to make a meaningful impact in web development projects.
+          Hi! I'm a Junior Full-Stack Developer with a strong focus on Front-End development, who showcases a solid work
+          ethic and adaptability. I demonstrate ability to create engaging web solutions that enhance user experience
+          and performance, contributing with fresh perspectives and a passion for learning. I also offer a commitment to
+          innovation and continuous improvement, and I'm always ready to make a meaningful impact in web development
+          projects.
+          <br />
+          Academic and professional experiences emphasize adaptability, creativity, and a commitment to detail, supported
+          by certifications in digital transformation and AI. The goal is to bridge technology and user experience,
+          creating impactful digital solutions while deepening expertise in web communication technologies.
         </p>
       </Section>
 
       <Section title="Professional Experience">
+        <ExperienceItem
+          role="Full-Stack Professional Internship"
+          company="Dynamikfloat"
+          date="08/2025"
+          location="Portugal"
+          description={[
+            "Contributed to multiple software development projects, collaborating with the team to implement new features, fix issues, and support ongoing releases.",
+            "Strengthened skills in backend development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to query, manage, and troubleshoot data.",
+            "Worked with Vue.js on the frontend to build and integrate components with backend services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
+          ]}
+        />
         <ExperienceItem
           role="Web platforms Internship"
           company="Bliss Applications"
@@ -101,18 +128,6 @@ export default function CVPage() {
             "Created the company website, which served as a foundation for our online presence and showcased our services effectively.",
             "Developed multiple client websites using WordPress, PHP, SaaS, HTML, and JavaScript, helping to meet diverse client needs and improve their online visibility.",
             "Enhanced user experience and functionality across all projects, leading to increased client satisfaction and engagement.",
-          ]}
-        />
-        <ExperienceItem
-          role="Social Media Manager"
-          company="C.U.D. Leverense"
-          date="09/2024"
-          location="Porto, Portugal"
-          description={[
-            "Managed social media platforms to boost engagement and brand visibility.",
-            "Developed content strategies that aligned with our organizational goals.",
-            "Created engaging posts and campaigns that sparked conversations, leading to a noticeable increase in interactions.",
-            "Analyzed social media metrics to refine our approach and understand content performance.",
           ]}
         />
         <ExperienceItem
@@ -129,23 +144,23 @@ export default function CVPage() {
       </Section>
 
       <Section title="Projects">
-        <ExperienceItem
-          role="Frontend Developer | UX/UI Designer"
-          company="Twovest"
-          date="09/2023 – 07/2024"
-          location="Project-based"
+      <ExperienceItem
+          role="Full-Stack Developer"
+          company="Dogwarts Website"
+          date="08/2025"
+          location="Porto, Portugal"
           description={[
-            "Developed a fashion platform promoting sustainability and ethical consumption for second-hand clothing.",
-            "Designed an intuitive user interface using Figma, enhancing customer interaction and satisfaction.",
-            "Utilized Next.js, Tailwind CSS, Redux Toolkit, and Supabase to build a robust platform.",
+            "Developed a modern website for Dogwarts, using Next.js, TypeScript, and Tailwind CSS.",
+            "Designed a role-based UI and integrated with the backend.",
+             "Used Sanity CMS for content management.",
           ]}
-          link="https://twovest.com/"
+          link="https://dogwarts.vercel.app/"
         />
         <ExperienceItem
           role="Frontend Developer | UX/UI Designer"
           company="Gomes Rego & Associados Website"
           date="12/2023"
-          location="Project-based"
+          location="Porto, Portugal"
           description={[
             "Designed a professional website, enhancing the company's online presence and credibility.",
             "Focused on UI/UX to make it easier for clients to navigate and find information.",
@@ -154,16 +169,16 @@ export default function CVPage() {
           link="https://gomes-rego-website.vercel.app/"
         />
         <ExperienceItem
-          role="Frontend Developer"
-          company="Slooze Challenge"
-          date="06/2025"
-          location="Porto, Portugal"
+          role="Frontend Developer | UX/UI Designer"
+          company="Twovest"
+          date="09/2023 – 07/2024"
+          location="Aveiro, Portugal"
           description={[
-            "Developed a modern, role-based commodities management system using React, TypeScript, and Tailwind CSS.",
-            "Implemented a secure email/password authentication system.",
-            "Created a responsive, mobile-first design that works seamlessly across all devices.",
-            "Designed a role-based UI with dynamic menu restrictions for tailored user experiences.",
+            "Developed a fashion platform promoting sustainability and ethical consumption for second-hand clothing.",
+            "Designed an intuitive user interface using Figma, enhancing customer interaction and satisfaction.",
+            "Utilized Next.js, Tailwind CSS, Redux Toolkit, and Supabase to build a robust platform.",
           ]}
+          link="https://twovest.com/"
         />
       </Section>
 
@@ -212,7 +227,7 @@ export default function CVPage() {
             </div>
             <h4 className="font-semibold mb-2">Tools & Platforms</h4>
             <div className="flex flex-wrap gap-2 mb-4">
-              {["WordPress", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind"].map((s) => (
+              {["WordPress", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind", "Laravel", "DBeaver", "Vue.js"].map((s) => (
                 <span key={s} className="bg-muted text-muted-foreground text-xs font-medium px-2.5 py-0.5 rounded-full">
                   {s}
                 </span>
@@ -229,20 +244,7 @@ export default function CVPage() {
           </Section>
         </div>
       </div>
-
-      <Section title="Certificates">
-        <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
-          <li>Introduction to Frontend Development (Meta, 04/2025)</li>
-          <li>React Basics (Meta, 04/2025)</li>
-          <li>Become a WordPress Developer: Unlocking Power with Code (Udemy, 02/2025)</li>
-          <li>WordPress for Beginners – Master WordPress Quickly (Udemy, 02/2025)</li>
-          <li>JavaScript Algorithms and Data Structures (freeCodeCamp, 12/2024)</li>
-          <li>Python (Santander, 12/2024)</li>
-          <li>AI and Productivity (Santander, 08/2024)</li>
-          <li>Digital Transformation (Santander, 08/2024)</li>
-          <li>Responsive Web Design (freeCodeCamp, 08/2024)</li>
-        </ul>
-      </Section>
+      </div>
     </div>
   )
 }

@@ -5,8 +5,8 @@ import { motion } from "framer-motion"
 import { Code, Wrench, LanguagesIcon } from "lucide-react" // Changed Languages to LanguagesIcon
 
 const skillsData = {
-  programming: ["HTML", "CSS", "JavaScript", "PHP", "React", "Next.js"],
-  tools: ["WordPress", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind"],
+  programming: ["HTML", "CSS", "JavaScript", "PHP", "React", "Next.js", "Vue.js"],
+  tools: ["WordPress", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind", "Laravel", "DBeaver"],
   languages: ["English (Professional)", "Portuguese (Native)"],
 }
 

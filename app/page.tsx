@@ -4,7 +4,6 @@ import { About } from "@/components/about"
 import { Experience } from "@/components/experience"
 import { Projects } from "@/components/projects"
 import { Education } from "@/components/education"
-import { Certificates } from "@/components/certificates"
 import { Skills } from "@/components/skills"
 import { Awards } from "@/components/awards"
 import { Hobbies } from "@/components/hobbies"
@@ -21,7 +20,6 @@ export default function PortfolioPage() {
         <Experience />
         <Projects />
         <Education />
-        <Certificates />
         <Skills />
         <Awards />
         <Hobbies />

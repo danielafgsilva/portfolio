@@ -5,20 +5,28 @@ import { Briefcase } from "lucide-react"
 
 const experiences = [
   {
+    role: "Full-Stack Professional Internship",
+    company: "Dynamikfloat",
+    date: "08/2025",
+    location: "Portugal",
+    description:
+      "Contributed to multiple software development projects, collaborating with the team to implement new features, fix issues, and support ongoing releases. Strengthened skills in backend development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to query, manage, and troubleshoot data. Worked with Vue.js on the frontend to build and integrate components with backend services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
+  },
+  {
+    role: "Full-Stack Developer",
+    company: "Dogwarts Website",
+    date: "08/2025",
+    location: "Porto, Portugal",
+    description:
+      "Developed a modern website for Dogwarts, using Next.js, TypeScript, and Tailwind CSS. Designed a role-based UI and integrated with the backend. Used Sanity CMS for content management.",
+  },
+  {
     role: "Web platforms Internship",
     company: "Bliss Applications",
     date: "12/2024",
     location: "Portugal",
     description:
       "Created the company website, which served as a foundation for our online presence and showcased our services effectively. Developed multiple client websites using WordPress, PHP, SaaS, HTML, and JavaScript, helping to meet diverse client needs and improve their online visibility. Enhanced user experience and functionality across all projects, leading to increased client satisfaction and engagement.",
-  },
-  {
-    role: "Social Media Manager",
-    company: "C.U.D. Leverense",
-    date: "09/2024",
-    location: "Porto, Portugal",
-    description:
-      "Managed social media platforms to boost engagement and brand visibility, which helped the organization connect better with its audience. Developed content strategies that aligned with our organizational goals, ensuring that our messaging resonated effectively with followers. Created engaging posts and campaigns that sparked conversations, leading to a noticeable increase in interactions and community growth. Analyzed social media metrics to refine our approach, helping us understand what content performed best and why. Collaborated with cross-functional teams to integrate social media efforts with broader marketing campaigns, enhancing overall brand consistency.",
   },
   {
     role: "Research in Immersive Web Environments",
@@ -44,14 +52,6 @@ const experiences = [
     description:
       "Designed a professional website for Gomes Rego & Associados, which enhanced the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information, which improved overall client engagement. Implemented responsive design features, ensuring the website is accessible across various devices, which helped reach a broader audience. Integrated clear calls-to-action, guiding potential clients through their journey, ultimately increasing inquiry rates.",
   },
-  {
-    role: "Frontend Developer",
-    company: "Slooze Challenge",
-    date: "06/2025 – 06/2025",
-    location: "Porto, Portugal",
-    description:
-      "Developed a modern, role-based commodities management system using React, TypeScript, and Tailwind CSS, which streamlined product management and enhanced user experience. Implemented a secure email/password authentication system, ensuring safe login for users and protecting sensitive information. Created a responsive design that works seamlessly across all devices, ensuring a mobile-first approach that improved usability for all users. Designed a role-based UI with dynamic menu restrictions, tailoring user experiences based on roles and enhancing security and usability.",
-  },
 ]
 
 export function Experience() {
@@ -61,11 +61,11 @@ export function Experience() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }} // Adjusted amount due to more content
+          viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl font-bold tracking-tight text-center sm:text-4xl">Professional Experience</h2>
-          <div className="mt-16 max-w-3xl mx-auto">
+          <div className="mt-16 max-w-5xl mx-auto">
             <div className="relative">
               <div className="absolute left-1/2 -translate-x-1/2 w-0.5 h-full bg-border" aria-hidden="true"></div>
               {experiences.map((exp, index) => (
@@ -80,16 +80,16 @@ export function Experience() {
                   <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-background rounded-full border-2 border-primary flex items-center justify-center">
                     <Briefcase className="w-4 h-4 text-primary" />
                   </div>
-                  <div className={`w-full flex ${index % 2 === 0 ? "justify-start" : "justify-end"}`}>
+                  <div className={`w-full flex ${index % 2 === 0 ? "justify-start pr-8 md:pr-0" : "justify-end pl-8 md:pl-0"}`}>
                     <div
-                      className={`w-full md:w-5/12 p-6 bg-card rounded-lg shadow-md ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
+                      className={`w-full md:w-[calc(50%-2rem)] max-w-[calc(50%-2rem)] p-6 bg-background dark:bg-card border-2 border-primary/20 dark:border-primary/30 rounded-xl shadow-lg hover:shadow-xl hover:border-primary/40 dark:hover:border-primary/50 transition-all duration-300 ${index % 2 === 0 ? "md:text-right" : "md:text-left"}`}
                     >
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground font-medium">
                         {exp.date} | {exp.location}
                       </p>
-                      <h3 className="text-xl font-bold mt-1">{exp.role}</h3>
-                      <p className="text-md font-semibold text-primary">{exp.company}</p>
-                      <p className="mt-2 text-sm text-muted-foreground">{exp.description}</p>
+                      <h3 className="text-xl font-bold mt-2">{exp.role}</h3>
+                      <p className="text-lg font-semibold text-primary mt-1">{exp.company}</p>
+                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{exp.description}</p>
                     </div>
                   </div>
                 </motion.div>

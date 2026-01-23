@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "TAN Harmony";
+  src: url("/fonts/Harmoni.otf") format("opentype"),
+       url("/fonts/Harmoni.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     /* New Blue Palette - Light Mode */
@@ -37,34 +46,34 @@
   }
 
   .dark {
-    /* New Blue Palette - Dark Mode */
-    --background: 202 100% 9%; /* #003249 - Dark Blue */
-    --foreground: 187 16% 83%; /* #ccdbdc - Light Grayish Blue */
+    /* Option 3: Deep Saturated Blue Dark Mode with Blue Accents */
+    --background: 210 45% 8%; /* Deep saturated blue background */
+    --foreground: 210 15% 95%; /* Very light blue-tinted for text */
 
-    --card: 202 100% 11%; /* Slightly lighter than background, e.g., #002a3f */
-    --card-foreground: 187 16% 83%; /* #ccdbdc */
+    --card: 210 45% 10%; /* Slightly lighter saturated blue for cards */
+    --card-foreground: 210 15% 95%; /* Light text on cards */
 
-    --popover: 202 100% 9%;
-    --popover-foreground: 187 16% 83%;
+    --popover: 210 45% 8%;
+    --popover-foreground: 210 15% 95%;
 
-    --primary: 190 50% 67%; /* #80ced7 - Soft Cyan for primary actions */
-    --primary-foreground: 202 100% 9%; /* #003249 - Dark Blue for text on soft cyan */
+    --primary: 197 100% 33%; /* #007ea7 - Strong Blue for primary actions (kept blue) */
+    --primary-foreground: 210 15% 95%; /* Light text on primary */
 
-    --secondary: 183 38% 72%; /* #9ad1d4 - Pale Cyan as secondary */
-    --secondary-foreground: 202 100% 9%; /* #003249 - Dark Blue for text on pale cyan */
+    --secondary: 210 45% 14%; /* Saturated blue for secondary */
+    --secondary-foreground: 210 15% 95%; /* Light text on secondary */
 
-    --muted: 202 100% 12%; /* Darker muted background */
-    --muted-foreground: 187 16% 70%; /* Slightly darker Light Grayish Blue for muted text */
+    --muted: 210 45% 12%; /* Saturated blue muted background */
+    --muted-foreground: 210 15% 65%; /* Blue-tinted for muted text */
 
-    --accent: 197 100% 33%; /* #007ea7 - Strong Blue as accent */
-    --accent-foreground: 187 16% 83%; /* #ccdbdc - Light Grayish Blue for text on strong blue */
+    --accent: 197 100% 33%; /* #007ea7 - Strong Blue as accent (kept blue) */
+    --accent-foreground: 210 15% 95%; /* Light text on accent */
 
     --destructive: 0 72% 51%; /* Keeping shadcn default red */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 202 100% 15%; /* Dark border */
-    --input: 202 100% 15%;
-    --ring: 190 50% 67%; /* #80ced7 - Soft Cyan for rings */
+    --border: 210 45% 18%; /* Saturated blue border */
+    --input: 210 45% 18%;
+    --ring: 197 100% 33%; /* #007ea7 - Strong Blue for rings (kept blue) */
   }
 }
 

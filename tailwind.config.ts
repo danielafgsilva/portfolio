@@ -60,6 +60,9 @@ const config = {
         "brand-strong-blue": "#007ea7",
         "brand-dark-blue": "#003249",
       },
+      fontFamily: {
+        harmony: ['"TAN Harmony"', "serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

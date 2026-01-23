@@ -13,7 +13,7 @@ export function About() {
   ]
 
   const aboutText =
-    "Junior Web Developer with a strong focus on front-end development and user interface design, showcasing a solid work ethic and adaptability. Demonstrated ability to create engaging web solutions that enhance user experience and performance, contributing fresh perspectives and a passion for learning. Offers a commitment to innovation and continuous improvement, ready to make a meaningful impact in web development projects."
+    "Hi! I'm a Junior Full-Stack Developer with a strong focus on Front-End development, who showcases a solid work ethic and adaptability. I demonstrate ability to create engaging web solutions that enhance user experience and performance, contributing with fresh perspectives and a passion for learning. I also offer a commitment to innovation and continuous improvement, and I'm always ready to make a meaningful impact in web development projects.\n\nAcademic and professional experiences emphasize adaptability, creativity, and a commitment to detail, supported by certifications in digital transformation and AI. The goal is to bridge technology and user experience, creating impactful digital solutions while deepening expertise in web communication technologies."
 
   return (
     <section id="about" className="py-24 sm:py-32">

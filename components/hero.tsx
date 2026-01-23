@@ -16,8 +16,8 @@ export function Hero() {
         transition={{ duration: 0.8 }}
         className="z-10"
       >
-        <h1 className="text-5xl md:text-7xl font-extrabold text-foreground">Daniela Silva</h1>
-        <p className="mt-4 text-lg md:text-2xl text-muted-foreground">Junior Web Developer & UX/UI Designer</p>
+        <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-foreground font-harmony uppercase">DANIELA SILVA</h1>
+        <p className="mt-4 text-lg md:text-2xl text-muted-foreground">Junior Full-Stack Developer | Front-End Oriented</p>
         <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
           Crafting meaningful, user-centered web experiences with passion and precision.
         </p>

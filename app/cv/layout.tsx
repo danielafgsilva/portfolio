@@ -1,19 +1,18 @@
-import type React from "react"
-import type { Metadata } from "next"
+"use client"
 
-export const metadata: Metadata = {
-  title: "CV - Daniela Silva",
-  description: "Curriculum Vitae for Daniela Silva, Junior Web Developer and UX/UI Designer.",
-}
+import { useEffect } from "react"
 
 export default function CVLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-    <html lang="en">
-      <body className="cv-page">{children}</body>
-    </html>
-  )
+  useEffect(() => {
+    document.body.classList.add("cv-page")
+    return () => {
+      document.body.classList.remove("cv-page")
+    }
+  }, [])
+
+  return <>{children}</>
 }
