@@ -48,7 +48,7 @@
     "html2pdf.js": "^0.14.0",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
-    "next": "15.2.4",
+    "next": "15.2.8",
     "next-themes": "latest",
     "puppeteer": "^24.36.0",
     "react": "^19",
