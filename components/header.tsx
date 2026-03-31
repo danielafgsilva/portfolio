@@ -38,9 +38,12 @@ export function Header() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-2xl font-bold text-foreground">
+        <Link
+            href="/"
+            className="text-xl sm:text-2xl font-harmony font-extrabold uppercase tracking-tight text-foreground"
+          >
             Daniela Silva
-          </Link>
+        </Link>
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
               <Link
