@@ -166,7 +166,7 @@ export default function CVPage() {
             "Focused on UI/UX to make it easier for clients to navigate and find information.",
             "Implemented responsive design features for accessibility across various devices.",
           ]}
-          link="https://gomes-rego-website.vercel.app/"
+          link="https://grasroc.pt/"
         />
         <ExperienceItem
           role="Frontend Developer | UX/UI Designer"

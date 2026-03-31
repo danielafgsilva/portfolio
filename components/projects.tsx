@@ -28,7 +28,7 @@ const projects = [
       "Designed a professional website for Gomes Rego & Associados, enhancing the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information. Implemented responsive design features and integrated clear calls-to-action, increasing inquiry rates.",
     image: "/images/gomes-rego-cover.png",
     tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
-    status: "In Progress",
+    liveUrl: "https://grasroc.pt/",
   },
 ]
 

@@ -7,7 +7,7 @@ const education = [
   {
     degree: "Web Communication and Technologies | Master's degree",
     institution: "Universidade de Aveiro",
-    date: "09/2023 – Present", // Assuming ongoing based on CV structure
+    date: "09/2023 – 12/2025",
   },
   {
     degree: "Audiovisual and Communication Technology | Licentiate degree",
@@ -18,7 +18,7 @@ const education = [
 
 export function Education() {
   return (
-    <section id="education" className="py-24 sm:py-32 bg-muted/30 dark:bg-background">
+    <section id="education" className="pt-20 sm:pt-32 bg-muted/30 dark:bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

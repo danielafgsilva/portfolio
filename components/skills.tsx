@@ -37,7 +37,7 @@ const SkillCategory = ({ title, skills, icon }: { title: string; skills: string[
 
 export function Skills() {
   return (
-    <section id="skills" className="py-24 sm:py-32 bg-muted/30 dark:bg-background">
+    <section id="skills" className="py-20 sm:py-32 bg-muted/30 dark:bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
