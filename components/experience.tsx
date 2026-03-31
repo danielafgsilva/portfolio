@@ -13,14 +13,6 @@ const experiences = [
       "Contributed to multiple software development projects, collaborating with the team to implement new features, fix issues, and support ongoing releases. Strengthened skills in backend development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to query, manage, and troubleshoot data. Worked with Vue.js on the frontend to build and integrate components with backend services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
   },
   {
-    role: "Full-Stack Developer",
-    company: "Dogwarts Website",
-    date: "08/2025",
-    location: "Porto, Portugal",
-    description:
-      "Developed a modern website for Dogwarts, using Next.js, TypeScript, and Tailwind CSS. Designed a role-based UI and integrated with the backend. Used Sanity CMS for content management.",
-  },
-  {
     role: "Web platforms Internship",
     company: "Bliss Applications",
     date: "12/2024",
@@ -35,22 +27,6 @@ const experiences = [
     location: "Aveiro, Portugal",
     description:
       "Collaborated on the 'O Metaverso na Educação' project, which focused on developing innovative strategies to explore the potential of immersive web environments in education, helping to advance the integration of technology in learning. Developed engaging projects that highlighted how immersive web technologies can enhance educational experiences, resulting in increased interest and investment in digital education initiatives. Presented findings and showcased the StudySphere platform at the Students@DigiMedia#03 event, contributing to critical discussions about the future of digital education and promoting awareness of emerging educational tools. Engaged with peers and stakeholders during the event, fostering valuable connections that could lead to future collaborations and advancements in educational technology.",
-  },
-  {
-    role: "Frontend Developer | UX/UI Designer",
-    company: "Twovest (Project)",
-    date: "09/2023 – 07/2024",
-    location: "Remote/Project-based",
-    description:
-      "Developed Twovest, a fashion platform that promotes sustainability and ethical consumption, focusing on second-hand clothing, which encourages environmentally conscious shopping habits. Designed an intuitive user interface using Figma, which significantly enhanced customer interaction and satisfaction by making navigation smoother. Utilized Next.js, Tailwind CSS, Redux Toolkit, and Supabase to build a robust platform, helping to ensure a seamless and responsive experience for users. Improved the overall user experience, which contributed to higher engagement rates and increased customer loyalty.",
-  },
-  {
-    role: "Frontend Developer | UX/UI Designer",
-    company: "Gomes Rego & Associados Website (Project)",
-    date: "12/2023",
-    location: "Remote/Project-based",
-    description:
-      "Designed a professional website for Gomes Rego & Associados, which enhanced the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information, which improved overall client engagement. Implemented responsive design features, ensuring the website is accessible across various devices, which helped reach a broader audience. Integrated clear calls-to-action, guiding potential clients through their journey, ultimately increasing inquiry rates.",
   },
 ]
 
