@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import { ExternalLink } from "lucide-react"
+
 
 const projects = [
   {
@@ -21,6 +21,7 @@ const projects = [
     image: "/images/twovest-cover.png",
     tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
     liveUrl: "https://twovest.com/",
+    status: "Visit Website"
   },
   {
     title: "Gomes Rego & Associados Website",
@@ -29,6 +30,7 @@ const projects = [
     image: "/images/gomes-rego-cover.png",
     tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
     liveUrl: "https://grasroc.pt/",
+    status: "Visit Website",
   },
 ]
 
@@ -60,7 +62,7 @@ export function Projects() {
                       alt={project.title}
                       width={500}
                       height={300}
-                      className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
+                      className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-10"
                     />
                   </div>
                 </div>
@@ -78,21 +80,38 @@ export function Projects() {
                     ))}
                   </div>
                   <div className="mt-6">
-                    {project.status ? (
+                    {project.liveUrl ? (
+                      <motion.div
+                        initial={{ scale: 1 }}
+                        whileHover={{ scale: 1.05, y: -1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                        className="inline-block"
+                      >
+                        <Link
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${project.status === "Visit Website"
+                              ? "bg-emerald-100 dark:bg-emerald-900/40"
+                              : "text-primary dark:text-primary hover:underline"
+                            }`}
+                        >
+                          <motion.span
+                            className="h-2 w-2 rounded-full bg-emerald-500"
+                            animate={project.status === "Visit Website" ? { opacity: [1, 0.4, 1] } : {}}
+                            transition={{ duration: 1.2, repeat: Infinity }}
+                          />
+                          <span className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                            {project.status ?? "Visit Website"}
+                          </span>
+                        </Link>
+                      </motion.div>
+                    ) : project.status ? (
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/50">
-                        <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                        <span className="h-2 w-2 rounded-full bg-blue-500" />
                         <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{project.status}</p>
                       </div>
-                    ) : (
-                      <Link
-                        href={project.liveUrl || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-primary dark:text-primary font-semibold hover:underline"
-                      >
-                        View Live Site <ExternalLink size={18} />
-                      </Link>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </motion.div>

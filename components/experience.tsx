@@ -10,7 +10,7 @@ const experiences = [
     date: "08/2025",
     location: "Portugal",
     description:
-      "Contributed to multiple software development projects, collaborating with the team to implement new features, fix issues, and support ongoing releases. Strengthened skills in backend development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to query, manage, and troubleshoot data. Worked with Vue.js on the frontend to build and integrate components with backend services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
+      "Contributed to multiple software development projects, collaborating with the team to implement new features, fix issues, and support ongoing releases. Strengthened skills in backend development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to query, manage, and troubleshoot data. Worked with Vue.js on the frontend to build and integrate components with backend services, gaining hands-on experience in full-stack workflows, best practices, and team-based development. Provided support to international clients, performed QA across selected projects, prepared technical and process documentation, and collaborated with the design team on small tasks such as newsletters and social media posts.",
   },
   {
     role: "Web platforms Internship",
@@ -18,7 +18,7 @@ const experiences = [
     date: "12/2024",
     location: "Portugal",
     description:
-      "Created the company website, which served as a foundation for our online presence and showcased our services effectively. Developed multiple client websites using WordPress, PHP, SaaS, HTML, and JavaScript, helping to meet diverse client needs and improve their online visibility. Enhanced user experience and functionality across all projects, leading to increased client satisfaction and engagement.",
+      "Created the company website, which served as a foundation for the online presence and showcased the company's services effectively. Developed the website using WordPress, PHP, SaaS, HTML, and JavaScript, helping to meet diverse needs and improve their online visibility. Enhanced the user experience and functionality, leading to increased satisfaction and engagement.",
   },
   {
     role: "Research in Immersive Web Environments",
