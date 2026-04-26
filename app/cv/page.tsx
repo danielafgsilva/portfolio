@@ -226,7 +226,7 @@ export default function CVPage() {
             <Section title="Skills">
               <h4 className="font-semibold mb-2">Programming Languages</h4>
               <div className="flex flex-wrap gap-2 mb-4">
-                {["HTML", "CSS", "JavaScript", "PHP", "React", "Next.js"].map((s) => (
+                {["HTML", "CSS", "JavaScript", "PHP", "React", "Next.js", "TypeScript", "Vue.js"].map((s) => (
                   <span key={s} className="bg-muted text-muted-foreground text-xs font-medium px-2.5 py-0.5 rounded-full">
                     {s}
                   </span>
@@ -234,7 +234,7 @@ export default function CVPage() {
               </div>
               <h4 className="font-semibold mb-2">Tools & Platforms</h4>
               <div className="flex flex-wrap gap-2 mb-4">
-                {["WordPress", "Bedrock", "Blade", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind", "Laravel", "DBeaver", "Vue.js"].map((s) => (
+                {["WordPress", "Bedrock", "Blade", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind", "Laravel", "DBeaver"].map((s) => (
                   <span key={s} className="bg-muted text-muted-foreground text-xs font-medium px-2.5 py-0.5 rounded-full">
                     {s}
                   </span>
