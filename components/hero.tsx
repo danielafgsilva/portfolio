@@ -1,45 +1,134 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowDown } from "lucide-react"
-import Link from "next/link"
+
+const meta = [
+  { label: "ROLE", value: "Front-End Developer" },
+  { label: "BASED", value: "Porto, Portugal" },
+  { label: "STATUS", value: "Open to opportunities", live: true },
+  { label: "STACK", value: "Next.js · React · Vue · Laravel" },
+]
 
 export function Hero() {
   return (
     <section
       id="home"
-      className="h-screen flex flex-col items-center justify-center text-center bg-background relative overflow-hidden"
+      className="relative min-h-screen flex flex-col bg-background overflow-hidden"
     >
+      {/* Top meta strip */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="z-10"
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="absolute top-20 left-0 right-0 z-10 hidden sm:block"
       >
-        <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-foreground font-harmony uppercase">DANIELA SILVA</h1>
-        <p className="mt-4 text-lg md:text-2xl text-muted-foreground">Junior Full-Stack Developer | Front-End Oriented</p>
-        <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
-          Crafting meaningful, user-centered web experiences with passion and precision.
-        </p>
+        <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
+          <div className="flex items-center justify-between gap-6">
+            <span className="eyebrow">portfolio</span>
+          </div>
+        </div>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-10"
-      >
-        <Link href="#about" aria-label="Scroll to about section">
-          <ArrowDown className="w-8 h-8 text-muted-foreground animate-bounce" />
-        </Link>
-      </motion.div>
+      {/* Main mark */}
+      <div className="flex-1 flex items-center pt-32 sm:pt-40">
+        <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-20">
+          <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 items-end">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="lg:col-span-12"
+            >
+              <motion.h1
+                className="font-display font-bold text-display-xl text-foreground leading-[0.88] tracking-[-0.045em]"
+                aria-label="Daniela."
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: {
+                    transition: { delayChildren: 0.4, staggerChildren: 0.085 },
+                  },
+                }}
+              >
+                <span className="inline-flex items-baseline">
+                  {Array.from("Daniela").map((char, i) => (
+                    <motion.span
+                      key={i}
+                      variants={{
+                        hidden: { opacity: 0 },
+                        visible: { opacity: 1 },
+                      }}
+                      transition={{ duration: 0.01 }}
+                      className="inline-block"
+                      aria-hidden="true"
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                  <motion.span
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: { opacity: 1 },
+                    }}
+                    transition={{ duration: 0.01 }}
+                    className="inline-block text-cyan"
+                    aria-hidden="true"
+                  >
+                    .
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0, 1, 1, 0, 0, 1, 1, 0] }}
+                    transition={{
+                      delay: 0.4 + "Daniela".length * 0.085 + 0.18,
+                      duration: 1.8,
+                      times: [0, 0.04, 0.28, 0.30, 0.52, 0.54, 0.76, 1],
+                      ease: "linear",
+                    }}
+                    className="ml-3 sm:ml-4 inline-block h-[1em] w-[0.035em] bg-cyan"
+                    aria-hidden="true"
+                  />
+                </span>
+              </motion.h1>
+            </motion.div>
 
-      {/* Background decorative elements - using new brand colors */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 dark:opacity-5">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-brand-soft-cyan rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-brand-pale-cyan rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-32 h-32 bg-brand-strong-blue rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="lg:col-span-7"
+            >
+              <p className="text-xl sm:text-2xl lg:text-3xl text-ink-muted leading-snug text-balance max-w-2xl">
+                I build <span className="text-foreground font-medium">user-centered</span> web
+                experiences, bridging the gap between technology and the people using it.
+              </p>
+            </motion.div>
+
+            <motion.dl
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="lg:col-span-4 lg:col-start-9 grid grid-cols-2 lg:grid-cols-1 gap-y-4 gap-x-6 w-full"
+            >
+              {meta.map((m) => (
+                <div key={m.label} className="border-t border-rule pt-3">
+                  <dt className="eyebrow">{m.label}</dt>
+                  <dd className="mt-1.5 mono text-foreground flex items-center gap-2">
+                    {m.live && (
+                      <span className="relative flex h-2 w-2" aria-hidden="true">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+                      </span>
+                    )}
+                    <span className="text-foreground">{m.value}</span>
+                  </dd>
+                </div>
+              ))}
+            </motion.dl>
+          </div>
+        </div>
       </div>
+
     </section>
   )
 }

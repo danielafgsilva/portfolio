@@ -1,58 +1,123 @@
 "use client"
 
-import type React from "react"
 import { motion } from "framer-motion"
-import { Code, Wrench, LanguagesIcon } from "lucide-react" // Changed Languages to LanguagesIcon
+import { Chapter, Accent } from "./chapter"
 
-const skillsData = {
-  programming: ["HTML", "CSS", "JavaScript", "PHP", "React", "Next.js", "Vue.js"],
-  tools: ["WordPress", "Figma", "SaaS", "Supabase", "Docker", "GitHub", "Tailwind", "Laravel", "DBeaver"],
-  languages: ["English (Professional)", "Portuguese (Native)"],
+type Tool = { name: string }
+
+type Group = {
+  index: string
+  label: string
+  tools: Tool[]
 }
 
-const SkillCategory = ({ title, skills, icon }: { title: string; skills: string[]; icon: React.ReactNode }) => (
-  <motion.div
-    className="p-6 bg-card rounded-lg"
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.5 }}
-    transition={{ duration: 0.6 }}
-  >
-    <div className="flex items-center gap-4 mb-4">
-      <div className="text-primary">{icon}</div>
-      <h3 className="text-xl font-bold">{title}</h3>
-    </div>
-    <div className="flex flex-wrap gap-2">
-      {skills.map((skill) => (
-        <span
-          key={skill}
-          className="px-3 py-1 text-sm font-medium bg-background text-foreground dark:bg-muted dark:text-foreground rounded-full shadow-sm"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-  </motion.div>
-)
+const groups: Group[] = [
+  {
+    index: "01",
+    label: "Front-End",
+    tools: [
+      { name: "Next.js" },
+      { name: "React" },
+      { name: "TypeScript" },
+      { name: "JavaScript" },
+      { name: "Vue.js" },
+      { name: "Tailwind CSS" },
+      { name: "Sass" },
+      { name: "HTML" },
+      { name: "CSS" },
+    ],
+  },
+  {
+    index: "02",
+    label: "Back-End & Data",
+    tools: [
+      { name: "Laravel" },
+      { name: "PHP" },
+      { name: "Supabase" },
+      { name: "DBeaver" },
+      { name: "Docker" },
+    ],
+  },
+  {
+    index: "03",
+    label: "Design & Workflow",
+    tools: [
+      { name: "Figma" },
+      { name: "Git / GitHub" },
+      { name: "WordPress" },
+      { name: "Framer Motion" },
+    ],
+  },
+]
+
+const languages = [
+  { name: "Portuguese", level: "Native" },
+  { name: "English", level: "Professional" },
+]
 
 export function Skills() {
   return (
-    <section id="skills" className="py-20 sm:py-32 bg-muted/30 dark:bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <Chapter
+      id="toolbox"
+      number="04 //"
+      eyebrow="Toolbox"
+      title={
+        <>
+          What I <Accent>build</Accent> with.
+        </>
+      }
+      intro={
+        <p>
+          Roughly grouped by where I spend my hours.
+        </p>
+      }
+    >
+      <div className="space-y-12">
+        {groups.map((group, gi) => (
+          <motion.div
+            key={group.label}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: gi * 0.06, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="flex items-baseline gap-3 mb-4">
+              <span className="chapter-number text-sm">{group.index}</span>
+              <span className="eyebrow">// {group.label}</span>
+              <span className="h-px flex-1 bg-rule" aria-hidden="true" />
+            </div>
+            <ul className="flex flex-wrap gap-2">
+              {group.tools.map((t) => (
+                <li key={t.name} className="badge">
+                  {t.name}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        ))}
+
+        {/* Languages */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-3xl font-bold tracking-tight text-center sm:text-4xl">Skills</h2>
-          <div className="mt-16 grid md:grid-cols-1 lg:grid-cols-3 gap-8">
-            <SkillCategory title="Programming Languages" skills={skillsData.programming} icon={<Code size={24} />} />
-            <SkillCategory title="Tools & Platforms" skills={skillsData.tools} icon={<Wrench size={24} />} />
-            <SkillCategory title="Languages" skills={skillsData.languages} icon={<LanguagesIcon size={24} />} />
+          <div className="flex items-baseline gap-3 mb-4">
+            <span className="chapter-number text-sm">04</span>
+            <span className="eyebrow">// Languages</span>
+            <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 max-w-md">
+            {languages.map((l) => (
+              <div key={l.name} className="flex items-baseline justify-between border border-rule rounded-md px-4 py-3">
+                <dt className="font-medium text-foreground">{l.name}</dt>
+                <dd className="mono text-xs text-cyan">{l.level}</dd>
+              </div>
+            ))}
+          </dl>
         </motion.div>
       </div>
-    </section>
+    </Chapter>
   )
 }
