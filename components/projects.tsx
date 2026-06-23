@@ -3,103 +3,202 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import { ExternalLink } from "lucide-react"
+import { ArrowUpRight, Award } from "lucide-react"
+import { Chapter, Accent } from "./chapter"
 
-const projects = [
+type Project = {
+  index: string
+  title: string
+  year: string
+  role: string
+  description: string
+  image: string
+  tech: string[]
+  status?: "live" | "in-progress"
+  liveUrl?: string
+  awards?: { title: string; issuer: string }[]
+}
+
+const projects: Project[] = [
   {
-    title: "Dogwarts Website",
-    description:
-      "Developed a modern website for Dogwarts, a canine care service platform. Built using Next.js, TypeScript, and Tailwind CSS with a role-based UI. Integrated with backend services and Sanity CMS for content management, creating an intuitive experience for both dog owners and service providers.",
-    image: "/images/dogwarts-cover.png",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
-    status: "In Progress",
-  },
-  {
+    index: "01",
     title: "Twovest",
+    year: "2024",
+    role: "UI/UX Design & Front-End Development",
     description:
-      "Developed Twovest, a fashion platform that promotes sustainability and ethical consumption, focusing on second-hand clothing. Designed an intuitive user interface using Figma, which significantly enhanced customer interaction and satisfaction. Improved the overall user experience, contributing to higher engagement rates and increased customer loyalty.",
+      "A second-hand fashion platform built to make sustainable consumption the obvious choice. Designed the full experience in Figma, then shipped the interface in Next.js with Supabase as the backbone. Won two awards for design and execution.",
     image: "/images/twovest-cover.png",
     tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
+    status: "live",
     liveUrl: "https://twovest.com/",
+    awards: [
+      { title: "Academy Award · Media Play", issuer: "University of Aveiro, 2024" },
+      { title: "Best Project 2023/2024", issuer: "Mindera × Master's Programme" },
+    ],
   },
   {
-    title: "Gomes Rego & Associados Website",
+    index: "02",
+    title: "Gomes Rego & Associados",
+    year: "2024",
+    role: "Web Design & Development",
     description:
-      "Designed a professional website for Gomes Rego & Associados, enhancing the company's online presence and credibility. Focused on user interface and experience, making it easier for clients to navigate and find information. Implemented responsive design features and integrated clear calls-to-action, increasing inquiry rates.",
+      "A professional site for a law firm needing to signal credibility online. Designed for clarity — clean information architecture, considered typography, responsive across every breakpoint, and clear calls-to-action that translated into measurable inquiry lift.",
     image: "/images/gomes-rego-cover.png",
     tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
+    status: "live",
     liveUrl: "https://grasroc.pt/",
+  },
+  {
+    index: "03",
+    title: "Dogwarts",
+    year: "2025",
+    role: "Full-Stack Development",
+    description:
+      "A canine-care marketplace connecting dog owners with service providers. Role-based UI built with Next.js and TypeScript, with Sanity CMS powering editorial content. Currently in active development.",
+    image: "/images/dogwarts-cover.png",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
+    status: "in-progress",
   },
 ]
 
 export function Projects() {
   return (
-    <section id="projects" className="py-24 sm:py-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl font-bold tracking-tight text-center sm:text-4xl">Highlighted Projects</h2>
-          <div className="mt-16 grid gap-12 md:grid-cols-1 lg:gap-16">
-            {projects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                className="group flex flex-col md:flex-row gap-8 items-center"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-              >
-                <div className={`w-full md:w-1/2 ${index % 2 !== 0 ? "md:order-2" : ""}`}>
-                  <div className="overflow-hidden rounded-lg shadow-xl aspect-[5/3] bg-muted/50">
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      alt={project.title}
-                      width={500}
-                      height={300}
-                      className="w-full h-full object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
-                    />
-                  </div>
+    <Chapter
+      id="work"
+      number="02 //"
+      eyebrow="Selected Work"
+      title={
+        <>
+          Work I'm <Accent>proud</Accent> of.
+        </>
+      }
+      intro={
+        <p>
+          Three projects spanning sustainable fashion, professional services, and a marketplace
+          in progress — each one a chance to think about real people on the other side of the screen.
+        </p>
+      }
+    >
+      <div className="space-y-20 lg:space-y-28">
+        {projects.map((project, i) => (
+          <motion.article
+            key={project.title}
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+            className="group"
+          >
+            {/* Header line */}
+            <div className="flex items-baseline gap-3 mb-4">
+              <span className="chapter-number text-sm">{project.index}</span>
+              <span className="h-px flex-1 bg-rule" aria-hidden="true" />
+              <span className="eyebrow">{project.year}</span>
+            </div>
+
+            {/* Browser-frame mockup */}
+            <div className="overflow-hidden rounded-md border border-rule bg-paper shadow-sm">
+              {/* Chrome */}
+              <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 bg-paper-tint border-b border-rule">
+                <div className="flex gap-1.5 shrink-0" aria-hidden="true">
+                  <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
+                  <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
+                  <span className="h-3 w-3 rounded-full bg-[#28C840]" />
                 </div>
-                <div className="w-full md:w-1/2">
-                  <h3 className="text-2xl font-bold">{project.title}</h3>
-                  <p className="mt-4 text-muted-foreground">{project.description}</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {project.tech.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 text-sm font-medium bg-secondary text-secondary-foreground dark:bg-secondary dark:text-secondary-foreground rounded-full"
-                      >
-                        {tech}
+                <div className="flex-1 min-w-0 flex justify-center">
+                  <span className="mono text-[11px] sm:text-xs text-ink-subtle px-2.5 py-1 bg-paper rounded border border-rule max-w-full truncate">
+                    {project.status === "live" && project.liveUrl
+                      ? project.liveUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")
+                      : `~/${project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")} (dev)`}
+                  </span>
+                </div>
+                <div className="shrink-0 flex items-center">
+                  {project.status === "live" && (
+                    <span className="inline-flex items-center gap-1.5 mono text-[11px] sm:text-xs text-foreground">
+                      <span className="relative flex h-2 w-2" aria-hidden="true">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
                       </span>
-                    ))}
-                  </div>
-                  <div className="mt-6">
-                    {project.status ? (
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/50">
-                        <span className="h-2 w-2 rounded-full bg-blue-500"></span>
-                        <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{project.status}</p>
-                      </div>
-                    ) : (
-                      <Link
-                        href={project.liveUrl || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-primary dark:text-primary font-semibold hover:underline"
-                      >
-                        View Live Site <ExternalLink size={18} />
-                      </Link>
-                    )}
-                  </div>
+                      <span className="hidden sm:inline">live</span>
+                    </span>
+                  )}
+                  {project.status === "in-progress" && (
+                    <span className="inline-flex items-center gap-1.5 mono text-[11px] sm:text-xs text-foreground">
+                      <span className="relative flex h-2 w-2" aria-hidden="true">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+                      </span>
+                      <span className="hidden sm:inline">in progress</span>
+                    </span>
+                  )}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+              </div>
+
+              {/* Screenshot */}
+              <div className="relative aspect-[5/3] bg-paper-tint overflow-hidden">
+                <Image
+                  src={project.image || "/placeholder.svg"}
+                  alt={`${project.title} project cover`}
+                  fill
+                  priority={i === 0}
+                  className="object-cover object-top transition-transform duration-700 ease-editorial group-hover:scale-[1.03]"
+                  sizes="(min-width: 1024px) 60vw, 100vw"
+                />
+              </div>
+            </div>
+
+            {/* Caption block */}
+            <div className="mt-6 grid gap-x-6 gap-y-5 sm:gap-x-8 sm:grid-cols-12">
+              <div className="sm:col-span-7">
+                <h3 className="font-display font-semibold text-2xl sm:text-3xl text-foreground leading-tight">
+                  {project.title}
+                </h3>
+                <p className="mt-2 mono text-sm text-cyan">{project.role}</p>
+                <p className="mt-4 text-base leading-relaxed text-ink-muted text-pretty">
+                  {project.description}
+                </p>
+
+                {project.awards && (
+                  <ul className="mt-5 space-y-2 border-l-2 border-cyan pl-4">
+                    {project.awards.map((a) => (
+                      <li key={a.title} className="text-sm flex items-baseline gap-2">
+                        <Award size={13} className="shrink-0 text-cyan translate-y-0.5" strokeWidth={1.75} />
+                        <div>
+                          <span className="font-medium text-foreground">{a.title}</span>
+                          <span className="text-ink-subtle"> — {a.issuer}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="sm:col-span-5 sm:border-l sm:border-rule sm:pl-6">
+                <p className="eyebrow mb-3">// stack</p>
+                <ul className="flex flex-wrap gap-1.5">
+                  {project.tech.map((t) => (
+                    <li key={t} className="badge">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+
+                {project.liveUrl && (
+                  <Link
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
+                  >
+                    Visit site
+                    <ArrowUpRight size={14} strokeWidth={2} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </Link>
+                )}
+              </div>
+            </div>
+          </motion.article>
+        ))}
       </div>
-    </section>
+    </Chapter>
   )
 }
