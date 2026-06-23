@@ -82,26 +82,15 @@ export function About() {
       }
     >
       {/* Lead paragraph + portrait */}
-      <div className="grid gap-8 md:grid-cols-12 md:gap-x-10">
+      <div className="flex flex-col items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="md:col-span-5"
         >
-          <div className="relative aspect-square w-full max-w-xs mx-auto md:mx-0 overflow-hidden rounded-full bg-paper-tint border border-rule">
-            <Image
-              src="/images/daniela-silva.jpg"
-              alt="Daniela Silva"
-              fill
-              className="object-cover"
-              sizes="(min-width: 768px) 320px, 320px"
-            />
-          </div>
         </motion.div>
-
-        <div className="md:col-span-7 space-y-5 text-base sm:text-lg leading-relaxed text-ink-muted text-pretty">
+        <div className="space-y-5 text-base sm:text-lg leading-relaxed text-ink-muted text-pretty">
           <p>
             Hi — I'm a junior full-stack developer with a strong front-end orientation. I build
             web experiences that pay attention to the person on the other side of the screen,
