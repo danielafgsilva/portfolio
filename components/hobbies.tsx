@@ -119,7 +119,7 @@ export function Hobbies() {
                 src="/images/photography-cover.png"
                 alt="Daniela's photography portfolio cover — 'Hello, welcome to my corner of the world'"
                 fill
-                className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03]"
+                className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03] bg-black"
                 sizes="(min-width: 640px) 40vw, 100vw"
               />
             </div>
