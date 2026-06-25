@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "portfolio-dev",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"],
+      "runtimeExecutable": "/Users/danielasilva/Portfolio/portfolio/.claude/dev.sh",
+      "runtimeArgs": [],
       "port": 3001
     }
   ]

@@ -1,6 +1,8 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
+import { loaderSignal } from "@/lib/loader-signal"
 
 const meta = [
   { label: "ROLE", value: "Front-End Developer" },
@@ -9,9 +11,59 @@ const meta = [
   { label: "STACK", value: "Next.js · React · Vue · Laravel" },
 ]
 
+const REPLAY_INTERVAL_MS = 60_000
+
 export function Hero() {
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const [animKey, setAnimKey] = useState(0)
+  const [ready, setReady] = useState(false)
+
+  // Wait for loader to finish before starting typewriter
+  useEffect(() => {
+    if (loaderSignal.isDone()) {
+      setReady(true)
+      return
+    }
+    const unsubscribe = loaderSignal.subscribe(() => setReady(true))
+    return unsubscribe
+  }, [])
+
+  // Re-animate every 60s while in view (only after loader done)
+  useEffect(() => {
+    if (!ready) return
+    const el = sectionRef.current
+    if (!el) return
+
+    let interval: ReturnType<typeof setInterval> | null = null
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (interval === null) {
+            interval = setInterval(() => {
+              setAnimKey((k) => k + 1)
+            }, REPLAY_INTERVAL_MS)
+          }
+        } else {
+          if (interval !== null) {
+            clearInterval(interval)
+            interval = null
+          }
+        }
+      },
+      { threshold: 0.4 },
+    )
+
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+      if (interval !== null) clearInterval(interval)
+    }
+  }, [ready])
+
   return (
     <section
+      ref={sectionRef}
       id="home"
       className="relative min-h-screen flex flex-col bg-background overflow-hidden"
     >
@@ -33,20 +85,16 @@ export function Hero() {
       <div className="flex-1 flex items-center pt-32 sm:pt-40">
         <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-20">
           <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 items-end">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:col-span-12"
-            >
+            <div className="lg:col-span-12">
               <motion.h1
+                key={`${animKey}-${ready ? "go" : "wait"}`}
                 className="font-display font-bold text-display-xl text-foreground leading-[0.88] tracking-[-0.045em]"
                 aria-label="Daniela."
                 initial="hidden"
-                animate="visible"
+                animate={ready ? "visible" : "hidden"}
                 variants={{
                   visible: {
-                    transition: { delayChildren: 0.4, staggerChildren: 0.085 },
+                    transition: { delayChildren: 0.15, staggerChildren: 0.085 },
                   },
                 }}
               >
@@ -78,9 +126,9 @@ export function Hero() {
                   </motion.span>
                   <motion.span
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: [0, 1, 1, 0, 0, 1, 1, 0] }}
+                    animate={ready ? { opacity: [0, 1, 1, 0, 0, 1, 1, 0] } : { opacity: 0 }}
                     transition={{
-                      delay: 0.4 + "Daniela".length * 0.085 + 0.18,
+                      delay: 0.15 + "Daniela".length * 0.085 + 0.18,
                       duration: 1.8,
                       times: [0, 0.04, 0.28, 0.30, 0.52, 0.54, 0.76, 1],
                       ease: "linear",
@@ -90,7 +138,7 @@ export function Hero() {
                   />
                 </span>
               </motion.h1>
-            </motion.div>
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -128,7 +176,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-
     </section>
   )
 }

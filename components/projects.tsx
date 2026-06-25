@@ -141,7 +141,7 @@ export function Projects() {
                   alt={`${project.title} project cover`}
                   fill
                   priority={i === 0}
-                  className="object-cover object-top transition-transform duration-700 ease-editorial group-hover:scale-[1.03]"
+                  className="object-cover object-top"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                 />
               </div>
