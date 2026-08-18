@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "portfolio-dev",
-      "runtimeExecutable": "/Users/danielasilva/Portfolio/portfolio/.claude/dev.sh",
+      "runtimeExecutable": "/Users/danielasilva/Personal Projects/Portfolio/portfolio/.claude/dev.sh",
       "runtimeArgs": [],
       "port": 3001
     }

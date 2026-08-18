@@ -2,30 +2,12 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Github, Linkedin, Mail, Phone, Globe, MapPin } from "lucide-react"
 import { DownloadCVButton } from "@/app/cv/download-button"
+import { AnimatedSection } from "@/app/cv/animated-section"
 
 export const metadata: Metadata = {
   title: "CV — Daniela Silva",
   description: "Curriculum Vitae for Daniela Silva.",
 }
-
-const Section = ({
-  number,
-  title,
-  children,
-}: {
-  number: string
-  title: string
-  children: React.ReactNode
-}) => (
-  <section className="mb-10 print:mb-7">
-    <div className="flex items-baseline gap-3 mb-5 print:mb-4">
-      <span className="chapter-number text-sm">{number}</span>
-      <span className="eyebrow">// {title}</span>
-      <span className="h-px flex-1 bg-rule" aria-hidden="true" />
-    </div>
-    {children}
-  </section>
-)
 
 const ExperienceItem = ({
   role,
@@ -35,6 +17,7 @@ const ExperienceItem = ({
   description,
   link,
   status,
+  stack,
 }: {
   role: string
   company: string
@@ -43,6 +26,7 @@ const ExperienceItem = ({
   description: string[]
   link?: string
   status?: string
+  stack?: string[]
 }) => (
   <div className="mb-6 print:mb-5 last:mb-0 pb-6 print:pb-5 border-b border-rule last:border-b-0 print:break-inside-avoid">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-1">
@@ -63,6 +47,15 @@ const ExperienceItem = ({
         </li>
       ))}
     </ul>
+    {stack && stack.length > 0 && (
+      <ul className="mt-4 flex flex-wrap gap-1.5">
+        {stack.map((s) => (
+          <li key={s} className="badge">
+            {s}
+          </li>
+        ))}
+      </ul>
+    )}
     {(link || status) && (
       <div className="mt-3 flex flex-wrap items-center gap-3">
         {link && (
@@ -75,9 +68,7 @@ const ExperienceItem = ({
             {link.replace(/^https?:\/\//, "").replace(/\/$/, "")} →
           </a>
         )}
-        {status && (
-          <span className="badge badge-accent">{status}</span>
-        )}
+        {status && <span className="badge badge-accent">{status}</span>}
       </div>
     )}
   </div>
@@ -92,14 +83,14 @@ export default function CVPage() {
 
       <div id="cv-print-content">
         {/* Header */}
-        <header className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-12 print:mb-8 pb-8 border-b border-rule items-end">
+        <header className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10 print:mb-6 pb-8 border-b border-rule items-end">
           <div className="sm:col-span-2">
             <p className="eyebrow mb-2">// curriculum vitae</p>
             <h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-7xl text-foreground tracking-tight leading-[0.95]">
               Daniela Silva<span className="text-cyan">.</span>
             </h1>
             <p className="mt-4 mono text-sm text-ink-muted">
-              Junior Web Developer · Front-End Oriented
+              Design Engineer · Front-End Developer · Component-first
             </p>
           </div>
 
@@ -157,44 +148,67 @@ export default function CVPage() {
         </header>
 
         {/* About */}
-        <Section number="01" title="about">
+        <AnimatedSection number="01" title="about">
           <p className="text-base leading-relaxed text-ink-muted text-pretty max-w-3xl">
-            Hi! I'm a Junior Web Developer with a strong focus on Front-End, driven by curiosity
-            and a constant desire to improve. I enjoy building clean, engaging, and user-focused
-            web experiences that balance performance with thoughtful design. Naturally adaptable,
-            I'm comfortable stepping beyond Front-End when the team needs it, always prioritizing
-            collaboration and teamwork. I value clear communication, positive team dynamics and
-            delivering high-quality work with attention to detail and professionalism.
+            Front-End developer who thinks like a designer and edits like a filmmaker. My
+            audiovisual background isn't a past life — it's how I reason about timing, rhythm,
+            and hierarchy, the same instincts that make a scene land make a component land. I
+            ship pixel-perfect, component-first UI in Next.js, React, and TypeScript, live in
+            Figma, and care about the details a good interaction hides: motion timing,
+            typographic detail, accessibility, state transitions. Happiest at the seam between
+            design and code.
           </p>
-        </Section>
+        </AnimatedSection>
 
         {/* Experience */}
-        <Section number="02" title="professional experience">
+        <AnimatedSection number="02" title="professional experience">
           <ExperienceItem
-            role="Full-Stack Professional Internship"
+            role="Full-Stack Developer · Project Manager"
             company="Dynamikfloat | Dyn-Link"
             date="08/2025 — now"
             location="Aveiro, Portugal"
             description={[
-              "Contributed to multiple software development projects.",
-              "Stepped into the role of Project Manager for the company's core software, leading delivery for international clients.",
-              "Joined the support team and conducted workshops across all of the company's software products for international clients.",
-              "Strengthened skills in Back-End development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to manage data.",
-              "Worked with Vue.js on the Front-End to build and integrate components with Back-End services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
-              "Performed QA across selected projects, prepared technical and process documentation, and collaborated with the design team on small tasks such as newsletters and social media posts.",
+              "Designed and shipped Plan4Marketing — a multi-tenant SaaS with a drag-and-drop email builder, campaigns, and contacts, all served by one scalable component library across many client brands.",
+              "Led SEAC's migration to a component-first TypeScript architecture on the Front-End and shipped a Google Calendar integration.",
+              "Rescued a broken Stripe integration on Scopphu — production payments stabilised.",
+              "Stepped into Project Manager for the company's core software, leading delivery for international clients and running product workshops for the support team.",
+              "Shipped a CRUD module for APLO as onboarding work; contributed QA, technical documentation, and design collaboration on brand assets.",
+            ]}
+            stack={[
+              "TypeScript",
+              "Vue",
+              "Tailwind CSS",
+              "Figma",
+              "Laravel",
+              "PHP",
+              "MySQL",
+              "DBeaver",
+              "GitHub",
             ]}
           />
           <ExperienceItem
-            role="Web Platforms Internship"
+            role="Front-End Developer Internship"
             company="Bliss Applications"
             date="12/2024 — 06/2025"
             location="Porto, Portugal"
             description={[
-              "Created the company website, which served as a foundation for the online presence and showcased the company's services effectively.",
-              "Developed the website using WordPress, PHP, Sass, HTML and JavaScript, helping to meet diverse needs and improve their online visibility.",
-              "Enhanced the user experience and functionality, leading to increased satisfaction and engagement.",
+              "Shipped every block of the marketing site from Figma design to pixel-perfect production — Hero, Why Bliss, Where We've Been, Scandinavian office, Quotes, and Brands.",
+              "Rebuilt the project-card component pattern across the Projects pages for consistency and reuse.",
+              "Documented every implementation to keep the component library maintainable for the team.",
             ]}
             link="https://blissapplications.com/"
+            stack={[
+              "WordPress Headless",
+              "PHP",
+              "Blade",
+              "Sass",
+              "Bedrock",
+              "Sage",
+              "Gutenberg",
+              "Figma",
+              "GitHub",
+              "Azure DevOps",
+            ]}
           />
           <ExperienceItem
             role="Research in Immersive Web Environments"
@@ -202,25 +216,39 @@ export default function CVPage() {
             date="11/2023 — 07/2024"
             location="Aveiro, Portugal"
             description={[
-              "Collaborated on the project 'O Metaverso na Educação' (Immersive Web Environments in Education), exploring immersive web environments in education.",
-              "Developed engaging projects highlighting how immersive web technologies can enhance educational experiences.",
-              "Presented findings and showcased the StudySphere platform at the Students@DigiMedia#03 event.",
+              "Pitched the immersive-web education concept to the research centre and set up the codebase.",
+              "Ran baseline user-research interviews and shaped the learning-experience blocks.",
+              "Designed and prototyped the immersive VR environment for the StudySphere platform. Presented at Students@DigiMedia#03.",
+              "Conducted manual VR usability testing across the experience.",
             ]}
           />
-        </Section>
+        </AnimatedSection>
 
-        {/* Projects */}
-        <Section number="03" title="projects">
+        {/* Projects — Twovest first as the flagship design-eng story */}
+        <AnimatedSection number="03" title="projects">
           <ExperienceItem
-            role="Full-Stack Developer"
-            company="Dogwarts Website"
-            date="08/2025"
-            location="Porto, Portugal"
+            role="Front-End Developer · UX/UI Designer"
+            company="Twovest"
+            date="07/2024"
+            location="Aveiro, Portugal"
             description={[
-              "Developed a modern website for Dogwarts, using Next.js, TypeScript, and Tailwind CSS.",
-              "Designed a role-based UI and integrated with the Back-End and Sanity CMS for content management.",
+              "Ran UX interviews for the first prototype and translated the findings into a component-first design system for the platform.",
+              "Designed and shipped the homepage slider, the Profile page, and the (front-end) Purchase Process — one of the primary user flows.",
+              "Prototyped the backoffice (unlaunched), the delivery-point page, brand pages, and the look-submission flow.",
+              "Built the MediaPlay Showcase landing page and a library of reusable, pixel-precise components.",
+              "Implemented components as a Front-End developer and performed manual QA on live builds.",
+              "Pitched the project to professors, the Mindera engineering team, and the Showcase audience — a full end-to-end product story from research to launch.",
             ]}
-            status="In Progress"
+            link="https://twovest.com/"
+            stack={[
+              "Next.js",
+              "Tailwind CSS",
+              "Supabase",
+              "Figma",
+              "Vercel",
+              "Docker",
+              "GitHub",
+            ]}
           />
           <ExperienceItem
             role="Front-End Developer · UX/UI Designer"
@@ -228,28 +256,30 @@ export default function CVPage() {
             date="12/2024"
             location="Porto, Portugal"
             description={[
-              "Designed a professional website, enhancing the company's online presence and credibility.",
-              "Focused on UI/UX to make it easier for clients to navigate and find information.",
-              "Implemented responsive design features for accessibility across various devices.",
+              "Designed and built a credibility-first professional site with a considered, clarity-driven information architecture.",
+              "Implemented responsive, motion-rich UI with Framer Motion — pixel-perfect across every breakpoint.",
+              "Delivered clear calls-to-action that translated into a measurable lift in client inquiries.",
             ]}
             link="https://grasroc.pt/"
+            stack={["Next.js", "React", "Framer Motion", "Tailwind CSS"]}
           />
           <ExperienceItem
-            role="Front-End Developer · UX/UI Designer"
-            company="Twovest"
-            date="07/2024"
-            location="Aveiro, Portugal"
+            role="Full-Stack Developer"
+            company="Dogwarts Website"
+            date="08/2025"
+            location="Porto, Portugal"
             description={[
-              "Designed an intuitive user interface using Figma, enhancing customer interaction and satisfaction.",
-              "Utilized Next.js, Tailwind CSS, Redux Toolkit, and Supabase to build a robust platform.",
+              "Modern website for a canine-care service — built with a component-first architecture designed to scale to more service categories.",
+              "Role-based UI (owners vs. providers) with Sanity CMS powering editorial content.",
             ]}
-            link="https://twovest.com/"
+            status="In Progress"
+            stack={["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"]}
           />
-        </Section>
+        </AnimatedSection>
 
-        {/* Two-column section */}
+        {/* Two-column: Education + Awards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 print:break-inside-avoid">
-          <Section number="04" title="education">
+          <AnimatedSection number="04" title="education">
             <div className="space-y-5">
               <div>
                 <h3 className="font-display font-semibold text-base text-foreground leading-tight">
@@ -266,9 +296,9 @@ export default function CVPage() {
                 <p className="mono text-xs text-ink-subtle">10/2020 — 07/2023</p>
               </div>
             </div>
-          </Section>
+          </AnimatedSection>
 
-          <Section number="05" title="awards">
+          <AnimatedSection number="05" title="awards">
             <div className="space-y-5">
               <div>
                 <h3 className="font-display font-semibold text-base text-foreground leading-tight">
@@ -289,16 +319,27 @@ export default function CVPage() {
                 </p>
               </div>
             </div>
-          </Section>
+          </AnimatedSection>
         </div>
 
         {/* Skills */}
-        <Section number="06" title="skills">
+        <AnimatedSection number="06" title="skills">
           <div className="space-y-5">
             <div>
-              <p className="eyebrow mb-3">programming</p>
+              <p className="eyebrow mb-3">front-end</p>
               <ul className="flex flex-wrap gap-2">
-                {["HTML", "CSS", "JavaScript", "TypeScript", "PHP", "React", "Next.js", "Vue.js"].map((s) => (
+                {[
+                  "Next.js",
+                  "React",
+                  "TypeScript",
+                  "JavaScript",
+                  "Vue.js",
+                  "HTML",
+                  "CSS",
+                  "Tailwind CSS",
+                  "Sass",
+                  "Framer Motion",
+                ].map((s) => (
                   <li key={s} className="badge">
                     {s}
                   </li>
@@ -306,20 +347,40 @@ export default function CVPage() {
               </ul>
             </div>
             <div>
-              <p className="eyebrow mb-3">tools &amp; platforms</p>
+              <p className="eyebrow mb-3">design &amp; UX</p>
               <ul className="flex flex-wrap gap-2">
                 {[
                   "Figma",
-                  "Tailwind",
+                  "Design Systems",
+                  "Component Libraries",
+                  "User Research",
+                  "Prototyping",
+                  "Accessibility",
+                ].map((s) => (
+                  <li key={s} className="badge">
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="eyebrow mb-3">back-end &amp; tools</p>
+              <ul className="flex flex-wrap gap-2">
+                {[
+                  "PHP",
                   "Laravel",
-                  "Sass",
                   "Supabase",
-                  "Docker",
-                  "GitHub",
+                  "MySQL",
                   "DBeaver",
                   "WordPress",
                   "Bedrock",
                   "Blade",
+                  "Sage",
+                  "Gutenberg",
+                  "GitHub",
+                  "Vercel",
+                  "Docker",
+                  "Azure DevOps",
                 ].map((s) => (
                   <li key={s} className="badge">
                     {s}
@@ -338,7 +399,7 @@ export default function CVPage() {
               </ul>
             </div>
           </div>
-        </Section>
+        </AnimatedSection>
       </div>
     </div>
   )

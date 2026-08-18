@@ -6,6 +6,8 @@ import { Skills } from "@/components/skills"
 import { Hobbies } from "@/components/hobbies"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { SceneProgress } from "@/components/scene-progress"
+import { SceneCounter } from "@/components/scene-counter"
 
 export default function PortfolioPage() {
   return (
@@ -26,6 +28,8 @@ export default function PortfolioPage() {
         <Contact />
       </main>
       <Footer />
+      <SceneProgress />
+      <SceneCounter />
     </div>
   )
 }
