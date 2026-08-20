@@ -294,11 +294,11 @@ function ChronologySlide({
       </div>
 
       {/* Bottom — gallery: bottom-aligned marquee that auto-scrolls right→left
-          continuously. Items overlap slightly (negative margins) and use
-          heights driven by each item's own orientation, so verticals tower
-          over horizontals for a Pixelmatters-style composition. */}
+          continuously. Escapes the container via w-screen so the strip runs
+          the full viewport width, edge-to-edge. Items overlap slightly and
+          use heights driven by each item's own orientation. */}
       {entry.media.length > 0 && (
-        <div className="flex-1 min-h-0 mt-6 sm:mt-8 lg:mt-10 overflow-hidden">
+        <div className="flex-1 min-h-0 mt-6 sm:mt-8 lg:mt-10 overflow-hidden relative left-1/2 -translate-x-1/2 w-screen">
           <ul
             className="flex items-end h-full animate-marquee-x"
             style={{

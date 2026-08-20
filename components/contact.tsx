@@ -33,10 +33,10 @@ export function Contact() {
     <section id="contact" className="relative py-12 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* Header line */}
           <div className="flex items-baseline gap-3 mb-10">

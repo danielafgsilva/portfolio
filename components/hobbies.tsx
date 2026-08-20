@@ -114,12 +114,12 @@ export function Hobbies() {
           className="group block border border-rule rounded-md overflow-hidden transition-all duration-300 ease-editorial hover:border-cyan"
         >
           <div className="grid sm:grid-cols-5 gap-0">
-            <div className="sm:col-span-2 aspect-[4/3] sm:aspect-auto bg-ink relative overflow-hidden border-b sm:border-b-0 sm:border-r border-rule bg-black">
+            <div className="sm:col-span-2 relative overflow-hidden border-b sm:border-b-0 sm:border-r border-rule bg-black min-h-[240px] sm:min-h-[280px] lg:min-h-[320px]">
               <Image
                 src="/images/photography-cover.png"
                 alt="Daniela's photography portfolio cover — 'Hello, welcome to my corner of the world'"
                 fill
-                className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03] bg-black"
+                className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03]"
                 sizes="(min-width: 640px) 40vw, 100vw"
               />
             </div>

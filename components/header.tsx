@@ -4,6 +4,14 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 
+const navLinks = [
+  { num: "02", href: "#work", label: "Work" },
+  { num: "03", href: "#story", label: "Story" },
+  { num: "04", href: "#toolbox", label: "Toolbox" },
+  { num: "05", href: "#off-duty", label: "Off Duty" },
+  { num: "06", href: "#contact", label: "Contact" },
+]
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
 

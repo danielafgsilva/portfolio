@@ -5,13 +5,25 @@ import { DownloadCVButton } from "@/app/cv/download-button";
 import { AnimatedSection } from "@/app/cv/animated-section";
 
 export const metadata: Metadata = {
-  title: "CV - Daniela Silva",
+  title: "CV — Daniela Silva",
   description: "Curriculum Vitae for Daniela Silva.",
 };
 
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="mb-8">
-    <h2 className="text-2xl font-bold border-b-2 border-primary pb-2 mb-4">{title}</h2>
+const Section = ({
+  number,
+  title,
+  children,
+}: {
+  number: string
+  title: string
+  children: React.ReactNode
+}) => (
+  <section className="mb-10 print:mb-7">
+    <div className="flex items-baseline gap-3 mb-5 print:mb-4">
+      <span className="chapter-number text-sm">{number}</span>
+      <span className="eyebrow">// {title}</span>
+      <span className="h-px flex-1 bg-rule" aria-hidden="true" />
+    </div>
     {children}
   </section>
 )
@@ -42,13 +54,18 @@ const ExperienceItem = ({
       </h3>
       <p className="mono text-xs text-ink-subtle">{date}</p>
     </div>
-    <div className="flex justify-between items-baseline mb-4">
-      <p className="font-medium text-primary text-lg">{company}</p>
-      <p className="text-sm text-muted-foreground">{location}</p>
+    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
+      <p className="mono text-sm text-cyan">{company}</p>
+      <p className="mono text-xs text-ink-subtle">{location}</p>
     </div>
-    <ul className="list-disc list-inside text-muted-foreground space-y-1.5 ml-2">
+    <ul className="space-y-1.5 text-sm text-ink-muted leading-relaxed">
       {description.map((item, index) => (
-        <li key={index} className="leading-relaxed">{item}</li>
+        <li key={index} className="flex gap-2.5">
+          <span className="text-cyan mt-1.5 shrink-0" aria-hidden="true">
+            <span className="block h-1 w-1 bg-cyan rounded-full" />
+          </span>
+          <span>{item}</span>
+        </li>
       ))}
     </ul>
     {stack && stack.length > 0 && (
@@ -69,10 +86,11 @@ const ExperienceItem = ({
 
 export default function CVPage() {
   return (
-    <div className="max-w-6xl mx-auto p-8 sm:p-12 bg-background text-foreground font-sans">
+    <div className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
       <div className="mb-6 flex justify-end no-print">
         <DownloadCVButton />
       </div>
+
       <div id="cv-print-content">
         {/* Header */}
         <header className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10 print:mb-6 pb-8 border-b border-rule items-end">
@@ -158,23 +176,25 @@ export default function CVPage() {
           <ExperienceItem
             role="Full-Stack Professional Internship"
             company="Dynamikfloat | Dyn-Link"
-            date="08/2025 - "
+            date="08/2025 — now"
             location="Aveiro, Portugal"
             description={[
               "Contributed to multiple software development projects.",
+              "Stepped into the role of Project Manager for the company's core software, leading delivery for international clients.",
+              "Joined the support team and conducted workshops across all of the company's software products for international clients.",
               "Strengthened skills in Back-End development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to manage data.",
               "Worked with Vue.js on the Front-End to build and integrate components with Back-End services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
-              "Provided support to international clients, performed QA across selected projects, prepared technical and process documentation, and collaborated with the design team on small tasks such as newsletters and social media posts.",
+              "Performed QA across selected projects, prepared technical and process documentation, and collaborated with the design team on small tasks such as newsletters and social media posts.",
             ]}
           />
           <ExperienceItem
             role="Web Platforms Internship"
             company="Bliss Applications"
-            date="12/2024 - 06/2025"
+            date="12/2024 — 06/2025"
             location="Porto, Portugal"
             description={[
               "Created the company website, which served as a foundation for the online presence and showcased the company's services effectively.",
-              "Developed the website using WordPress, PHP, SaaS, HTML and JavaScript, helping to meet diverse needs and improve their online visibility.",
+              "Developed the website using WordPress, PHP, Sass, HTML and JavaScript, helping to meet diverse needs and improve their online visibility.",
               "Enhanced the user experience and functionality, leading to increased satisfaction and engagement.",
             ]}
             link="https://blissapplications.com/"
@@ -182,7 +202,7 @@ export default function CVPage() {
           <ExperienceItem
             role="Research in Immersive Web Environments"
             company="Digital Media and Interaction Research Centre"
-            date="11/2023 – 07/2024"
+            date="11/2023 — 07/2024"
             location="Aveiro, Portugal"
             description={[
               "Collaborated on the project 'O Metaverso na Educação' (Immersive Web Environments in Education), exploring immersive web environments in education.",
