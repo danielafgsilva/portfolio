@@ -1,31 +1,35 @@
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
-import { Experience } from "@/components/experience"
 import { Projects } from "@/components/projects"
-import { Education } from "@/components/education"
 import { Skills } from "@/components/skills"
-import { Awards } from "@/components/awards"
 import { Hobbies } from "@/components/hobbies"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { SceneProgress } from "@/components/scene-progress"
+import { BackToTop } from "@/components/back-to-top"
 
 export default function PortfolioPage() {
   return (
-    <div className="bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-200">
+    <div className="bg-background text-foreground">
       <Header />
       <main>
+        {/* Index */}
         <Hero />
-        <About />
-        <Experience />
+        {/* Selected Work */}
         <Projects />
-        <Education />
+        {/* The Story (About + Experience + Education merged) */}
+        <About />
+        {/* Toolbox */}
         <Skills />
-        <Awards />
+        {/* Off Duty (Hobbies + Volunteering) */}
         <Hobbies />
+        {/* Get in Touch */}
         <Contact />
       </main>
       <Footer />
+      <SceneProgress />
+      <BackToTop />
     </div>
   )
 }

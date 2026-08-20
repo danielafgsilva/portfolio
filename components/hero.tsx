@@ -1,44 +1,180 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowDown } from "lucide-react"
-import Link from "next/link"
+import { loaderSignal } from "@/lib/loader-signal"
+
+const meta = [
+  { label: "ROLE", value: "Front-End Developer | Design Engineer" },
+  { label: "BASED", value: "Porto, Portugal" },
+  { label: "STATUS", value: "Open to opportunities", live: true },
+  { label: "STACK", value: "Next.js · React · Vue · Laravel" },
+]
+
+const REPLAY_INTERVAL_MS = 60_000
 
 export function Hero() {
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const [animKey, setAnimKey] = useState(0)
+  const [ready, setReady] = useState(false)
+
+  // Wait for loader to finish before starting typewriter
+  useEffect(() => {
+    if (loaderSignal.isDone()) {
+      setReady(true)
+      return
+    }
+    const unsubscribe = loaderSignal.subscribe(() => setReady(true))
+    return unsubscribe
+  }, [])
+
+  // Re-animate every 60s while in view (only after loader done)
+  useEffect(() => {
+    if (!ready) return
+    const el = sectionRef.current
+    if (!el) return
+
+    let interval: ReturnType<typeof setInterval> | null = null
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (interval === null) {
+            interval = setInterval(() => {
+              setAnimKey((k) => k + 1)
+            }, REPLAY_INTERVAL_MS)
+          }
+        } else {
+          if (interval !== null) {
+            clearInterval(interval)
+            interval = null
+          }
+        }
+      },
+      { threshold: 0.4 },
+    )
+
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+      if (interval !== null) clearInterval(interval)
+    }
+  }, [ready])
+
   return (
     <section
+      ref={sectionRef}
       id="home"
-      className="h-screen flex flex-col items-center justify-center text-center bg-background relative overflow-hidden"
+      className="relative min-h-[90vh] flex flex-col bg-background overflow-hidden"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="z-10"
-      >
-        <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold text-foreground font-harmony uppercase">DANIELA SILVA</h1>
-        <p className="mt-4 text-lg md:text-2xl text-muted-foreground">Junior Full-Stack Developer | Front-End Oriented</p>
-        <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
-          Crafting meaningful, user-centered web experiences with passion and precision.
-        </p>
-      </motion.div>
+      {/* Main mark */}
+      <div className="flex-1 flex items-end pt-4 sm:pt-6 lg:pt-8">
+        <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-12 sm:pb-16 lg:pb-24">
+          <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 items-end">
+            <div className="lg:col-span-12">
+              <motion.h1
+                key={`${animKey}-${ready ? "go" : "wait"}`}
+                className="font-display font-bold text-display-xl text-foreground leading-[0.88] tracking-[-0.045em]"
+                aria-label="Daniela."
+                initial="hidden"
+                animate={ready ? "visible" : "hidden"}
+                variants={{
+                  visible: {
+                    transition: { delayChildren: 0.15, staggerChildren: 0.085 },
+                  },
+                }}
+              >
+                <span className="inline-flex items-baseline">
+                  {Array.from("Daniela").map((char, i) => (
+                    <motion.span
+                      key={i}
+                      variants={{
+                        hidden: { opacity: 0 },
+                        visible: { opacity: 1 },
+                      }}
+                      transition={{ duration: 0.01 }}
+                      className="inline-block"
+                      aria-hidden="true"
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                  <motion.span
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: { opacity: 1 },
+                    }}
+                    transition={{ duration: 0.01 }}
+                    className="inline-block text-cyan"
+                    aria-hidden="true"
+                  >
+                    {/* Inner span: little bounce right after the typewriter
+                        finishes writing "Daniela." — a subtle punctuation. */}
+                    <motion.span
+                      className="inline-block"
+                      initial={{ y: 0 }}
+                      animate={ready ? { y: [0, -18, 0, -6, 0] } : { y: 0 }}
+                      transition={{
+                        delay: 0.15 + "Daniela".length * 0.085 + 0.35,
+                        duration: 0.75,
+                        times: [0, 0.3, 0.6, 0.82, 1],
+                        ease: "easeOut",
+                      }}
+                    >
+                      .
+                    </motion.span>
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={ready ? { opacity: [0, 1, 1, 0, 0, 1, 1, 0] } : { opacity: 0 }}
+                    transition={{
+                      delay: 0.15 + "Daniela".length * 0.085 + 0.18,
+                      duration: 1.8,
+                      times: [0, 0.04, 0.28, 0.30, 0.52, 0.54, 0.76, 1],
+                      ease: "linear",
+                    }}
+                    className="ml-3 sm:ml-4 inline-block h-[1em] w-[0.035em] bg-cyan"
+                    aria-hidden="true"
+                  />
+                </span>
+              </motion.h1>
+            </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-10"
-      >
-        <Link href="#about" aria-label="Scroll to about section">
-          <ArrowDown className="w-8 h-8 text-muted-foreground animate-bounce" />
-        </Link>
-      </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="lg:col-span-7"
+            >
+              <p className="text-xl sm:text-2xl lg:text-3xl text-ink-muted leading-snug text-balance max-w-2xl">
+                I build <span className="text-foreground font-medium">user-centered</span> web
+                experiences, bridging the gap between technology and the people using it.
+              </p>
+            </motion.div>
 
-      {/* Background decorative elements - using new brand colors */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 dark:opacity-5">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-brand-soft-cyan rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-brand-pale-cyan rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-32 h-32 bg-brand-strong-blue rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+            <motion.dl
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="lg:col-span-4 lg:col-start-9 grid grid-cols-2 lg:grid-cols-1 gap-y-4 gap-x-6 w-full"
+            >
+              {meta.map((m) => (
+                <div key={m.label} className="border-t border-rule pt-3">
+                  <dt className="eyebrow">{m.label}</dt>
+                  <dd className="mt-1.5 mono text-foreground flex items-center gap-2">
+                    {m.live && (
+                      <span className="relative flex h-2 w-2" aria-hidden="true">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+                      </span>
+                    )}
+                    <span className="text-foreground">{m.value}</span>
+                  </dd>
+                </div>
+              ))}
+            </motion.dl>
+          </div>
+        </div>
       </div>
     </section>
   )
