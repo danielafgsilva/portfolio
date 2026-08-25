@@ -5,6 +5,7 @@ import {
   motion,
   AnimatePresence,
   useScroll,
+  useSpring,
   useTransform,
 } from "framer-motion";
 import Image from "next/image";
@@ -102,8 +103,15 @@ export function Projects() {
     target: sectionRef,
     offset: ["start 0.9", "start 0.2"],
   });
-  const sectionOpacity = useTransform(scrollYProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(scrollYProgress, [0, 1], [24, 0]);
+  // Spring-smoothed so the reveal glides even when the trackpad jitters.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 40,
+    mass: 0.4,
+    restDelta: 0.0005,
+  });
+  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
+  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
   // Auto-advance timer — resets on index change or pause change
   useEffect(() => {
@@ -143,7 +151,7 @@ export function Projects() {
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
-        <div className="flex items-baseline gap-3 mb-10">
+        <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
           <span className="eyebrow">Selected Work</span>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
@@ -155,7 +163,7 @@ export function Projects() {
           onMouseLeave={() => setPaused(false)}
         >
           {/* Info panel — LEFT (stays on the left, updates per project) */}
-          <div className="lg:col-span-5 xl:col-span-5 relative min-h-[28rem]">
+          <div className="lg:col-span-5 xl:col-span-5 relative lg:min-h-[28rem]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}

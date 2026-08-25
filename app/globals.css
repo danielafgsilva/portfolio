@@ -86,9 +86,25 @@
   html {
     scroll-behavior: smooth;
   }
+  html,
+  body {
+    /* Prevent any rogue element (marquee, wide media, etc.) from producing
+       a horizontal scrollbar on mobile viewports. */
+    overflow-x: clip;
+    /* Kill the vertical bounce/rubber-band. It doesn't add anything visual
+       and it delays scroll events, which stalls the framer-motion springs
+       that watch scroll position — the result was a subtle jitter at the
+       very top and bottom of the page. */
+    overscroll-behavior-y: none;
+  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11", "kern";
+    /* Slightly better sub-pixel rendering while transforms are running —
+       keeps text crisp when a section is spring-lifting into place. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   ::selection {
     background-color: hsl(var(--cyan));
@@ -125,6 +141,53 @@
   }
   .text-pretty {
     text-wrap: pretty;
+  }
+}
+
+/* Chronology — short-viewport safety net. When a viewport is tall enough
+   (Chromebooks in landscape, iPad landscape, small laptops) the width may
+   hit `sm:` / `lg:` breakpoints and pick up the larger type + more bullets,
+   but the vertical stage stays cramped and the text zone starts to overflow
+   into the gallery. This block re-imposes the compact mobile treatment on
+   any viewport shorter than ~720px so the text never bleeds behind the
+   image row. Keeps the layout DOM identical — only sizes are adjusted. */
+@media (max-height: 720px) {
+  .chronology-gallery {
+    height: 30% !important;
+  }
+  .chronology-year {
+    font-size: 2.5rem !important;
+    line-height: 0.9 !important;
+  }
+  .chronology-badge {
+    margin-top: 0.5rem !important;
+  }
+  .chronology-title {
+    font-size: 1.125rem !important;
+    line-height: 1.25 !important;
+  }
+  .chronology-org {
+    font-size: 0.75rem !important;
+  }
+  .chronology-bullets {
+    margin-top: 0.5rem !important;
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    row-gap: 0.25rem !important;
+  }
+  .chronology-bullets > * + * {
+    margin-top: 0.25rem !important;
+  }
+  /* Show only the first two bullets on short viewports — the rest would
+     force the text zone taller than the flex allocation. */
+  .chronology-bullet:nth-child(n + 3) {
+    display: none !important;
+  }
+  .chronology-bullet .line-clamp-none {
+    -webkit-line-clamp: 2 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
 }
 
