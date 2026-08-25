@@ -62,17 +62,17 @@ export function Hobbies() {
   return (
     <Chapter
       id="off-duty"
-      number="05 //"
+      number="05"
       eyebrow="Off Duty"
       title={
         <>
-          What I do when I'm <Accent>not</Accent> coding.
+          What I do when I&apos;m <Accent>not</Accent> coding.
         </>
       }
       intro={
         <p>
-          The shorthand version of a longer truth: I'm more useful to a team when I'm a full
-          person, not just a developer. Here's where the rest of me lives.
+          The shorthand version of a longer truth: I&apos;m more useful to a team when I&apos;m a full
+          person, not just a developer. Here&apos;s where the rest of me lives.
         </p>
       }
     >
@@ -89,12 +89,12 @@ export function Hobbies() {
             <HeartHandshake size={20} strokeWidth={1.5} />
           </div>
           <div className="min-w-0">
-            <p className="eyebrow text-cyan">// volunteering · a value, not a footnote</p>
+            <p className="eyebrow text-cyan">volunteering · a value, not a footnote</p>
             <p className="mt-2 font-display font-medium text-xl sm:text-2xl text-foreground leading-snug text-balance">
               Food collection with the Food Bank Against Hunger — organising and gathering
-              donations so neighbours don't go hungry.
+              donations so neighbours don&apos;t go hungry.
             </p>
-            <p className="mt-2 mono text-xs text-ink-subtle">// Porto, Portugal</p>
+            <p className="mt-2 mono text-xs text-ink-subtle">Porto, Portugal</p>
           </div>
         </div>
       </motion.div>
@@ -114,12 +114,12 @@ export function Hobbies() {
           className="group block border border-rule rounded-md overflow-hidden transition-all duration-300 ease-editorial hover:border-cyan"
         >
           <div className="grid sm:grid-cols-5 gap-0">
-            <div className="sm:col-span-2 aspect-[4/3] sm:aspect-auto bg-ink relative overflow-hidden border-b sm:border-b-0 sm:border-r border-rule bg-black">
+            <div className="sm:col-span-2 relative overflow-hidden border-b sm:border-b-0 sm:border-r border-rule bg-black min-h-[240px] sm:min-h-[280px] lg:min-h-[320px]">
               <Image
                 src="/images/photography-cover.png"
                 alt="Daniela's photography portfolio cover — 'Hello, welcome to my corner of the world'"
                 fill
-                className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03] bg-black"
+                className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03]"
                 sizes="(min-width: 640px) 40vw, 100vw"
               />
             </div>
@@ -132,7 +132,7 @@ export function Hobbies() {
                 <h3 className="mt-4 font-display font-semibold text-2xl sm:text-3xl text-foreground leading-tight group-hover:text-cyan transition-colors duration-300">
                   {photography.name}
                 </h3>
-                <p className="mt-2 mono text-xs text-ink-subtle">// {photography.kicker}</p>
+                <p className="mt-2 mono text-xs text-ink-subtle">{photography.kicker}</p>
                 <p className="mt-4 text-base text-ink-muted leading-relaxed text-pretty">
                   {photography.detail}
                 </p>
@@ -172,7 +172,7 @@ export function Hobbies() {
                 <h3 className="mt-3 font-display font-semibold text-xl text-foreground leading-tight group-hover:text-cyan transition-colors duration-200">
                   {p.name}
                 </h3>
-                <p className="mt-1 mono text-xs text-ink-subtle">// {p.kicker}</p>
+                <p className="mt-1 mono text-xs text-ink-subtle">{p.kicker}</p>
               </div>
               <p className="text-sm text-ink-muted leading-relaxed">{p.detail}</p>
             </Link>
