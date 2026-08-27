@@ -36,12 +36,21 @@ export function Chapter({
   const [ranges, setRanges] = useState<[number, number]>([0, 0])
 
   // Section reveal — subtle lift + fade as the chapter scrolls into view.
+  // The raw scroll progress reacts to every wheel/trackpad micro-movement;
+  // running it through a spring smooths jitter without adding perceivable
+  // lag (high stiffness + high damping = fast catch-up, no wobble).
   const { scrollYProgress: sectionProgress } = useScroll({
     target: sectionRef,
     offset: ["start 0.9", "start 0.2"],
   })
-  const sectionOpacity = useTransform(sectionProgress, [0, 1], [0.4, 1])
-  const sectionLift = useTransform(sectionProgress, [0, 1], [24, 0])
+  const smoothSectionProgress = useSpring(sectionProgress, {
+    stiffness: 220,
+    damping: 40,
+    mass: 0.4,
+    restDelta: 0.0005,
+  })
+  const sectionOpacity = useTransform(smoothSectionProgress, [0, 1], [0.4, 1])
+  const sectionLift = useTransform(smoothSectionProgress, [0, 1], [24, 0])
 
   // Intro travel — linear descent. Aligned with the section top when the
   // section enters the viewport; aligned with the section bottom when it exits.
@@ -113,8 +122,7 @@ export function Chapter({
 
       <div
         className={cn(
-          "mx-auto",
-          bleed ? "max-w-[1440px] px-6 sm:px-10 lg:px-16" : "container",
+          "mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16",
         )}
       >
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-10">

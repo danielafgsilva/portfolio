@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -153,7 +153,7 @@ function ReadingWord({
 }
 
 const QUOTE_TEXT =
-  "I want to bridge technology and user experience — creating digital solutions that feel as considered as they look.";
+  "Bridging technology and user experience — creating digital solutions that feel as considered as they look.";
 
 function CinematicQuote() {
   const ref = useRef<HTMLDivElement>(null);
@@ -230,91 +230,153 @@ function ChronologySlide({
 
   const opacity = useTransform(progress, opacityFrames, opacityValues);
   const y = useTransform(progress, opacityFrames, yValues);
+  // Raise the more visible slide during cross-fades so a fading slide's
+  // images can't sit on the incoming slide's text. 0.45 threshold gives the
+  // incoming slide priority slightly before it crosses the midpoint.
+  const zIndex = useTransform(opacity, (o) => (o > 0.45 ? 2 : 1));
 
-  // Height map based on each media item's orientation. Verticals get the
-  // full row height, horizontals sit in the middle band, videos stay short
-  // (also helps hide the URL-bar crop). Pixelmatters-style variable-height
-  // staircase with a shared bottom baseline.
-  const HEIGHT_BY_SIZE: Record<MediaSize, string> = {
-    tall: "h-full",
-    med: "h-[70%]",
-    short: "h-[52%]",
+  // Tile classes — driven by row height + aspect ratio so widths follow
+  // heights (no fixed min-widths that fight the rhythm on small phones).
+  // Med/short use `self-end` so their tops rise from a shared bottom
+  // baseline for the Pixelmatters staircase feel.
+  const TILE_CLASS: Record<MediaSize, string> = {
+    tall: "h-full aspect-[3/4]",
+    med: "h-[80%] aspect-[4/3] self-end",
+    short: "h-[62%] aspect-[16/9] self-end",
   };
 
-  // Duplicated media for a seamless marquee loop — translating the row by
-  // -50% brings the second copy exactly where the first started.
-  const marqueeItems = [...entry.media, ...entry.media];
+  // Marquee copies — measured at runtime so the row is always at least twice
+  // as wide as the gallery viewport. Otherwise a short media list (5 tiles
+  // on ESMAD, e.g.) leaves visible dead space on wide screens where you can
+  // see the "end" of the loop before the next copy comes in.
+  const rowRef = useRef<HTMLUListElement | null>(null);
+  const [copies, setCopies] = useState(2);
+
+  useEffect(() => {
+    const compute = () => {
+      const ul = rowRef.current;
+      const parent = ul?.parentElement;
+      if (!ul || !parent) return;
+      const viewportW = parent.offsetWidth;
+      const mediaCount = entry.media.length;
+      if (mediaCount === 0 || ul.children.length < 2 * mediaCount) return;
+      // Distance between start of first copy and start of second copy is one
+      // copy's rendered width (including tile overlaps). Independent of the
+      // current `copies` value, so no feedback loop.
+      const tile0 = ul.children[0] as HTMLElement;
+      const tileN = ul.children[mediaCount] as HTMLElement;
+      const singleCopyW = tileN.offsetLeft - tile0.offsetLeft;
+      if (singleCopyW <= 0) return;
+      // Row width ≥ 2× viewport so the second copy is always in place by
+      // the time the first scrolls fully off — no visible seam.
+      const needed = Math.max(2, Math.ceil((viewportW * 2) / singleCopyW));
+      if (needed !== copies) setCopies(needed);
+    };
+    compute();
+    const parent = rowRef.current?.parentElement;
+    if (!parent) return;
+    const ro = new ResizeObserver(compute);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, [copies, entry.media.length]);
+
+  const marqueeItems = Array.from({ length: copies }, () => entry.media).flat();
+  const shiftPct = 100 / copies;
 
   return (
     <motion.div
-      style={{ opacity, y, willChange: "transform, opacity" }}
-      className="absolute inset-0 flex flex-col"
+      style={{ opacity, y, zIndex, willChange: "transform, opacity" }}
+      className="absolute inset-0 flex flex-col min-h-0 gap-3 sm:gap-4 lg:gap-5"
     >
-      {/* Top — text block: year on the left, chapter content on the right. */}
-      <div className="grid gap-6 lg:grid-cols-12 lg:gap-x-10 shrink-0">
-        {/* Year — big display type, editorial-magazine style */}
-        <div className="lg:col-span-4 flex flex-col">
-          <span
-            aria-hidden="true"
-            className="pointer-events-none select-none font-display font-bold leading-[0.9] tracking-[-0.045em] text-cyan/55 text-5xl sm:text-6xl lg:text-7xl xl:text-8xl"
-          >
-            {entry.displayYear}
-          </span>
-          <span
-            className={`mt-3 sm:mt-4 self-start w-fit badge ${entry.type === "work" ? "badge-accent" : ""}`}
-          >
-            {entry.type === "work" ? "work" : "study"}
-          </span>
-        </div>
+      {/* Top — text block: flex-1 so it takes whatever room is left after
+          the gallery below claims its share. Never grows into the gallery
+          because it's a sibling in a flex column, not a layered element.
+          bg-background + isolate guarantee the text always paints over the
+          gallery zone even if a browser fails to clip a stray overflow. */}
+      <div className="chronology-text relative z-10 flex-1 min-h-0 overflow-hidden flex flex-col bg-background isolate">
+        {/* Inner grid — year on the left, content on the right. h-full so it
+            fills the text zone; the outer wrapper's overflow-hidden clips
+            any content that exceeds. */}
+        <div className="grid gap-3 sm:gap-6 lg:grid-cols-12 lg:gap-x-10 min-h-0 h-full">
+          {/* Year — big display type, editorial-magazine style */}
+          <div className="lg:col-span-4 flex flex-col">
+            <span
+              aria-hidden="true"
+              className="chronology-year pointer-events-none select-none font-display font-bold leading-[0.9] tracking-[-0.045em] text-cyan/55 text-4xl sm:text-6xl lg:text-7xl xl:text-8xl"
+            >
+              {entry.displayYear}
+            </span>
+            <span
+              className={`chronology-badge mt-2 sm:mt-4 self-start w-fit badge ${entry.type === "work" ? "badge-accent" : ""}`}
+            >
+              {entry.type === "work" ? "work" : "study"}
+            </span>
+          </div>
 
-        {/* Content — right column */}
-        <div className="lg:col-span-8 flex flex-col">
-          <h3 className="font-display font-semibold text-xl sm:text-2xl lg:text-3xl text-foreground leading-tight tracking-tight">
-            {entry.title}
-          </h3>
+          {/* Content — right column */}
+          <div className="lg:col-span-8 flex flex-col min-h-0">
+            <h3 className="chronology-title font-display font-semibold text-lg sm:text-2xl lg:text-3xl text-foreground leading-tight tracking-tight">
+              {entry.title}
+            </h3>
 
-          <p className="mt-1 mono text-sm text-cyan">
-            {entry.org}
-            {entry.location && (
-              <span className="text-ink-subtle"> · {entry.location}</span>
-            )}
-          </p>
+            <p className="chronology-org mt-1 mono text-xs sm:text-sm text-cyan">
+              {entry.org}
+              {entry.location && (
+                <span className="text-ink-subtle"> · {entry.location}</span>
+              )}
+            </p>
 
-          <ul className="mt-4 lg:mt-5 space-y-2 text-sm sm:text-base text-ink-muted leading-relaxed max-w-3xl">
-            {entry.bullets.map((b, i) => (
-              <li key={i} className="flex gap-3">
-                <span className="text-cyan mt-1.5 shrink-0" aria-hidden="true">
-                  <span className="block h-1 w-1 bg-cyan rounded-full" />
-                </span>
-                <span className="text-pretty">{b}</span>
-              </li>
-            ))}
-          </ul>
+            {/* Mobile shows the two most recent bullets — the rest reveal on
+                sm+ where the stage has room. On short viewports of any
+                width the same rule kicks in (see globals.css). */}
+            <ul className="chronology-bullets mt-2 sm:mt-3 lg:mt-5 space-y-1 sm:space-y-2 text-[11px] sm:text-sm lg:text-base text-ink-muted leading-snug sm:leading-relaxed max-w-3xl">
+              {entry.bullets.map((b, i) => (
+                <li
+                  key={i}
+                  className={`chronology-bullet flex gap-2 sm:gap-3 ${i >= 2 ? "hidden sm:flex" : ""}`}
+                >
+                  <span className="text-cyan mt-[6px] sm:mt-1.5 shrink-0" aria-hidden="true">
+                    <span className="block h-1 w-1 bg-cyan rounded-full" />
+                  </span>
+                  <span className="text-pretty line-clamp-2 sm:line-clamp-none">
+                    {b}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
-      {/* Bottom — gallery: bottom-aligned marquee that auto-scrolls right→left
-          continuously. Escapes the container via w-screen so the strip runs
-          the full viewport width, edge-to-edge. Items overlap slightly and
-          use heights driven by each item's own orientation. */}
+      {/* Bottom — gallery: fixed fraction of the stage on every screen. On
+          the shortest phones we drop to ~36% so the text zone above always
+          holds the full content; sm+ (with more real estate) can afford the
+          fuller 42%. Short-height viewports (Chromebooks, landscape phones,
+          tablets in landscape) shrink further via .chronology-gallery in
+          globals.css so the text zone never overflows. Tiles are sized by
+          height + aspect ratio so their widths follow the row height. */}
       {entry.media.length > 0 && (
-        <div className="flex-1 min-h-0 mt-6 sm:mt-8 lg:mt-10 overflow-hidden relative left-1/2 -translate-x-1/2 w-screen">
-          <ul
-            className="flex items-end h-full animate-marquee-x"
-            style={{
-              // Longer loops for entries with more media.
-              animationDuration: `${Math.max(30, entry.media.length * 6)}s`,
+        <div className="chronology-gallery relative z-0 shrink-0 h-[min(36%,18rem)] sm:h-[42%] overflow-hidden -mx-6 sm:-mx-10 lg:-mx-16">
+          <motion.ul
+            ref={rowRef}
+            className="flex items-end h-full"
+            style={{ willChange: "transform" }}
+            animate={{ x: ["0%", `-${shiftPct}%`] }}
+            transition={{
+              duration: Math.max(30, entry.media.length * 6),
+              ease: "linear",
+              repeat: Infinity,
             }}
           >
             {marqueeItems.map((item, i) => (
               <li
                 key={`${item.src}-${i}`}
-                className={`shrink-0 ${HEIGHT_BY_SIZE[item.size]} ${i > 0 ? "-ml-3 sm:-ml-4 lg:-ml-6" : ""} rounded-xl overflow-hidden border border-rule bg-paper-tint shadow-sm`}
+                className={`shrink-0 ${TILE_CLASS[item.size]} ${i > 0 ? "-ml-3 sm:-ml-4 lg:-ml-6" : ""} rounded-xl overflow-hidden border border-rule bg-paper-tint shadow-sm`}
               >
                 <MediaTile src={item.src} alt={`${entry.org} — media`} />
               </li>
             ))}
-          </ul>
+          </motion.ul>
         </div>
       )}
     </motion.div>
@@ -342,19 +404,19 @@ function MediaTile({ src, alt }: { src: string; alt: string }) {
         // scale up from the bottom edge so only the site content is shown
         // and the chrome gets clipped by the tile's overflow-hidden.
         style={{ transform: "scale(1.14)", transformOrigin: "center bottom" }}
-        className="block h-full w-auto max-w-none object-cover"
+        className="block h-full w-full object-cover"
       />
     );
   }
   return (
-    // Native <img> — timeline media has arbitrary aspect ratios and we want the
-    // browser to keep each item at the row's height with natural width.
+    // Native <img> — the tile itself now dictates aspect ratio + height, so
+    // the image just fills the tile with object-cover.
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={url}
       alt={alt}
       loading="lazy"
-      className="block h-full w-auto max-w-none object-cover"
+      className="block h-full w-full object-cover"
     />
   );
 }
@@ -363,15 +425,15 @@ function ChronologyPath() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress: rawProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end 80%"],
+    offset: ["start start", "end 90%"],
   });
-  // Spring-smoothed progress. All slides share this value so cross-fades feel
-  // gently damped instead of tracking every raw scroll delta.
+  // Snappy spring — high stiffness + light mass gives buttery cross-fades
+  // without perceivable input lag on either desktop or touch devices.
   const scrollYProgress = useSpring(rawProgress, {
-    stiffness: 280,
-    damping: 42,
-    mass: 0.5,
-    restDelta: 0.001,
+    stiffness: 420,
+    damping: 55,
+    mass: 0.3,
+    restDelta: 0.0005,
   });
   const total = timeline.length;
   const scrollHeightVh = total * 55;
@@ -381,7 +443,7 @@ function ChronologyPath() {
       style={{ height: `${scrollHeightVh}vh` }}
       className="bg-background"
     >
-      <div className="sticky top-14 sm:top-16 lg:top-20 flex flex-col h-[calc(80vh-3.5rem)] sm:h-[calc(80vh-4rem)] lg:h-[calc(80vh-5rem)] bg-background pt-4 sm:pt-5 lg:pt-6 pb-4 sm:pb-5 lg:pb-6">
+      <div className="sticky top-14 sm:top-16 lg:top-20 flex flex-col h-[calc(90dvh-3.5rem)] sm:h-[calc(90vh-4rem)] lg:h-[calc(90vh-5rem)] bg-background pt-4 sm:pt-5 lg:pt-6 pb-4 sm:pb-5 lg:pb-6">
         {/* Section label — pinned to the top of the sticky area */}
         <div className="flex items-baseline gap-3 mb-3 sm:mb-4 lg:mb-5 shrink-0">
           <span className="eyebrow">chronology</span>
@@ -414,8 +476,14 @@ export function About() {
     target: sectionRef,
     offset: ["start 0.9", "start 0.2"],
   });
-  const sectionOpacity = useTransform(scrollYProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(scrollYProgress, [0, 1], [24, 0]);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 40,
+    mass: 0.4,
+    restDelta: 0.0005,
+  });
+  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
+  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
   return (
     <motion.section
@@ -428,7 +496,7 @@ export function About() {
       <div className="py-12 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
           {/* Header line */}
-          <div className="flex items-baseline gap-3 mb-10">
+          <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
             <span className="eyebrow">The Story</span>
             <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
