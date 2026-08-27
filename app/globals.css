@@ -13,7 +13,7 @@
 
 @layer base {
   :root {
-    /* Tech palette — cool slate / electric cyan */
+    /* Editorial palette — light mode base */
     --paper: 210 20% 98%;         /* #F8FAFC slate-50 */
     --paper-tint: 210 17% 95%;    /* #EFF2F6 */
     --ink: 222 47% 11%;           /* #0F172A slate-900 */
@@ -26,28 +26,20 @@
 
     --background: var(--paper);
     --foreground: var(--ink);
-
     --card: var(--paper);
     --card-foreground: var(--ink);
-
     --popover: var(--paper);
     --popover-foreground: var(--ink);
-
     --primary: var(--ink);
     --primary-foreground: var(--paper);
-
     --secondary: var(--paper-tint);
     --secondary-foreground: var(--ink);
-
     --muted: var(--paper-tint);
     --muted-foreground: var(--ink-subtle);
-
     --accent: var(--cyan);
     --accent-foreground: var(--paper);
-
     --destructive: 0 70% 50%;
     --destructive-foreground: var(--paper);
-
     --border: var(--rule);
     --input: var(--rule);
     --ring: var(--cyan);
@@ -57,14 +49,14 @@
 
   .dark {
     /* Dark tech — slate-950 base, brighter cyan accent */
-    --paper: 222 47% 6%;          /* deeper than slate-950 */
-    --paper-tint: 220 26% 11%;    /* card on dark */
+    --paper: 222 47% 6%;
+    --paper-tint: 220 26% 11%;
     --ink: 210 30% 96%;
     --ink-muted: 215 20% 75%;
     --ink-subtle: 215 16% 55%;
-    --cyan: 199 95% 60%;          /* brighter on dark */
+    --cyan: 199 95% 60%;
     --teal: 172 70% 52%;
-    --green: 142 71% 55%;         /* brighter on dark */
+    --green: 142 71% 55%;
     --rule: 215 25% 18%;
 
     --background: var(--paper);
@@ -111,25 +103,19 @@
 
 @layer components {
   .eyebrow {
-    @apply font-mono text-eyebrow uppercase tracking-[0.16em] font-medium text-ink-subtle;
+    @apply font-mono text-[10px] sm:text-xs uppercase tracking-[0.18em] text-ink-subtle;
   }
   .mono {
-    @apply font-mono text-sm tracking-tight;
-  }
-  .rule-line {
-    @apply h-px w-full bg-rule;
-  }
-  .editorial-link {
-    @apply relative inline-flex items-baseline gap-2 text-ink underline decoration-rule decoration-1 underline-offset-[6px] transition-colors duration-200 ease-editorial hover:decoration-cyan hover:text-cyan;
-  }
-  .chapter-number {
-    @apply font-mono text-ink-subtle;
+    @apply font-mono text-sm;
   }
   .badge {
-    @apply inline-flex items-center gap-1.5 font-mono text-xs font-medium px-2.5 py-1 rounded-md border border-rule bg-paper-tint text-ink-muted transition-colors duration-200 ease-editorial;
+    @apply inline-flex items-center font-mono text-[10px] uppercase tracking-[0.16em] px-2 py-0.5 rounded border border-rule text-ink-muted;
   }
   .badge-accent {
-    @apply border-cyan/30 bg-cyan/10 text-cyan;
+    @apply border-cyan/40 bg-cyan/10 text-cyan;
+  }
+  .chapter-number {
+    @apply font-mono uppercase tracking-[0.18em] text-cyan;
   }
 }
 
@@ -142,6 +128,28 @@
   }
 }
 
+/* Auto-scroll marquee (right → left). The child row must be duplicated so
+   translating -50% brings the second half exactly where the first started,
+   creating a seamless loop. */
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.animate-marquee-x {
+  animation: marquee-x 40s linear infinite;
+  will-change: transform;
+}
+
+/* Cursor blink used in hero — kept as a separate keyframe for legibility. */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -151,6 +159,29 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* CV pages are always in light mode — override the dark palette variables
+   whenever body has the cv-page class, regardless of html.dark. */
+body.cv-page {
+  color-scheme: light;
+  --paper: 210 20% 98%;
+  --paper-tint: 210 17% 95%;
+  --ink: 222 47% 11%;
+  --ink-muted: 215 25% 27%;
+  --ink-subtle: 215 16% 47%;
+  --cyan: 199 89% 48%;
+  --teal: 173 80% 40%;
+  --green: 142 71% 40%;
+  --rule: 215 16% 88%;
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --muted: var(--paper-tint);
+  --muted-foreground: var(--ink-subtle);
+  --border: var(--rule);
+  --input: var(--rule);
 }
 
 @media print {
@@ -166,5 +197,14 @@
   }
   .no-print {
     display: none !important;
+  }
+  /* Force any framer-motion elements to their final visible state for PDF export */
+  *,
+  ::before,
+  ::after {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
   }
 }

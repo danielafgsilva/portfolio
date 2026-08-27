@@ -5,138 +5,100 @@ import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
 
-const VISIBLE_MS = 1600
+const EASE = [0.22, 1, 0.36, 1] as const
+const HOLD_MS = 3200
 
 export function PageLoader() {
   const pathname = usePathname()
   const skip = pathname?.startsWith("/cv")
-  const [loading, setLoading] = useState(!skip)
-  const [pct, setPct] = useState(0)
+  const [visible, setVisible] = useState(!skip)
 
-  // Skip-immediate path
+  // Skip on CV / covers etc.
   useEffect(() => {
     if (skip) {
-      setLoading(false)
+      setVisible(false)
       loaderSignal.signal()
     }
   }, [skip])
 
-  // Loader timer
+  // Play the intro, then dismiss
   useEffect(() => {
     if (skip) return
-    const timer = setTimeout(() => setLoading(false), VISIBLE_MS)
-    return () => clearTimeout(timer)
+    const t = setTimeout(() => setVisible(false), HOLD_MS)
+    return () => clearTimeout(t)
   }, [skip])
 
-  // Percentage counter — uses RAF for smoothness, no Date.now (uses performance.now)
+  // Signal hero once we start exiting
   useEffect(() => {
-    if (skip || !loading) return
-    let raf = 0
-    const start = performance.now()
-    const duration = VISIBLE_MS - 200
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration)
-      setPct(Math.round(t * 100))
-      if (t < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [loading, skip])
-
-  // Signal others as soon as we start exiting (so hero can begin while we fade out)
-  useEffect(() => {
-    if (!loading) loaderSignal.signal()
-  }, [loading])
+    if (!visible) loaderSignal.signal()
+  }, [visible])
 
   return (
     <AnimatePresence>
-      {loading && (
+      {visible && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, ease: EASE }}
           className="fixed inset-0 z-[100] bg-background flex flex-col"
           aria-hidden="true"
         >
-          {/* Top progress bar — drawing left to right */}
+          {/* Top hairline strip */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: VISIBLE_MS / 1000 - 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: HOLD_MS / 1000 - 0.4, ease: EASE }}
             className="origin-left h-[2px] bg-cyan w-full"
           />
 
-          {/* Top mono strip */}
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="absolute top-8 left-8 right-8 flex items-center justify-between"
-          >
-            <span className="eyebrow">// loading portfolio</span>
-            <span className="eyebrow hidden sm:inline">v2026.06</span>
-          </motion.div>
+          {/* Center intro sequence — horizontally and vertically centered on page */}
+          <div className="flex-1 flex items-center justify-center px-8 sm:px-12 lg:px-24">
+            <div className="max-w-4xl w-full mx-auto flex flex-col items-center text-center">
+              {/* Hi 👋 */}
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5, ease: EASE }}
+                className="font-mono text-xs sm:text-sm text-cyan uppercase tracking-[0.18em] mb-6 sm:mb-8"
+              >
+                Hi <span aria-hidden="true">👋🏻</span>
+              </motion.p>
 
-          {/* Center mark */}
-          <div className="flex-1 flex items-center justify-center px-8">
-            <div className="relative flex flex-col items-start gap-5">
-              {/* D + period */}
-              <div className="flex items-end font-display font-bold text-8xl sm:text-9xl text-foreground leading-none tracking-tight">
-                <motion.span
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              {/* I'm Daniela. — mask reveal */}
+              <div className="overflow-hidden pb-2">
+                <motion.h1
+                  initial={{ y: "105%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
+                  className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground leading-[0.9] tracking-[-0.03em]"
                 >
-                  D
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: -40, scale: 0.4 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{
-                    duration: 0.55,
-                    delay: 0.6,
-                    type: "spring",
-                    stiffness: 220,
-                    damping: 14,
-                  }}
-                  className="text-cyan inline-block"
-                >
-                  .
-                </motion.span>
+                  I&apos;m Daniela<span className="text-cyan">.</span>
+                </motion.h1>
               </div>
 
-              {/* Cyan accent line below */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.6, delay: 0.95, ease: [0.22, 1, 0.36, 1] }}
-                className="origin-left h-[3px] w-24 sm:w-32 bg-cyan rounded-full"
-              />
+              {/* Find out what I'm up to. — mask reveal, offset */}
+              <div className="overflow-hidden pb-2 mt-1 sm:mt-2">
+                <motion.h2
+                  initial={{ y: "125%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ duration: 0.9, delay: 1.15, ease: EASE }}
+                  className="font-display font-bold text-xl sm:text-xl md:text-xl lg:text-xl text-ink-muted leading-[0.95] tracking-[-0.02em]"
+                >
+                  Find out what I'm up to <span aria-hidden="true">👀</span>
+                </motion.h2>
+              </div>
 
-              {/* Mono percentage counter */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.95 }}
-                className="flex items-center gap-3 mono text-sm text-ink-subtle"
+              {/* Role tagline */}
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.9, ease: EASE }}
+                className="mt-8 sm:mt-10 font-mono text-xs sm:text-sm uppercase tracking-[0.18em] text-ink-subtle"
               >
-                <span className="text-cyan tabular-nums w-12">{String(pct).padStart(3, "0")}%</span>
-                <span className="text-ink-subtle">·</span>
-                <span>{pct < 100 ? "compiling" : "ready"}</span>
-              </motion.div>
+                Front-End Developer <span className="text-cyan">|</span> Design Engineer
+              </motion.p>
             </div>
           </div>
-
-          {/* Bottom mono strip */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="absolute bottom-8 left-8 right-8 flex items-center justify-between"
-          >
-            <span className="eyebrow">build · 01</span>
-            <span className="eyebrow hidden sm:inline">daniela silva</span>
-          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

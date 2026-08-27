@@ -1,13 +1,32 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Github, Linkedin, Mail, Phone, Globe, MapPin } from "lucide-react"
-import { DownloadCVButton } from "@/app/cv/download-button"
-import { AnimatedSection } from "@/app/cv/animated-section"
+import type React from "react";
+import type { Metadata } from "next";
+import { Github, Linkedin, Mail, Phone, Globe, MapPin } from "lucide-react";
+import { DownloadCVButton } from "@/app/cv/download-button";
+import { AnimatedSection } from "@/app/cv/animated-section";
 
 export const metadata: Metadata = {
   title: "CV — Daniela Silva",
   description: "Curriculum Vitae for Daniela Silva.",
-}
+};
+
+const Section = ({
+  number,
+  title,
+  children,
+}: {
+  number: string
+  title: string
+  children: React.ReactNode
+}) => (
+  <section className="mb-10 print:mb-7">
+    <div className="flex items-baseline gap-3 mb-5 print:mb-4">
+      <span className="chapter-number text-sm">{number}</span>
+      <span className="eyebrow">// {title}</span>
+      <span className="h-px flex-1 bg-rule" aria-hidden="true" />
+    </div>
+    {children}
+  </section>
+)
 
 const ExperienceItem = ({
   role,
@@ -19,18 +38,20 @@ const ExperienceItem = ({
   status,
   stack,
 }: {
-  role: string
-  company: string
-  date: string
-  location: string
-  description: string[]
-  link?: string
-  status?: string
-  stack?: string[]
+  role: string;
+  company: string;
+  date: string;
+  location: string;
+  description: string[];
+  link?: string;
+  status?: string;
+  stack?: string[];
 }) => (
   <div className="mb-6 print:mb-5 last:mb-0 pb-6 print:pb-5 border-b border-rule last:border-b-0 print:break-inside-avoid">
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-1">
-      <h3 className="font-display font-semibold text-lg text-foreground leading-tight">{role}</h3>
+      <h3 className="font-display font-semibold text-lg text-foreground leading-tight">
+        {role}
+      </h3>
       <p className="mono text-xs text-ink-subtle">{date}</p>
     </div>
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
@@ -50,29 +71,18 @@ const ExperienceItem = ({
     {stack && stack.length > 0 && (
       <ul className="mt-4 flex flex-wrap gap-1.5">
         {stack.map((s) => (
-          <li key={s} className="badge">
+          <li
+            key={s}
+            className="inline-flex items-center font-mono text-xs font-medium px-2.5 py-1 rounded-md border border-rule text-ink-muted bg-transparent"
+          >
             {s}
           </li>
         ))}
       </ul>
     )}
-    {(link || status) && (
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        {link && (
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mono text-xs text-foreground border-b border-foreground hover:text-cyan hover:border-cyan transition-colors duration-200"
-          >
-            {link.replace(/^https?:\/\//, "").replace(/\/$/, "")} →
-          </a>
-        )}
-        {status && <span className="badge badge-accent">{status}</span>}
-      </div>
-    )}
+    {status && <span className="badge badge-accent">{status}</span>}
   </div>
-)
+);
 
 export default function CVPage() {
   return (
@@ -85,12 +95,12 @@ export default function CVPage() {
         {/* Header */}
         <header className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10 print:mb-6 pb-8 border-b border-rule items-end">
           <div className="sm:col-span-2">
-            <p className="eyebrow mb-2">// curriculum vitae</p>
+            <p className="eyebrow mb-2">curriculum vitae</p>
             <h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-7xl text-foreground tracking-tight leading-[0.95]">
               Daniela Silva<span className="text-cyan">.</span>
             </h1>
             <p className="mt-4 mono text-sm text-ink-muted">
-              Design Engineer · Front-End Developer · Component-first
+              Design Engineer · Front-End Developer
             </p>
           </div>
 
@@ -121,7 +131,7 @@ export default function CVPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-end gap-2 hover:text-cyan transition-colors"
               >
-                <Globe size={12} strokeWidth={1.75} /> daniela-silva.vercel.app
+                <Globe size={12} strokeWidth={1.75} /> portfolio
               </a>
             </li>
             <li>
@@ -148,42 +158,33 @@ export default function CVPage() {
         </header>
 
         {/* About */}
-        <AnimatedSection number="01" title="about">
+        <AnimatedSection title="about">
           <p className="text-base leading-relaxed text-ink-muted text-pretty max-w-3xl">
-            Front-End developer who thinks like a designer and edits like a filmmaker. My
-            audiovisual background isn't a past life — it's how I reason about timing, rhythm,
-            and hierarchy, the same instincts that make a scene land make a component land. I
-            ship pixel-perfect, component-first UI in Next.js, React, and TypeScript, live in
-            Figma, and care about the details a good interaction hides: motion timing,
-            typographic detail, accessibility, state transitions. Happiest at the seam between
-            design and code.
+            Front-End developer who thinks like a designer and edits like a
+            filmmaker. My audiovisual background isn't a past life — it's how I
+            reason about timing, rhythm, and hierarchy, the same instincts that
+            make a scene land make a component land. I ship pixel-perfect,
+            component-first UI in Next.js, React, and TypeScript, live in Figma,
+            and care about the details a good interaction hides: motion timing,
+            typographic detail, accessibility, state transitions. Happiest at
+            the seam between design and code.
           </p>
         </AnimatedSection>
 
         {/* Experience */}
-        <AnimatedSection number="02" title="professional experience">
+        <AnimatedSection title="professional experience">
           <ExperienceItem
             role="Full-Stack Developer · Project Manager"
             company="Dynamikfloat | Dyn-Link"
             date="08/2025 — now"
             location="Aveiro, Portugal"
             description={[
-              "Designed and shipped Plan4Marketing — a multi-tenant SaaS with a drag-and-drop email builder, campaigns, and contacts, all served by one scalable component library across many client brands.",
-              "Led SEAC's migration to a component-first TypeScript architecture on the Front-End and shipped a Google Calendar integration.",
-              "Rescued a broken Stripe integration on Scopphu — production payments stabilised.",
-              "Stepped into Project Manager for the company's core software, leading delivery for international clients and running product workshops for the support team.",
-              "Shipped a CRUD module for APLO as onboarding work; contributed QA, technical documentation, and design collaboration on brand assets.",
-            ]}
-            stack={[
-              "TypeScript",
-              "Vue",
-              "Tailwind CSS",
-              "Figma",
-              "Laravel",
-              "PHP",
-              "MySQL",
-              "DBeaver",
-              "GitHub",
+              "Contributed to multiple software development projects.",
+              "Stepped into the role of Project Manager for the company's core software, leading delivery for international clients.",
+              "Joined the support team and conducted workshops across all of the company's software products for international clients.",
+              "Strengthened skills in Back-End development by working with Laravel (REST APIs, business logic, and database interactions) and used DBeaver to manage data.",
+              "Worked with Vue.js on the Front-End to build and integrate components with Back-End services, gaining hands-on experience in full-stack workflows, best practices, and team-based development.",
+              "Performed QA across selected projects, prepared technical and process documentation, and collaborated with the design team on small tasks such as newsletters and social media posts.",
             ]}
           />
           <ExperienceItem
@@ -192,9 +193,9 @@ export default function CVPage() {
             date="12/2024 — 06/2025"
             location="Porto, Portugal"
             description={[
-              "Shipped every block of the marketing site from Figma design to pixel-perfect production — Hero, Why Bliss, Where We've Been, Scandinavian office, Quotes, and Brands.",
-              "Rebuilt the project-card component pattern across the Projects pages for consistency and reuse.",
-              "Documented every implementation to keep the component library maintainable for the team.",
+              "Created the company website, which served as a foundation for the online presence and showcased the company's services effectively.",
+              "Developed the website using WordPress, PHP, Sass, HTML and JavaScript, helping to meet diverse needs and improve their online visibility.",
+              "Enhanced the user experience and functionality, leading to increased satisfaction and engagement.",
             ]}
             link="https://blissapplications.com/"
             stack={[
@@ -225,7 +226,7 @@ export default function CVPage() {
         </AnimatedSection>
 
         {/* Projects — Twovest first as the flagship design-eng story */}
-        <AnimatedSection number="03" title="projects">
+        <AnimatedSection title="projects">
           <ExperienceItem
             role="Front-End Developer · UX/UI Designer"
             company="Twovest"
@@ -279,34 +280,45 @@ export default function CVPage() {
 
         {/* Two-column: Education + Awards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 print:break-inside-avoid">
-          <AnimatedSection number="04" title="education">
+          <AnimatedSection title="education">
             <div className="space-y-5">
               <div>
                 <h3 className="font-display font-semibold text-base text-foreground leading-tight">
                   Master's, Web Communication &amp; Technologies
                 </h3>
-                <p className="mt-1 mono text-xs text-cyan">Universidade de Aveiro</p>
-                <p className="mono text-xs text-ink-subtle">09/2023 — 12/2025</p>
+                <p className="mt-1 mono text-xs text-cyan">
+                  Universidade de Aveiro
+                </p>
+                <p className="mono text-xs text-ink-subtle">
+                  09/2023 — 12/2025
+                </p>
               </div>
               <div>
                 <h3 className="font-display font-semibold text-base text-foreground leading-tight">
                   Licentiate, Audiovisual &amp; Communication Technology
                 </h3>
-                <p className="mt-1 mono text-xs text-cyan">Escola Superior de Media Artes e Design</p>
-                <p className="mono text-xs text-ink-subtle">10/2020 — 07/2023</p>
+                <p className="mt-1 mono text-xs text-cyan">
+                  Escola Superior de Media Artes e Design
+                </p>
+                <p className="mono text-xs text-ink-subtle">
+                  10/2020 — 07/2023
+                </p>
               </div>
             </div>
           </AnimatedSection>
 
-          <AnimatedSection number="05" title="awards">
+          <AnimatedSection title="awards">
             <div className="space-y-5">
               <div>
                 <h3 className="font-display font-semibold text-base text-foreground leading-tight">
                   Academy Award
                 </h3>
-                <p className="mt-1 mono text-xs text-cyan">University of Aveiro · 07/2024</p>
+                <p className="mt-1 mono text-xs text-cyan">
+                  University of Aveiro · 07/2024
+                </p>
                 <p className="mt-1 text-xs text-ink-muted leading-relaxed">
-                  For the Twovest Project, recognizing contributions to sustainable fashion technology.
+                  For the Twovest Project, recognizing contributions to
+                  sustainable fashion technology.
                 </p>
               </div>
               <div>
@@ -315,7 +327,8 @@ export default function CVPage() {
                 </h3>
                 <p className="mt-1 mono text-xs text-cyan">Mindera · 07/2024</p>
                 <p className="mt-1 text-xs text-ink-muted leading-relaxed">
-                  For the Twovest Project, highlighting excellence in design and user experience.
+                  For the Twovest Project, highlighting excellence in design and
+                  user experience.
                 </p>
               </div>
             </div>
@@ -323,7 +336,7 @@ export default function CVPage() {
         </div>
 
         {/* Skills */}
-        <AnimatedSection number="06" title="skills">
+        <AnimatedSection title="skills">
           <div className="space-y-5">
             <div>
               <p className="eyebrow mb-3">front-end</p>
@@ -402,5 +415,5 @@ export default function CVPage() {
         </AnimatedSection>
       </div>
     </div>
-  )
+  );
 }

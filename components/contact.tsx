@@ -30,7 +30,7 @@ const channels = [
 
 export function Contact() {
   return (
-    <section id="contact" className="relative py-20 sm:py-28 lg:py-32 border-t border-rule">
+    <section id="contact" className="relative py-12 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -40,9 +40,8 @@ export function Contact() {
         >
           {/* Header line */}
           <div className="flex items-baseline gap-3 mb-10">
-            <span className="chapter-number text-sm">06 //</span>
-            <span className="h-px flex-1 bg-rule" aria-hidden="true" />
             <span className="eyebrow">Get in Touch</span>
+            <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
 
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-10">
@@ -60,13 +59,13 @@ export function Contact() {
               </h2>
 
               <p className="mt-8 max-w-2xl text-base sm:text-lg leading-relaxed text-ink-muted">
-                Looking for a junior front-end or full-stack developer who cares about the craft?
-                I'd love to hear about the role, the team, and what you're building.
+                Looking for a junior front-end developer or design engineer who cares about the craft?
+                I'd love to hear about the role, the team, and what you're building!
               </p>
             </div>
 
             <div className="lg:col-span-5 lg:border-l lg:border-rule lg:pl-8">
-              <p className="eyebrow mb-4">// download</p>
+              <p className="eyebrow mb-4">download</p>
               <Link
                 href="/cv"
                 target="_blank"
@@ -83,7 +82,7 @@ export function Contact() {
 
           {/* Channels — equal weight tiles */}
           <div className="mt-16">
-            <p className="eyebrow mb-5">// channels</p>
+            <p className="eyebrow mb-5">channels</p>
             <ul className="grid gap-3 md:grid-cols-3">
               {channels.map((c, i) => {
                 const Icon = c.icon

@@ -1,20 +1,27 @@
-// Tiny signal so the hero animation knows when the pre-loader has finished.
-// Module-level state — survives across components on the same page.
+// Module-level signal that lets the Hero delay its typewriter reveal until the
+// page-loader intro sequence has finished. Simple pub/sub pattern (not a
+// React context on purpose — it needs to survive across separate component
+// trees and be reliably in sync with the loader's exit callback).
 
 let done = false
 const listeners = new Set<() => void>()
 
 export const loaderSignal = {
-  isDone: () => done,
-  signal: () => {
+  isDone(): boolean {
+    return done
+  },
+  signal(): void {
     if (done) return
     done = true
-    listeners.forEach((cb) => cb())
+    for (const listener of listeners) listener()
+    listeners.clear()
   },
-  subscribe: (cb: () => void) => {
-    listeners.add(cb)
-    return () => {
-      listeners.delete(cb)
+  subscribe(listener: () => void): () => void {
+    if (done) {
+      listener()
+      return () => {}
     }
+    listeners.add(listener)
+    return () => listeners.delete(listener)
   },
 }

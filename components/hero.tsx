@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
 
 const meta = [
-  { label: "ROLE", value: "Front-End Developer" },
+  { label: "ROLE", value: "Front-End Developer | Design Engineer" },
   { label: "BASED", value: "Porto, Portugal" },
   { label: "STATUS", value: "Open to opportunities", live: true },
   { label: "STACK", value: "Next.js · React · Vue · Laravel" },
@@ -65,25 +65,11 @@ export function Hero() {
     <section
       ref={sectionRef}
       id="home"
-      className="relative min-h-screen flex flex-col bg-background overflow-hidden"
+      className="relative min-h-[90vh] flex flex-col bg-background overflow-hidden"
     >
-      {/* Top meta strip */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="absolute top-20 left-0 right-0 z-10 hidden sm:block"
-      >
-        <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
-          <div className="flex items-center justify-between gap-6">
-            <span className="eyebrow">portfolio</span>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Main mark */}
-      <div className="flex-1 flex items-center pt-32 sm:pt-40">
-        <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-20">
+      <div className="flex-1 flex items-end pt-4 sm:pt-6 lg:pt-8">
+        <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-12 sm:pb-16 lg:pb-24">
           <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 items-end">
             <div className="lg:col-span-12">
               <motion.h1
@@ -122,7 +108,21 @@ export function Hero() {
                     className="inline-block text-cyan"
                     aria-hidden="true"
                   >
-                    .
+                    {/* Inner span: little bounce right after the typewriter
+                        finishes writing "Daniela." — a subtle punctuation. */}
+                    <motion.span
+                      className="inline-block"
+                      initial={{ y: 0 }}
+                      animate={ready ? { y: [0, -18, 0, -6, 0] } : { y: 0 }}
+                      transition={{
+                        delay: 0.15 + "Daniela".length * 0.085 + 0.35,
+                        duration: 0.75,
+                        times: [0, 0.3, 0.6, 0.82, 1],
+                        ease: "easeOut",
+                      }}
+                    >
+                      .
+                    </motion.span>
                   </motion.span>
                   <motion.span
                     initial={{ opacity: 0 }}

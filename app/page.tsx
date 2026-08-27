@@ -7,29 +7,29 @@ import { Hobbies } from "@/components/hobbies"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 import { SceneProgress } from "@/components/scene-progress"
-import { SceneCounter } from "@/components/scene-counter"
+import { BackToTop } from "@/components/back-to-top"
 
 export default function PortfolioPage() {
   return (
     <div className="bg-background text-foreground">
       <Header />
       <main>
-        {/* 01 — Index */}
+        {/* Index */}
         <Hero />
-        {/* 02 — Selected Work */}
+        {/* Selected Work */}
         <Projects />
-        {/* 03 — The Story (About + Experience + Education merged) */}
+        {/* The Story (About + Experience + Education merged) */}
         <About />
-        {/* 04 — Toolbox */}
+        {/* Toolbox */}
         <Skills />
-        {/* 05 — Off Duty (Hobbies + Volunteering) */}
+        {/* Off Duty (Hobbies + Volunteering) */}
         <Hobbies />
-        {/* 06 — Get in Touch */}
+        {/* Get in Touch */}
         <Contact />
       </main>
       <Footer />
       <SceneProgress />
-      <SceneCounter />
+      <BackToTop />
     </div>
   )
 }
