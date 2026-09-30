@@ -4,11 +4,21 @@ import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
 
+// Middot separators are glued to the preceding word with a non-breaking
+// space ( ) — the browser can still break at the regular space after
+// the middot, so on narrow viewports "Developer ·" wraps as a unit rather
+// than leaving "·" orphaned on its own line.
 const meta = [
-  { label: "ROLE", value: "Front-End Developer | Design Engineer" },
+  {
+    label: "ROLE",
+    value: "Front-End Developer · Design Engineer",
+  },
   { label: "BASED", value: "Porto, Portugal" },
   { label: "STATUS", value: "Open to opportunities", live: true },
-  { label: "STACK", value: "Next.js · React · Vue · Laravel" },
+  {
+    label: "STACK",
+    value: "Next.js · React · Vue · Laravel",
+  },
 ]
 
 const REPLAY_INTERVAL_MS = 60_000
