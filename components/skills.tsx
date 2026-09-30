@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ComponentType } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import StackIcon from "tech-stack-icons";
 import type { IconName } from "tech-stack-icons";
 import {
@@ -166,8 +166,17 @@ export function Skills() {
     target: sectionRef,
     offset: ["start 0.9", "start 0.2"],
   });
-  const sectionOpacity = useTransform(scrollYProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(scrollYProgress, [0, 1], [24, 0]);
+  // Spring-smoothed so the reveal glides like the other sections — otherwise
+  // this one would jitter under trackpad micro-movements while the rest stay
+  // buttery.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 40,
+    mass: 0.4,
+    restDelta: 0.0005,
+  });
+  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
+  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
   return (
     <motion.section

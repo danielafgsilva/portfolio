@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google"
 import { PageLoader } from "@/components/page-loader"
+import { MotionProvider } from "@/components/motion-provider"
 import "./globals.css"
 
 const spaceGrotesk = Space_Grotesk({
@@ -39,8 +40,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${spaceGrotesk.variable} ${inter.variable} ${jetbrains.variable}`}>
       <body className="font-sans antialiased">
-        <PageLoader />
-        {children}
+        <MotionProvider>
+          <PageLoader />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   )

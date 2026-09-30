@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, useScroll, useSpring, useTransform } from "framer-motion"
+import { motion, useScroll, useSpring } from "framer-motion"
 
 const CHAPTERS = [
   { num: "01", id: "home", label: "Index" },
@@ -22,7 +22,9 @@ export function SceneProgress() {
     mass: 0.3,
     restDelta: 0.0005,
   })
-  const fillHeight = useTransform(smoothProgress, [0, 1], ["0%", "100%"])
+  // scaleY drives the fill via a compositor-only transform (no layout each
+  // frame). Full-height bar → transform-origin: top → scaleY(0…1) reveals
+  // top-down exactly like the old height animation did.
 
   // Position-based active detection via IntersectionObserver — one browser
   // callback per crossing rather than a full DOM sweep per scroll event.
@@ -93,10 +95,10 @@ export function SceneProgress() {
           className="absolute top-3 bottom-3 w-px bg-rule"
           aria-hidden="true"
         />
-        {/* Progress fill */}
+        {/* Progress fill — transform-only (scaleY), so no layout per frame. */}
         <motion.div
-          className="absolute top-3 w-px bg-cyan origin-top"
-          style={{ height: fillHeight, maxHeight: "calc(100% - 24px)" }}
+          className="absolute top-3 bottom-3 w-px bg-cyan origin-top"
+          style={{ scaleY: smoothProgress }}
           aria-hidden="true"
         />
         {CHAPTERS.map((c) => {

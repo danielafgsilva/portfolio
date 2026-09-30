@@ -64,8 +64,13 @@ export function BackToTop() {
         strokeWidth={1.75}
         className="shrink-0 transition-transform duration-200 group-hover:-translate-y-0.5"
       />
-      <span className="max-w-0 opacity-0 whitespace-nowrap overflow-hidden group-hover:max-w-[8rem] group-hover:opacity-100 transition-[max-width,opacity] duration-300 ease-editorial">
-        back to top
+      {/* grid-template-columns animates cheaper than max-width (the label
+          collapses to a 0fr track, no layout thrash on the parent) and lets
+          the label fade in from opacity + slight x-translate for polish. */}
+      <span className="grid grid-cols-[0fr] group-hover:grid-cols-[1fr] transition-[grid-template-columns] duration-300 ease-editorial">
+        <span className="min-w-0 overflow-hidden whitespace-nowrap opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-200 ease-editorial">
+          back to top
+        </span>
       </span>
     </motion.button>
   )

@@ -234,6 +234,11 @@ function ChronologySlide({
   // images can't sit on the incoming slide's text. 0.45 threshold gives the
   // incoming slide priority slightly before it crosses the midpoint.
   const zIndex = useTransform(opacity, (o) => (o > 0.45 ? 2 : 1));
+  // Fully transparent slides skip paint (visibility: hidden) — spares the
+  // compositor from ~5 stacked full-viewport layers when only 1-2 are in
+  // view. `pointer-events` follows so hidden slides don't intercept touch.
+  const visibility = useTransform(opacity, (o) => (o < 0.01 ? "hidden" : "visible"));
+  const pointerEvents = useTransform(opacity, (o) => (o < 0.01 ? "none" : "auto"));
 
   // Tile classes — driven by row height + aspect ratio so widths follow
   // heights (no fixed min-widths that fight the rhythm on small phones).
@@ -285,7 +290,18 @@ function ChronologySlide({
 
   return (
     <motion.div
-      style={{ opacity, y, zIndex, willChange: "transform, opacity" }}
+      style={{
+        opacity,
+        y,
+        zIndex,
+        visibility,
+        pointerEvents,
+        willChange: "transform, opacity",
+        // `contain: layout paint` isolates each slide's paint + layout to its
+        // own subtree; the compositor can promote it independently and avoid
+        // repainting the entire chronology stage when a neighbour animates.
+        contain: "layout paint",
+      }}
       className="absolute inset-0 flex flex-col min-h-0 gap-3 sm:gap-4 lg:gap-5"
     >
       {/* Top — text block: flex-1 so it takes whatever room is left after

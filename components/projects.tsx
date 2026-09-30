@@ -113,15 +113,18 @@ export function Projects() {
   const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
   const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
-  // Auto-advance timer — resets on index change or pause change
+  // Auto-advance timer — resets on index change or pause change.
+  // Progress is a 0…1 scalar driving a scaleX transform (see track below), so
+  // the render each tick is a compositor-only transform — no layout thrash
+  // from animating width every 50ms.
   useEffect(() => {
     if (paused) return;
     setProgress(0);
     const INTERVAL = 50;
-    const STEP = (INTERVAL / AUTO_ADVANCE_MS) * 100;
+    const STEP = INTERVAL / AUTO_ADVANCE_MS;
 
     const tick = setInterval(() => {
-      setProgress((prev) => Math.min(100, prev + STEP));
+      setProgress((prev) => Math.min(1, prev + STEP));
     }, INTERVAL);
 
     const advance = setTimeout(() => {
@@ -373,9 +376,8 @@ export function Projects() {
                   <div className="relative h-[2px] flex-1 bg-rule overflow-hidden">
                     {isCurrent && (
                       <motion.div
-                        className="absolute inset-y-0 left-0 bg-cyan"
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 0.1, ease: "linear" }}
+                        className="absolute inset-0 bg-cyan origin-left"
+                        style={{ transform: `scaleX(${progress})` }}
                       />
                     )}
                   </div>
