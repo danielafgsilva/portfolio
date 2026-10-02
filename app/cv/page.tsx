@@ -73,8 +73,8 @@ export default function CVPage() {
 
       <div id="cv-print-content">
         {/* Header */}
-        <header className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10 print:mb-6 pb-8 border-b border-rule items-end">
-          <div className="sm:col-span-2">
+        <header className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-6 sm:gap-8 mb-10 print:mb-6 pb-8 border-b border-rule items-end">
+          <div>
             <p className="eyebrow mb-2">curriculum vitae</p>
             <h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-7xl text-foreground tracking-tight leading-[0.95]">
               Daniela Silva<span className="text-cyan">.</span>

@@ -6,6 +6,7 @@ import {
   useScroll,
   useSpring,
   useTransform,
+  useReducedMotion,
   type MotionValue,
 } from "framer-motion";
 
@@ -287,6 +288,10 @@ function ChronologySlide({
 
   const marqueeItems = Array.from({ length: copies }, () => entry.media).flat();
   const shiftPct = 100 / copies;
+  // Marquee animates the `transform` string (not `x`) so framer-motion hands it
+  // to WAAPI and it runs on the compositor — `x` would tick on the main thread
+  // every frame for all five slides. Reduced-motion users get a static row.
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.div
@@ -297,10 +302,10 @@ function ChronologySlide({
         visibility,
         pointerEvents,
         willChange: "transform, opacity",
-        // `contain: layout paint` isolates each slide's paint + layout to its
-        // own subtree; the compositor can promote it independently and avoid
-        // repainting the entire chronology stage when a neighbour animates.
-        contain: "layout paint",
+        // Layout containment only — `paint` would clip the gallery's
+        // full-bleed negative margins. Hidden slides already skip paint via
+        // `visibility` above.
+        contain: "layout",
       }}
       className="absolute inset-0 flex flex-col min-h-0 gap-3 sm:gap-4 lg:gap-5"
     >
@@ -370,14 +375,20 @@ function ChronologySlide({
           fuller 42%. Short-height viewports (Chromebooks, landscape phones,
           tablets in landscape) shrink further via .chronology-gallery in
           globals.css so the text zone never overflows. Tiles are sized by
-          height + aspect ratio so their widths follow the row height. */}
+          height + aspect ratio so their widths follow the row height.
+          mx-[calc(50%-50vw)] bleeds it to the viewport edges at any width,
+          including ultrawide where the 1440px container leaves side gutters. */}
       {entry.media.length > 0 && (
-        <div className="chronology-gallery relative z-0 shrink-0 h-[min(36%,18rem)] sm:h-[42%] overflow-hidden -mx-6 sm:-mx-10 lg:-mx-16">
+        <div className="chronology-gallery relative z-0 shrink-0 h-[min(36%,18rem)] sm:h-[42%] overflow-hidden mx-[calc(50%-50vw)]">
           <motion.ul
             ref={rowRef}
             className="flex items-end h-full"
             style={{ willChange: "transform" }}
-            animate={{ x: ["0%", `-${shiftPct}%`] }}
+            animate={
+              reduceMotion
+                ? undefined
+                : { transform: ["translateX(0%)", `translateX(-${shiftPct}%)`] }
+            }
             transition={{
               duration: Math.max(30, entry.media.length * 6),
               ease: "linear",

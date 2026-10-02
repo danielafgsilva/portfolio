@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
+  animate,
+  useMotionValue,
   useScroll,
   useSpring,
   useTransform,
@@ -94,7 +96,7 @@ const AUTO_ADVANCE_MS = 8000;
 export function Projects() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const progress = useMotionValue(0);
   const [paused, setPaused] = useState(false);
   const total = projects.length;
   const current = projects[currentIndex];
@@ -114,33 +116,31 @@ export function Projects() {
   const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
   // Auto-advance timer — resets on index change or pause change.
-  // Progress is a 0…1 scalar driving a scaleX transform (see track below), so
-  // the render each tick is a compositor-only transform — no layout thrash
-  // from animating width every 50ms.
+  // Progress is a motion value driving scaleX on the track below, so the bar
+  // animates every frame without re-rendering this section. Pausing stops it
+  // where it is; resuming restarts from 0 (same as the timer).
   useEffect(() => {
     if (paused) return;
-    setProgress(0);
-    const INTERVAL = 50;
-    const STEP = INTERVAL / AUTO_ADVANCE_MS;
-
-    const tick = setInterval(() => {
-      setProgress((prev) => Math.min(1, prev + STEP));
-    }, INTERVAL);
+    progress.set(0);
+    const fill = animate(progress, 1, {
+      duration: AUTO_ADVANCE_MS / 1000,
+      ease: "linear",
+    });
 
     const advance = setTimeout(() => {
       setCurrentIndex((i) => (i + 1) % total);
     }, AUTO_ADVANCE_MS);
 
     return () => {
-      clearInterval(tick);
+      fill.stop();
       clearTimeout(advance);
     };
-  }, [currentIndex, paused, total]);
+  }, [currentIndex, paused, total, progress]);
 
   const goTo = (idx: number) => {
     const next = ((idx % total) + total) % total;
     setCurrentIndex(next);
-    setProgress(0);
+    progress.set(0);
   };
   const handlePrev = () => goTo(currentIndex - 1);
   const handleNext = () => goTo(currentIndex + 1);
@@ -377,7 +377,7 @@ export function Projects() {
                     {isCurrent && (
                       <motion.div
                         className="absolute inset-0 bg-cyan origin-left"
-                        style={{ transform: `scaleX(${progress})` }}
+                        style={{ scaleX: progress }}
                       />
                     )}
                   </div>
