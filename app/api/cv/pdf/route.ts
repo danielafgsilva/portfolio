@@ -49,7 +49,13 @@ export async function GET(request: NextRequest) {
     }
     browser = await puppeteer.launch(launchOptions)
     const page = await browser.newPage()
-    const baseUrl = request.nextUrl.origin
+    // Production renders its own canonical domain (a trusted env value) rather
+    // than the request's Host header, so a forged Host can't point the headless
+    // browser elsewhere. Previews/local keep the request origin (their host).
+    const baseUrl =
+      process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : request.nextUrl.origin
     await page.goto(`${baseUrl}${localePath(locale, "/cv")}`, {
       waitUntil: "networkidle0",
       timeout: 30000,
@@ -83,11 +89,8 @@ export async function GET(request: NextRequest) {
     if (browser) {
       await browser.close().catch(() => {})
     }
+    // Details stay in the server log; the client only needs to know it failed.
     console.error("Error generating PDF:", error)
-    const errorMessage = error instanceof Error ? error.message : "Unknown error"
-    return NextResponse.json(
-      { error: "Failed to generate PDF", details: errorMessage },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to generate PDF" }, { status: 500 })
   }
 }

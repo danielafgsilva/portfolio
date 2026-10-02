@@ -74,6 +74,7 @@ export function Contact() {
               <Link
                 href={localePath(locale, "/cv")}
                 target="_blank"
+                rel="noopener"
                 className="group inline-flex w-full items-center justify-between gap-3 border border-foreground rounded-md px-5 py-4 mono text-sm text-foreground transition-colors duration-200 ease-editorial hover:bg-foreground hover:text-paper"
               >
                 <span className="flex items-center gap-3">
