@@ -67,7 +67,9 @@ const pt: Dictionary = {
     stack: "stack",
     visitSite: "Visitar site",
     live: "online",
-    inProgress: "em curso",
+    inDevelopment: "Em desenvolvimento",
+    viewPreview: "Ver pré-visualização",
+    previewSoon: "Pré-visualização em breve",
     previous: "Projeto anterior",
     next: "Projeto seguinte",
     goTo: "Ir para o projeto {n}: {title}",
@@ -94,6 +96,18 @@ const pt: Dictionary = {
         role: "Desenvolvimento Full-Stack",
         description:
           "Um marketplace de cuidados caninos que liga donos de cães a prestadores de serviços. Interface baseada em perfis, desenvolvida com Next.js e TypeScript, com o Sanity CMS a gerir o conteúdo editorial. Atualmente em desenvolvimento ativo.",
+        awards: [],
+      },
+      eperfil: {
+        role: "Web Design e Desenvolvimento Front-End",
+        description:
+          "Um novo site para a e+Perfil, fabricante de sistemas em alumínio em Vila do Conde. Construído à volta das pessoas por trás do serviço — equipa comercial dedicada, stock e lacagem próprios — para os instaladores que dependem delas. Atualmente em desenvolvimento.",
+        awards: [],
+      },
+      officium: {
+        role: "Web Design e Desenvolvimento",
+        description:
+          "Um site para a Offici'um, uma empresa de contabilidade e consultoria — da contabilidade e apoio fiscal à abertura de empresas e recursos humanos, com uma área de recrutamento para candidatos. Atualmente em desenvolvimento.",
         awards: [],
       },
     },

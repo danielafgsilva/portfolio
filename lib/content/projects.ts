@@ -8,9 +8,13 @@ export type Project = {
   index: string
   title: string
   year: string
-  image: string
+  /** Cover / video poster. Optional: projects without one get a styled
+   *  "in development" frame instead. */
+  image?: string
   tech: string[]
+  /** "in-progress" = still in development: never presented as finished. */
   status?: "live" | "in-progress"
+  /** Public URL — optional (unreleased projects have none; never invent one). */
   liveUrl?: string
   video?: string
   /** Scales the video up, anchored to the bottom, so the top edge gets cropped
@@ -50,6 +54,25 @@ export const projects: Project[] = [
     image: "/images/dogwarts-cover.jpg",
     video: "/videos/dogwarts-video.mp4",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
+    status: "in-progress",
+  },
+  {
+    id: "eperfil",
+    index: "04",
+    title: "e+Perfil",
+    year: "2026",
+    image: "/images/eperfil-cover.jpg",
+    tech: ["React", "Vite", "Tailwind CSS"],
+    status: "in-progress",
+    liveUrl: "https://e-perfil.vercel.app/",
+  },
+  {
+    // No definitive URL yet — no link and no cover until there is one.
+    id: "officium",
+    index: "05",
+    title: "Offici'um",
+    year: "2026",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Motion"],
     status: "in-progress",
   },
 ]

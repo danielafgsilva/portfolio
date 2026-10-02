@@ -90,7 +90,7 @@ export function homeJsonLd(locale: Locale) {
           ...(p.liveUrl && { url: p.liveUrl }),
           description: t.projects.items[p.id].description,
           dateCreated: p.year,
-          image: abs(p.image),
+          ...(p.image && { image: abs(p.image) }),
           keywords: p.tech.join(", "),
           creator: { "@id": PERSON_ID },
           ...(p.status === "in-progress" && { creativeWorkStatus: "In progress" }),

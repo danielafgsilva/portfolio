@@ -44,6 +44,9 @@ function ProjectInfo({ project, ghost = false }: { project: Project; ghost?: boo
       {/* Take shot log */}
       <div className="flex items-baseline gap-3 mb-6">
         <span className="eyebrow">{project.year}</span>
+        {project.status === "in-progress" && (
+          <span className="badge badge-accent">{t.projects.inDevelopment}</span>
+        )}
       </div>
 
       {/* Title */}
@@ -96,16 +99,24 @@ function ProjectInfo({ project, ghost = false }: { project: Project; ghost?: boo
       </div>
 
       {/* Visit link */}
-      {project.liveUrl && (
+      {/* Unfinished projects never read as launched: a public preview says
+          "View preview"; no URL yet → plain, muted, non-interactive text. */}
+      {project.liveUrl ? (
         <Link
           href={project.liveUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-6 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
         >
-          {t.projects.visitSite}
+          {project.status === "in-progress" ? t.projects.viewPreview : t.projects.visitSite}
           <ArrowUpRight size={14} strokeWidth={2} />
         </Link>
+      ) : (
+        project.status === "in-progress" && (
+          <p className="mt-6 inline-flex items-center gap-2 mono text-sm text-ink-subtle border border-dashed border-rule rounded-md px-3 py-2 cursor-default select-none">
+            {t.projects.previewSoon}
+          </p>
+        )
       )}
     </>
   );
@@ -147,6 +158,7 @@ export function Projects() {
     // next/image will request (a <link rel=preload> would warn when the later
     // projects aren't shown within a few seconds).
     for (const p of projects) {
+      if (!p.image) continue;
       const { props } = getImageProps({ src: p.image, alt: "", fill: true, sizes: COVER_SIZES });
       const img = new window.Image();
       img.fetchPriority = "low";
@@ -251,7 +263,7 @@ export function Projects() {
                   </div>
                   <div className="flex-1 min-w-0 flex justify-center">
                     <span className="mono text-[11px] sm:text-xs text-ink-subtle px-2.5 py-1 bg-paper rounded border border-rule max-w-full truncate">
-                      {current.status === "live" && current.liveUrl
+                      {current.liveUrl
                         ? current.liveUrl
                             .replace(/^https?:\/\//, "")
                             .replace(/\/$/, "")
@@ -283,7 +295,7 @@ export function Projects() {
                           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
                         </span>
-                        <span className="hidden sm:inline">{t.projects.inProgress}</span>
+                        <span className="hidden sm:inline lowercase">{t.projects.inDevelopment}</span>
                       </span>
                     )}
                   </div>
@@ -291,7 +303,7 @@ export function Projects() {
 
                 {/* Screenshot */}
                 <div className="relative aspect-[5/3] bg-paper-tint overflow-hidden">
-                  {current.video ? (
+                  {current.video && current.image ? (
                     <AutoplayVideo
                       key={current.video}
                       src={current.video}
@@ -310,7 +322,7 @@ export function Projects() {
                           : undefined
                       }
                     />
-                  ) : (
+                  ) : current.image ? (
                     <Image
                       src={current.image}
                       alt={fmt(t.projects.coverAlt, { title: current.title })}
@@ -318,6 +330,23 @@ export function Projects() {
                       className="object-cover object-top"
                       sizes={COVER_SIZES}
                     />
+                  ) : (
+                    // No cover yet: blueprint-grid frame with the project name.
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center bg-[linear-gradient(hsl(var(--rule))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--rule))_1px,transparent_1px)] bg-[size:40px_40px] bg-center"
+                    >
+                      <span className="font-display font-semibold text-4xl sm:text-6xl text-ink-muted tracking-tight">
+                        {current.title}
+                      </span>
+                      <span className="inline-flex items-center gap-2 mono text-xs text-ink-subtle bg-paper-tint px-2 lowercase">
+                        <span className="relative flex h-2 w-2">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+                        </span>
+                        {t.projects.inDevelopment}
+                      </span>
+                    </div>
                   )}
                 </div>
               </motion.div>

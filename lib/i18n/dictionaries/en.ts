@@ -67,7 +67,9 @@ const en = {
     stack: "stack",
     visitSite: "Visit site",
     live: "live",
-    inProgress: "in progress",
+    inDevelopment: "In development",
+    viewPreview: "View preview",
+    previewSoon: "Preview coming soon",
     previous: "Previous project",
     next: "Next project",
     goTo: "Go to project {n}: {title}",
@@ -94,6 +96,18 @@ const en = {
         role: "Full-Stack Development",
         description:
           "A canine-care marketplace connecting dog owners with service providers. Role-based UI built with Next.js and TypeScript, with Sanity CMS powering editorial content. Currently in active development.",
+        awards: [] as { title: string; issuer: string }[],
+      },
+      eperfil: {
+        role: "Web Design & Front-End Development",
+        description:
+          "A new website for e+Perfil, an aluminium-systems manufacturer in Vila do Conde. Built around the people behind the service — a dedicated sales team, in-house stock and finishing — for the installers who rely on them. Currently in development.",
+        awards: [] as { title: string; issuer: string }[],
+      },
+      officium: {
+        role: "Web Design & Development",
+        description:
+          "A website for Offici'um, an accounting and business-consulting firm — from bookkeeping and tax support to company formation and HR, with a recruitment area for candidates. Currently in development.",
         awards: [] as { title: string; issuer: string }[],
       },
     },
