@@ -14,6 +14,7 @@ const pt: Dictionary = {
     cvDescription:
       "Curriculum vitae de Daniela Silva, programadora front-end no Porto: experiência na Dyn-Link e na Bliss Applications, projetos, formação, prémios e competências.",
     notFoundTitle: "Página não encontrada — Daniela Silva",
+    errorTitle: "Algo correu mal — Daniela Silva",
     ogImageAlt: "Daniela Silva — Front-End Developer e Design Engineer",
     cvOgImageAlt: "Curriculum vitae — Daniela Silva",
   },
@@ -394,18 +395,23 @@ const pt: Dictionary = {
   },
 
   notFound: {
-    eyebrow: "404",
-    title: "Esta página não existe.",
-    body: "O link pode estar errado ou a página pode ter mudado de sítio.",
+    code: "404",
+    eyebrow: "cena em falta",
+    title: "Corta! Esta cena não ficou na montagem final.",
+    body: "A página que procuras mudou de sítio, mudou de nome ou nunca chegou a ser filmada. Os melhores takes continuam aqui:",
     back: "Voltar ao início",
+    suggestionsLabel: "Páginas sugeridas",
+    suggestions: { work: "Trabalho selecionado", story: "O percurso", contact: "Contacto", cv: "CV" },
   },
 
   error: {
-    eyebrow: "erro",
-    title: "Algo correu mal.",
-    body: "Ocorreu um erro inesperado ao carregar esta página.",
+    code: "500",
+    eyebrow: "segundo take",
+    title: "Algo correu mal na rodagem.",
+    body: "Um erro inesperado interrompeu esta página. Normalmente é pontual — tenta novamente ou volta ao início.",
     retry: "Tentar novamente",
     back: "Voltar ao início",
+    reference: "Referência",
   },
 }
 

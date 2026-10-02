@@ -13,6 +13,7 @@ const en = {
     cvDescription:
       "Curriculum vitae of Daniela Silva, front-end developer in Porto, Portugal: experience at Dyn-Link and Bliss Applications, projects, education, awards and skills.",
     notFoundTitle: "Page not found — Daniela Silva",
+    errorTitle: "Something went wrong — Daniela Silva",
     ogImageAlt: "Daniela Silva — Front-End Developer and Design Engineer",
     cvOgImageAlt: "Curriculum vitae — Daniela Silva",
   },
@@ -394,19 +395,25 @@ const en = {
     ],
   },
 
+  // Error pages borrow the film-set voice of the bio ("edits like a filmmaker").
   notFound: {
-    eyebrow: "404",
-    title: "This page doesn't exist.",
-    body: "The link may be broken, or the page may have moved.",
+    code: "404",
+    eyebrow: "scene missing",
+    title: "Cut! This scene didn't make the final edit.",
+    body: "The page you're looking for was moved, renamed, or never shot. The good takes are still here:",
     back: "Back to home",
+    suggestionsLabel: "Suggested pages",
+    suggestions: { work: "Selected work", story: "The story", contact: "Get in touch", cv: "CV" },
   },
 
   error: {
-    eyebrow: "error",
-    title: "Something went wrong.",
-    body: "An unexpected error happened while loading this page.",
+    code: "500",
+    eyebrow: "take two",
+    title: "Something broke on set.",
+    body: "An unexpected error interrupted this page. It's usually a one-off — try again, or head back home.",
     retry: "Try again",
     back: "Back to home",
+    reference: "Reference",
   },
 }
 
