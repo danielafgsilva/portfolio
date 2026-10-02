@@ -2,12 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  motion,
+  m,
   AnimatePresence,
+  animate,
+  useInView,
+  useMotionValue,
   useScroll,
+  useSpring,
   useTransform,
 } from "framer-motion";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
+import { AutoplayVideo } from "./autoplay-video";
+import { useI18n } from "./i18n-provider";
+import { fmt } from "@/lib/i18n/format";
+import { projects, type Project } from "@/lib/content/projects";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -17,84 +25,109 @@ import {
   Pause,
   Play,
 } from "lucide-react";
+import { EASE_EDITORIAL } from "@/lib/motion";
 
-type Project = {
-  index: string;
-  title: string;
-  year: string;
-  role: string;
-  description: string;
-  image: string;
-  tech: string[];
-  status?: "live" | "in-progress";
-  liveUrl?: string;
-  awards?: { title: string; issuer: string }[];
-  video?: string;
-  /** Scales the video up, anchored to the bottom, so the top edge gets cropped
-   *  (useful when a screen recording has a browser URL bar at the top). */
-  videoZoom?: number;
-};
+// Structural project data is shared with the JSON-LD (lib/content/projects.ts).
 
-const projects: Project[] = [
-  {
-    index: "01",
-    title: "Twovest",
-    year: "2024",
-    role: "UI/UX Design & Front-End Development",
-    description:
-      "A second-hand fashion platform built to make sustainable consumption the obvious choice. Designed the full experience in Figma, then shipped the interface in Next.js with Supabase as the backbone. Won two awards for design and execution.",
-    image: "/images/twovest-cover.png",
-    video: "/videos/twovest-video.mp4",
-    videoZoom: 1.12,
-    tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
-    status: "live",
-    liveUrl: "https://twovest.com/",
-    awards: [
-      {
-        title: "Academy Award · Media Play",
-        issuer: "University of Aveiro, 2024",
-      },
-      {
-        title: "Best Project 2023/2024",
-        issuer: "Mindera × Master's Programme",
-      },
-    ],
-  },
-  {
-    index: "02",
-    title: "Gomes Rego & Associados",
-    year: "2024",
-    role: "Web Design & Development",
-    description:
-      "A professional site for a law firm needing to signal credibility online. Designed for clarity — clean information architecture, considered typography, responsive across every breakpoint, and clear calls-to-action that translated into measurable inquiry lift.",
-    image: "/images/gomes-rego-cover.png",
-    video: "/videos/gomes-video.mp4",
-    tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
-    status: "live",
-    liveUrl: "https://grasroc.pt/",
-  },
-  {
-    index: "03",
-    title: "Dogwarts",
-    year: "2025",
-    role: "Full-Stack Development",
-    description:
-      "A canine-care marketplace connecting dog owners with service providers. Role-based UI built with Next.js and TypeScript, with Sanity CMS powering editorial content. Currently in active development.",
-    image: "/images/dogwarts-cover.png",
-    video: "/videos/dogwarts-video.mp4",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
-    status: "in-progress",
-  },
-];
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+// Browser frame is 7/12 of the ≤1440px container on lg+, full width below.
+const COVER_SIZES = "(min-width: 1440px) 780px, (min-width: 1024px) 55vw, 100vw";
 const AUTO_ADVANCE_MS = 8000;
+
+// `ghost` renders the invisible height-reservation copies: same box, but no
+// heading element so the page outline lists each project once.
+function ProjectInfo({ project, ghost = false }: { project: Project; ghost?: boolean }) {
+  const Title = ghost ? "p" : "h3";
+  const { t } = useI18n();
+  const copy = t.projects.items[project.id];
+  return (
+    <>
+      {/* Take shot log */}
+      <div className="flex items-baseline gap-3 mb-6">
+        <span className="eyebrow">{project.year}</span>
+        {project.status === "in-progress" && (
+          <span className="badge badge-accent">{t.projects.inDevelopment}</span>
+        )}
+      </div>
+
+      {/* Title */}
+      <Title className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-foreground leading-tight tracking-tight text-balance">
+        {project.title}
+      </Title>
+
+      {/* Role */}
+      <p className="mt-2 mono text-sm text-cyan">{copy.role}</p>
+
+      {/* Description */}
+      <p className="mt-5 text-base leading-relaxed text-ink-muted text-pretty">
+        {copy.description}
+      </p>
+
+      {/* Awards */}
+      {copy.awards.length > 0 && (
+        <ul className="mt-5 space-y-2 border-l-2 border-cyan pl-4">
+          {copy.awards.map((a) => (
+            <li
+              key={a.title}
+              className="text-sm flex items-baseline gap-2"
+            >
+              <Award
+                size={13}
+                className="shrink-0 text-cyan translate-y-0.5"
+                strokeWidth={1.75}
+              />
+              <div>
+                <span className="font-medium text-foreground">
+                  {a.title}
+                </span>
+                <span className="text-ink-subtle"> — {a.issuer}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Stack */}
+      <div className="mt-6">
+        <p className="eyebrow mb-3">{t.projects.stack}</p>
+        <ul className="flex flex-wrap gap-1.5">
+          {project.tech.map((t) => (
+            <li key={t} className="badge">
+              {t}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Visit link */}
+      {/* Unfinished projects never read as launched: a public preview says
+          "View preview"; no URL yet → plain, muted, non-interactive text. */}
+      {project.liveUrl ? (
+        <Link
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
+        >
+          {project.status === "in-progress" ? t.projects.viewPreview : t.projects.visitSite}
+          <ArrowUpRight size={14} strokeWidth={2} />
+        </Link>
+      ) : (
+        project.status === "in-progress" && (
+          <p className="mt-6 inline-flex items-center gap-2 mono text-sm text-ink-subtle border border-dashed border-rule rounded-md px-3 py-2 cursor-default select-none">
+            {t.projects.previewSoon}
+          </p>
+        )
+      )}
+    </>
+  );
+}
 
 export function Projects() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const progress = useMotionValue(0);
   const [paused, setPaused] = useState(false);
+  const { t } = useI18n();
   const total = projects.length;
   const current = projects[currentIndex];
 
@@ -102,40 +135,71 @@ export function Projects() {
     target: sectionRef,
     offset: ["start 0.9", "start 0.2"],
   });
-  const sectionOpacity = useTransform(scrollYProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(scrollYProgress, [0, 1], [24, 0]);
+  // Spring-smoothed so the reveal glides even when the trackpad jitters.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 40,
+    mass: 0.4,
+    restDelta: 0.0005,
+  });
+  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
+  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
-  // Auto-advance timer — resets on index change or pause change
+  // Video only loads/plays while the browser frame itself is on screen (it
+  // sits below the fold on every viewport). Once the section is within a
+  // viewport, warm every project's cover (low priority) so the poster is
+  // ready before the frame scrolls in and when rotating projects.
+  const frameColRef = useRef<HTMLDivElement | null>(null);
+  const onScreen = useInView(frameColRef);
+  const near = useInView(sectionRef, { once: true, margin: "100% 0px 100% 0px" });
+  useEffect(() => {
+    if (!near) return;
+    // A detached <img> with the same srcset/sizes warms exactly the variant
+    // next/image will request (a <link rel=preload> would warn when the later
+    // projects aren't shown within a few seconds).
+    for (const p of projects) {
+      if (!p.image) continue;
+      const { props } = getImageProps({ src: p.image, alt: "", fill: true, sizes: COVER_SIZES });
+      const img = new window.Image();
+      img.fetchPriority = "low";
+      img.sizes = props.sizes ?? "";
+      img.srcset = props.srcSet ?? "";
+      img.src = props.src;
+    }
+  }, [near]);
+
+  // Auto-advance timer — resets on index change or pause change.
+  // Progress is a motion value driving scaleX on the track below, so the bar
+  // animates every frame without re-rendering this section. Pausing stops it
+  // where it is; resuming restarts from 0 (same as the timer).
   useEffect(() => {
     if (paused) return;
-    setProgress(0);
-    const INTERVAL = 50;
-    const STEP = (INTERVAL / AUTO_ADVANCE_MS) * 100;
-
-    const tick = setInterval(() => {
-      setProgress((prev) => Math.min(100, prev + STEP));
-    }, INTERVAL);
+    progress.set(0);
+    const fill = animate(progress, 1, {
+      duration: AUTO_ADVANCE_MS / 1000,
+      ease: "linear",
+    });
 
     const advance = setTimeout(() => {
       setCurrentIndex((i) => (i + 1) % total);
     }, AUTO_ADVANCE_MS);
 
     return () => {
-      clearInterval(tick);
+      fill.stop();
       clearTimeout(advance);
     };
-  }, [currentIndex, paused, total]);
+  }, [currentIndex, paused, total, progress]);
 
   const goTo = (idx: number) => {
     const next = ((idx % total) + total) % total;
     setCurrentIndex(next);
-    setProgress(0);
+    progress.set(0);
   };
   const handlePrev = () => goTo(currentIndex - 1);
   const handleNext = () => goTo(currentIndex + 1);
 
   return (
-    <motion.section
+    <m.section
       ref={sectionRef}
       id="work"
       style={{ opacity: sectionOpacity, y: sectionLift }}
@@ -143,8 +207,8 @@ export function Projects() {
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
-        <div className="flex items-baseline gap-3 mb-10">
-          <span className="eyebrow">Selected Work</span>
+        <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
+          <h2 className="eyebrow">{t.projects.eyebrow}</h2>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
 
@@ -154,95 +218,40 @@ export function Projects() {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Info panel — LEFT (stays on the left, updates per project) */}
-          <div className="lg:col-span-5 xl:col-span-5 relative min-h-[28rem]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.5, ease: EASE }}
-              >
-                {/* Take shot log */}
-                <div className="flex items-baseline gap-3 mb-6">
-                  <span className="eyebrow">{current.year}</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-foreground leading-tight tracking-tight text-balance">
-                  {current.title}
-                </h3>
-
-                {/* Role */}
-                <p className="mt-2 mono text-sm text-cyan">{current.role}</p>
-
-                {/* Description */}
-                <p className="mt-5 text-base leading-relaxed text-ink-muted text-pretty">
-                  {current.description}
-                </p>
-
-                {/* Awards */}
-                {current.awards && (
-                  <ul className="mt-5 space-y-2 border-l-2 border-cyan pl-4">
-                    {current.awards.map((a) => (
-                      <li
-                        key={a.title}
-                        className="text-sm flex items-baseline gap-2"
-                      >
-                        <Award
-                          size={13}
-                          className="shrink-0 text-cyan translate-y-0.5"
-                          strokeWidth={1.75}
-                        />
-                        <div>
-                          <span className="font-medium text-foreground">
-                            {a.title}
-                          </span>
-                          <span className="text-ink-subtle"> — {a.issuer}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {/* Stack */}
-                <div className="mt-6">
-                  <p className="eyebrow mb-3">stack</p>
-                  <ul className="flex flex-wrap gap-1.5">
-                    {current.tech.map((t) => (
-                      <li key={t} className="badge">
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Visit link */}
-                {current.liveUrl && (
-                  <Link
-                    href={current.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
-                  >
-                    Visit site
-                    <ArrowUpRight size={14} strokeWidth={2} />
-                  </Link>
-                )}
-              </motion.div>
-            </AnimatePresence>
+          {/* Info panel — LEFT (stays on the left, updates per project).
+              Every project's info is stacked invisibly in the same grid cell
+              so the panel always reserves the tallest one — rotating projects
+              never changes its height or shifts the page below (CLS). */}
+          <div className="lg:col-span-5 xl:col-span-5 relative lg:min-h-[28rem] grid">
+            {projects.map((p) => (
+              <div key={p.index} aria-hidden="true" className="invisible col-start-1 row-start-1">
+                <ProjectInfo project={p} ghost />
+              </div>
+            ))}
+            <div className="col-start-1 row-start-1">
+              <AnimatePresence mode="wait">
+                <m.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.5, ease: EASE_EDITORIAL }}
+                >
+                  <ProjectInfo project={current} />
+                </m.div>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Browser frame — RIGHT (rotates through projects) */}
-          <div className="lg:col-span-7 xl:col-span-7">
+          <div ref={frameColRef} className="lg:col-span-7 xl:col-span-7">
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={currentIndex}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.5, ease: EASE }}
+                transition={{ duration: 0.5, ease: EASE_EDITORIAL }}
                 className="overflow-hidden rounded-md border border-rule bg-paper shadow-sm"
               >
                 {/* Browser chrome */}
@@ -254,7 +263,7 @@ export function Projects() {
                   </div>
                   <div className="flex-1 min-w-0 flex justify-center">
                     <span className="mono text-[11px] sm:text-xs text-ink-subtle px-2.5 py-1 bg-paper rounded border border-rule max-w-full truncate">
-                      {current.status === "live" && current.liveUrl
+                      {current.liveUrl
                         ? current.liveUrl
                             .replace(/^https?:\/\//, "")
                             .replace(/\/$/, "")
@@ -274,7 +283,7 @@ export function Projects() {
                           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-75" />
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
                         </span>
-                        <span className="hidden sm:inline">live</span>
+                        <span className="hidden sm:inline">{t.projects.live}</span>
                       </span>
                     )}
                     {current.status === "in-progress" && (
@@ -286,7 +295,7 @@ export function Projects() {
                           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
                         </span>
-                        <span className="hidden sm:inline">in progress</span>
+                        <span className="hidden sm:inline lowercase">{t.projects.inDevelopment}</span>
                       </span>
                     )}
                   </div>
@@ -294,16 +303,16 @@ export function Projects() {
 
                 {/* Screenshot */}
                 <div className="relative aspect-[5/3] bg-paper-tint overflow-hidden">
-                  {current.video ? (
-                    <video
+                  {current.video && current.image ? (
+                    <AutoplayVideo
                       key={current.video}
                       src={current.video}
                       poster={current.image}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="absolute inset-0 h-full w-full object-cover object-top"
+                      alt={fmt(t.projects.coverAlt, { title: current.title })}
+                      sizes={COVER_SIZES}
+                      // Pause (WCAG 2.2.2) also stops the video, not just auto-advance.
+                      play={onScreen && !paused}
+                      className="object-cover object-top"
                       style={
                         current.videoZoom
                           ? {
@@ -313,18 +322,34 @@ export function Projects() {
                           : undefined
                       }
                     />
-                  ) : (
+                  ) : current.image ? (
                     <Image
-                      src={current.image || "/placeholder.svg"}
-                      alt={`${current.title} project cover`}
+                      src={current.image}
+                      alt={fmt(t.projects.coverAlt, { title: current.title })}
                       fill
-                      priority={currentIndex === 0}
                       className="object-cover object-top"
-                      sizes="(min-width: 1024px) 60vw, 100vw"
+                      sizes={COVER_SIZES}
                     />
+                  ) : (
+                    // No cover yet: blueprint-grid frame with the project name.
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center bg-[linear-gradient(hsl(var(--rule))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--rule))_1px,transparent_1px)] bg-[size:40px_40px] bg-center"
+                    >
+                      <span className="font-display font-semibold text-4xl sm:text-6xl text-ink-muted tracking-tight">
+                        {current.title}
+                      </span>
+                      <span className="inline-flex items-center gap-2 mono text-xs text-ink-subtle bg-paper-tint px-2 lowercase">
+                        <span className="relative flex h-2 w-2">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
+                        </span>
+                        {t.projects.inDevelopment}
+                      </span>
+                    </div>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         </div>
@@ -336,7 +361,7 @@ export function Projects() {
             type="button"
             onClick={handlePrev}
             className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            aria-label="Previous project"
+            aria-label={t.projects.previous}
           >
             <ArrowLeft size={16} strokeWidth={1.5} />
           </button>
@@ -350,8 +375,8 @@ export function Projects() {
                   key={p.title}
                   type="button"
                   onClick={() => goTo(i)}
-                  className="group flex-1 flex items-center gap-2"
-                  aria-label={`Go to project ${i + 1}: ${p.title}`}
+                  className="group flex-1 flex items-center gap-2 min-h-6"
+                  aria-label={fmt(t.projects.goTo, { n: i + 1, title: p.title })}
                 >
                   <span
                     className={`chapter-number text-xs shrink-0 transition-colors duration-200 hidden sm:inline ${
@@ -364,10 +389,9 @@ export function Projects() {
                   </span>
                   <div className="relative h-[2px] flex-1 bg-rule overflow-hidden">
                     {isCurrent && (
-                      <motion.div
-                        className="absolute inset-y-0 left-0 bg-cyan"
-                        animate={{ width: `${progress}%` }}
-                        transition={{ duration: 0.1, ease: "linear" }}
+                      <m.div
+                        className="absolute inset-0 bg-cyan origin-left"
+                        style={{ scaleX: progress }}
                       />
                     )}
                   </div>
@@ -381,7 +405,7 @@ export function Projects() {
             type="button"
             onClick={() => setPaused((p) => !p)}
             className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            aria-label={paused ? "Resume auto-play" : "Pause auto-play"}
+            aria-label={paused ? t.projects.resume : t.projects.pause}
           >
             {paused ? (
               <Play size={14} strokeWidth={1.5} />
@@ -394,12 +418,12 @@ export function Projects() {
             type="button"
             onClick={handleNext}
             className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            aria-label="Next project"
+            aria-label={t.projects.next}
           >
             <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         </div>
       </div>
-    </motion.section>
+    </m.section>
   );
 }

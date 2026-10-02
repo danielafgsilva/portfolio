@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "TAN Harmony";
-  src: url("/fonts/Harmoni.otf") format("opentype"),
-       url("/fonts/Harmoni.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   :root {
     /* Editorial palette — light mode base */
@@ -18,8 +9,8 @@
     --paper-tint: 210 17% 95%;    /* #EFF2F6 */
     --ink: 222 47% 11%;           /* #0F172A slate-900 */
     --ink-muted: 215 25% 27%;     /* #334155 slate-700 */
-    --ink-subtle: 215 16% 47%;    /* #64748B slate-500 */
-    --cyan: 199 89% 48%;          /* #0EA5E9 sky-500 */
+    --ink-subtle: 215 18% 42%;    /* #58687E — 5.4:1 on paper (slate-500 was 4.49) */
+    --cyan: 200 98% 33%;          /* sky-700-ish — 4.5:1+ as text on paper (WCAG AA) */
     --teal: 173 80% 40%;          /* #14B8A6 teal-500 */
     --green: 142 71% 40%;         /* #16A34A green-600 */
     --rule: 215 16% 88%;          /* #DBE2EB */
@@ -85,19 +76,40 @@
   }
   html {
     scroll-behavior: smooth;
+    /* WCAG 2.4.11: keep focused elements and #anchors clear of the fixed
+       header (top) and the back-to-top pill (bottom). */
+    scroll-padding-top: 6rem;
+    scroll-padding-bottom: 4.5rem;
+  }
+  html,
+  body {
+    /* Prevent any rogue element (marquee, wide media, etc.) from producing
+       a horizontal scrollbar on mobile viewports. */
+    overflow-x: clip;
+    /* Kill the vertical bounce/rubber-band. It doesn't add anything visual
+       and it delays scroll events, which stalls the framer-motion springs
+       that watch scroll position — the result was a subtle jitter at the
+       very top and bottom of the page. */
+    overscroll-behavior-y: none;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11", "kern";
+    /* Slightly better sub-pixel rendering while transforms are running —
+       keeps text crisp when a section is spring-lifting into place. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   ::selection {
     background-color: hsl(var(--cyan));
     color: hsl(var(--paper));
   }
+  /* The outline follows each element's own radius — no border-radius here, it
+     would reshape pills/circles while focused. */
   :focus-visible {
     outline: 2px solid hsl(var(--cyan));
     outline-offset: 3px;
-    border-radius: 4px;
   }
 }
 
@@ -125,6 +137,76 @@
   }
   .text-pretty {
     text-wrap: pretty;
+  }
+}
+
+/* Chronology — short stages. The gallery already yields height to the text
+(see chronology.tsx); below ~720px tall the type also steps down, but never
+below the phone sizes, and text always wraps (never truncated). Laptops
+around 720px tall keep the desktop type: their two-column layout has room. */
+@media (max-height: 720px) {
+  /* xl's 6rem year is the tallest block in the left column */
+  .chronology-year {
+    font-size: 4.5rem !important;
+  }
+}
+@media (max-height: 720px) and (max-width: 1023px), (max-height: 600px) {
+  .chronology-year {
+    font-size: 2.5rem !important;
+    line-height: 0.9 !important;
+  }
+  .chronology-badge {
+    margin-top: 0.5rem !important;
+  }
+  .chronology-title {
+    font-size: 1.25rem !important;
+    line-height: 1.25 !important;
+  }
+  .chronology-org {
+    font-size: 0.75rem !important;
+  }
+  .chronology-bullets {
+    margin-top: 0.5rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.375 !important;
+  }
+  .chronology-bullets > * + * {
+    margin-top: 0.25rem !important;
+  }
+  /* Two bullets on short stages — the rest would push into the gallery. */
+  .chronology-bullet:nth-child(n + 3) {
+    display: none !important;
+  }
+}
+
+/* Tall portrait screens (phones, tablets upright) have far more stage than
+   the text needs: let the gallery grow into it instead of leaving a void.
+   It still yields to the text first (flex), so long entries are safe. */
+@media (orientation: portrait) and (min-height: 721px) {
+  .chronology-gallery {
+    max-height: 50% !important;
+  }
+}
+
+/* Very short, narrow stages (320×568 phones, phones in landscape): one
+   bullet and a smaller year so the latest highlight still reads in full. */
+@media (max-height: 600px) and (max-width: 1023px) {
+  .chronology-year {
+    font-size: 2rem !important;
+  }
+  .chronology-bullet:nth-child(n + 2) {
+    display: none !important;
+  }
+}
+
+/* Phones in landscape: plenty of width, very little height — use the
+   desktop two-column split (year left, content right). */
+@media (max-height: 480px) and (min-width: 640px) {
+  .chronology-text > .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: 2rem;
+  }  .chronology-gallery {
+    min-height: 18% !important;
   }
 }
 
@@ -162,15 +244,17 @@
 }
 
 /* CV pages are always in light mode — override the dark palette variables
-   whenever body has the cv-page class, regardless of html.dark. */
-body.cv-page {
+   whenever the page contains the CV (.cv-root), regardless of html.dark.
+   Pure CSS (:has) so the light theme is in the server-rendered HTML: no
+   dark-to-light flash and no hydration delay on the CV's first paint. */
+body:has(.cv-root) {
   color-scheme: light;
   --paper: 210 20% 98%;
   --paper-tint: 210 17% 95%;
   --ink: 222 47% 11%;
   --ink-muted: 215 25% 27%;
-  --ink-subtle: 215 16% 47%;
-  --cyan: 199 89% 48%;
+  --ink-subtle: 215 18% 42%; /* AA as small text on the light paper */
+  --cyan: 200 98% 33%; /* AA as text on the light paper (sky-500 was 2.7:1) */
   --teal: 173 80% 40%;
   --green: 142 71% 40%;
   --rule: 215 16% 88%;
@@ -189,7 +273,7 @@ body.cv-page {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  .cv-page {
+  body:has(.cv-root) {
     --background: 0 0% 100% !important;
     --foreground: 0 0% 0% !important;
     background-color: hsl(var(--background)) !important;

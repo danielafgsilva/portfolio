@@ -1,15 +1,14 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
+import { useI18n } from "@/components/i18n-provider"
+import { rich } from "@/lib/i18n/rich"
+import { EASE_EDITORIAL } from "@/lib/motion"
 
-const meta = [
-  { label: "ROLE", value: "Front-End Developer | Design Engineer" },
-  { label: "BASED", value: "Porto, Portugal" },
-  { label: "STATUS", value: "Open to opportunities", live: true },
-  { label: "STACK", value: "Next.js · React · Vue · Laravel" },
-]
+// Meta rows; copy lives in the dictionary (hero.meta).
+const META_KEYS = ["role", "based", "status", "stack"] as const
 
 const REPLAY_INTERVAL_MS = 60_000
 
@@ -17,6 +16,7 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const [animKey, setAnimKey] = useState(0)
   const [ready, setReady] = useState(false)
+  const { t } = useI18n()
 
   // Wait for loader to finish before starting typewriter
   useEffect(() => {
@@ -72,10 +72,9 @@ export function Hero() {
         <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-12 sm:pb-16 lg:pb-24">
           <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 items-end">
             <div className="lg:col-span-12">
-              <motion.h1
+              <m.h1
                 key={`${animKey}-${ready ? "go" : "wait"}`}
                 className="font-display font-bold text-display-xl text-foreground leading-[0.88] tracking-[-0.045em]"
-                aria-label="Daniela."
                 initial="hidden"
                 animate={ready ? "visible" : "hidden"}
                 variants={{
@@ -84,9 +83,10 @@ export function Hero() {
                   },
                 }}
               >
-                <span className="inline-flex items-baseline">
+                <span className="sr-only">{t.hero.heading} </span>
+                <span className="inline-flex items-baseline" aria-hidden="true">
                   {Array.from("Daniela").map((char, i) => (
-                    <motion.span
+                    <m.span
                       key={i}
                       variants={{
                         hidden: { opacity: 0 },
@@ -97,9 +97,9 @@ export function Hero() {
                       aria-hidden="true"
                     >
                       {char}
-                    </motion.span>
+                    </m.span>
                   ))}
-                  <motion.span
+                  <m.span
                     variants={{
                       hidden: { opacity: 0 },
                       visible: { opacity: 1 },
@@ -110,7 +110,7 @@ export function Hero() {
                   >
                     {/* Inner span: little bounce right after the typewriter
                         finishes writing "Daniela." — a subtle punctuation. */}
-                    <motion.span
+                    <m.span
                       className="inline-block"
                       initial={{ y: 0 }}
                       animate={ready ? { y: [0, -18, 0, -6, 0] } : { y: 0 }}
@@ -122,9 +122,9 @@ export function Hero() {
                       }}
                     >
                       .
-                    </motion.span>
-                  </motion.span>
-                  <motion.span
+                    </m.span>
+                  </m.span>
+                  <m.span
                     initial={{ opacity: 0 }}
                     animate={ready ? { opacity: [0, 1, 1, 0, 0, 1, 1, 0] } : { opacity: 0 }}
                     transition={{
@@ -137,42 +137,43 @@ export function Hero() {
                     aria-hidden="true"
                   />
                 </span>
-              </motion.h1>
+              </m.h1>
             </div>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.7, delay: 0.3, ease: EASE_EDITORIAL }}
               className="lg:col-span-7"
             >
               <p className="text-xl sm:text-2xl lg:text-3xl text-ink-muted leading-snug text-balance max-w-2xl">
-                I build <span className="text-foreground font-medium">user-centered</span> web
-                experiences, bridging the gap between technology and the people using it.
+                {rich(t.hero.intro, (c) => (
+                  <span className="text-foreground font-medium">{c}</span>
+                ))}
               </p>
-            </motion.div>
+            </m.div>
 
-            <motion.dl
+            <m.dl
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
               className="lg:col-span-4 lg:col-start-9 grid grid-cols-2 lg:grid-cols-1 gap-y-4 gap-x-6 w-full"
             >
-              {meta.map((m) => (
-                <div key={m.label} className="border-t border-rule pt-3">
-                  <dt className="eyebrow">{m.label}</dt>
+              {META_KEYS.map((key) => (
+                <div key={key} className="border-t border-rule pt-3">
+                  <dt className="eyebrow">{t.hero.meta[key].label}</dt>
                   <dd className="mt-1.5 mono text-foreground flex items-center gap-2">
-                    {m.live && (
+                    {key === "status" && (
                       <span className="relative flex h-2 w-2" aria-hidden="true">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
                       </span>
                     )}
-                    <span className="text-foreground">{m.value}</span>
+                    <span className="text-foreground">{t.hero.meta[key].value}</span>
                   </dd>
                 </div>
               ))}
-            </motion.dl>
+            </m.dl>
           </div>
         </div>
       </div>

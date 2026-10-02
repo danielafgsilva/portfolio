@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import puppeteer from "puppeteer-core"
 import chromium from "@sparticuz/chromium"
+import { getDictionary } from "@/lib/i18n/dictionaries"
+import { isLocale, localePath } from "@/lib/i18n/config"
 
 export const maxDuration = 60;
 
@@ -17,6 +19,8 @@ function getLocalChromeExecutablePath(): string {
 }
 export async function GET(request: NextRequest) {
   let browser
+  const langParam = request.nextUrl.searchParams.get("lang")
+  const locale = isLocale(langParam) ? langParam : "en"
   try {
     const isVercel = process.env.VERCEL === "1"
     let executablePath: string | undefined
@@ -45,8 +49,14 @@ export async function GET(request: NextRequest) {
     }
     browser = await puppeteer.launch(launchOptions)
     const page = await browser.newPage()
-    const baseUrl = request.nextUrl.origin
-    await page.goto(`${baseUrl}/cv`, {
+    // Production renders its own canonical domain (a trusted env value) rather
+    // than the request's Host header, so a forged Host can't point the headless
+    // browser elsewhere. Previews/local keep the request origin (their host).
+    const baseUrl =
+      process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : request.nextUrl.origin
+    await page.goto(`${baseUrl}${localePath(locale, "/cv")}`, {
       waitUntil: "networkidle0",
       timeout: 30000,
     })
@@ -72,18 +82,15 @@ export async function GET(request: NextRequest) {
     return new Response(pdf as unknown as BodyInit, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": 'attachment; filename="Daniela_Silva_CV.pdf"',
+        "Content-Disposition": `attachment; filename="${getDictionary(locale).cv.pdfFilename}"`,
       },
     })
   } catch (error) {
     if (browser) {
       await browser.close().catch(() => {})
     }
+    // Details stay in the server log; the client only needs to know it failed.
     console.error("Error generating PDF:", error)
-    const errorMessage = error instanceof Error ? error.message : "Unknown error"
-    return NextResponse.json(
-      { error: "Failed to generate PDF", details: errorMessage },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Failed to generate PDF" }, { status: 500 })
   }
 }
