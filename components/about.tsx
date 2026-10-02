@@ -215,8 +215,10 @@ function ChronologySlide({
   const start = index * slice;
   const end = start + slice;
   // Cross-fade half-width: each slice boundary becomes a cross-fade zone shared
-  // with the neighbour slide, so any scroll produces visible change (no dead scroll).
-  const halfT = slice * 0.35;
+  // with the neighbour slide. ±15% of a slice (~16vh of scroll) keeps the fade
+  // smooth while leaving ~70% of each slice as a clean, single-slide reading
+  // zone — wider zones left two slides overlapping at most scroll positions.
+  const halfT = slice * 0.15;
 
   const isFirst = index === 0;
   const isLast = index === total - 1;
