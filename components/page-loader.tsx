@@ -85,26 +85,26 @@ export function PageLoader() {
 
               {/* I'm Daniela. — mask reveal */}
               <div className="overflow-hidden pb-2">
-                <motion.h1
+                <motion.p
                   initial={{ y: "105%" }}
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
                   className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground leading-[0.9] tracking-[-0.03em]"
                 >
                   {t.loader.name}<span className="text-cyan">.</span>
-                </motion.h1>
+                </motion.p>
               </div>
 
               {/* Find out what I'm up to. — mask reveal, offset */}
               <div className="overflow-hidden pb-2 mt-1 sm:mt-2">
-                <motion.h2
+                <motion.p
                   initial={{ y: "125%" }}
                   animate={{ y: "0%" }}
                   transition={{ duration: 0.9, delay: 1.15, ease: EASE }}
                   className="font-display font-bold text-xl sm:text-xl md:text-xl lg:text-xl text-ink-muted leading-[0.95] tracking-[-0.02em]"
                 >
                   {t.loader.findOut} <span aria-hidden="true">👀</span>
-                </motion.h2>
+                </motion.p>
               </div>
 
               {/* Role tagline */}

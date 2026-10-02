@@ -74,7 +74,6 @@ export function Hero() {
               <motion.h1
                 key={`${animKey}-${ready ? "go" : "wait"}`}
                 className="font-display font-bold text-display-xl text-foreground leading-[0.88] tracking-[-0.045em]"
-                aria-label="Daniela."
                 initial="hidden"
                 animate={ready ? "visible" : "hidden"}
                 variants={{
@@ -83,7 +82,8 @@ export function Hero() {
                   },
                 }}
               >
-                <span className="inline-flex items-baseline">
+                <span className="sr-only">{t.hero.heading} </span>
+                <span className="inline-flex items-baseline" aria-hidden="true">
                   {Array.from("Daniela").map((char, i) => (
                     <motion.span
                       key={i}

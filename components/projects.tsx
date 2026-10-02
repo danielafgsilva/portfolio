@@ -15,7 +15,7 @@ import Image, { getImageProps } from "next/image";
 import { AutoplayVideo } from "./autoplay-video";
 import { useI18n } from "./i18n-provider";
 import { fmt } from "@/lib/i18n/format";
-import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { projects, type Project } from "@/lib/content/projects";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -26,65 +26,17 @@ import {
   Play,
 } from "lucide-react";
 
-// Structural data only — role, description and awards are translated in the
-// dictionary (projects.items[id]). Titles are proper names, not translated.
-type Project = {
-  id: keyof Dictionary["projects"]["items"];
-  index: string;
-  title: string;
-  year: string;
-  image: string;
-  tech: string[];
-  status?: "live" | "in-progress";
-  liveUrl?: string;
-  video?: string;
-  /** Scales the video up, anchored to the bottom, so the top edge gets cropped
-   *  (useful when a screen recording has a browser URL bar at the top). */
-  videoZoom?: number;
-};
-
-const projects: Project[] = [
-  {
-    id: "twovest",
-    index: "01",
-    title: "Twovest",
-    year: "2024",
-    image: "/images/twovest-cover.jpg",
-    video: "/videos/twovest-video.mp4",
-    videoZoom: 1.12,
-    tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
-    status: "live",
-    liveUrl: "https://twovest.com/",
-  },
-  {
-    id: "gomes",
-    index: "02",
-    title: "Gomes Rego & Associados",
-    year: "2024",
-    image: "/images/gomes-rego-cover.jpg",
-    video: "/videos/gomes-video.mp4",
-    tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
-    status: "live",
-    liveUrl: "https://grasroc.pt/",
-  },
-  {
-    id: "dogwarts",
-    index: "03",
-    title: "Dogwarts",
-    year: "2025",
-    image: "/images/dogwarts-cover.jpg",
-    video: "/videos/dogwarts-video.mp4",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
-    status: "in-progress",
-  },
-];
+// Structural project data is shared with the JSON-LD (lib/content/projects.ts).
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 // Browser frame is 7/12 of the ≤1440px container on lg+, full width below.
 const COVER_SIZES = "(min-width: 1440px) 780px, (min-width: 1024px) 55vw, 100vw";
 const AUTO_ADVANCE_MS = 8000;
 
-function ProjectInfo({ project }: { project: Project }) {
+// `ghost` renders the invisible height-reservation copies: same box, but no
+// heading element so the page outline lists each project once.
+function ProjectInfo({ project, ghost = false }: { project: Project; ghost?: boolean }) {
+  const Title = ghost ? "p" : "h3";
   const { t } = useI18n();
   const copy = t.projects.items[project.id];
   return (
@@ -95,9 +47,9 @@ function ProjectInfo({ project }: { project: Project }) {
       </div>
 
       {/* Title */}
-      <h3 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-foreground leading-tight tracking-tight text-balance">
+      <Title className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-foreground leading-tight tracking-tight text-balance">
         {project.title}
-      </h3>
+      </Title>
 
       {/* Role */}
       <p className="mt-2 mono text-sm text-cyan">{copy.role}</p>
@@ -244,7 +196,7 @@ export function Projects() {
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
         <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-          <span className="eyebrow">{t.projects.eyebrow}</span>
+          <h2 className="eyebrow">{t.projects.eyebrow}</h2>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
 
@@ -261,7 +213,7 @@ export function Projects() {
           <div className="lg:col-span-5 xl:col-span-5 relative lg:min-h-[28rem] grid">
             {projects.map((p) => (
               <div key={p.index} aria-hidden="true" className="invisible col-start-1 row-start-1">
-                <ProjectInfo project={p} />
+                <ProjectInfo project={p} ghost />
               </div>
             ))}
             <div className="col-start-1 row-start-1">
@@ -359,7 +311,7 @@ export function Projects() {
                     />
                   ) : (
                     <Image
-                      src={current.image || "/placeholder.svg"}
+                      src={current.image}
                       alt={fmt(t.projects.coverAlt, { title: current.title })}
                       fill
                       className="object-cover object-top"

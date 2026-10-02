@@ -8,10 +8,19 @@ const en = {
   meta: {
     title: "Daniela Silva — Front-End & Full-Stack Developer",
     description:
-      "Portfolio of Daniela Silva — front-end-leaning full-stack developer based in Portugal. Selected work in Next.js, React, Vue and Laravel.",
-    cvTitle: "CV — Daniela Silva",
-    cvDescription: "Curriculum Vitae for Daniela Silva.",
+      "Portfolio of Daniela Silva — front-end-leaning full-stack developer based in Porto, Portugal. Selected work in Next.js, React, Vue and Laravel.",
+    cvTitle: "CV — Daniela Silva, Front-End Developer",
+    cvDescription:
+      "Curriculum vitae of Daniela Silva, front-end developer in Porto, Portugal: experience at Dyn-Link and Bliss Applications, projects, education, awards and skills.",
     notFoundTitle: "Page not found — Daniela Silva",
+    ogImageAlt: "Daniela Silva — Front-End Developer and Design Engineer",
+    cvOgImageAlt: "Curriculum vitae — Daniela Silva",
+  },
+
+  breadcrumb: {
+    label: "Breadcrumb",
+    home: "Home",
+    cv: "CV",
   },
 
   nav: {
@@ -39,6 +48,8 @@ const en = {
   },
 
   hero: {
+    // Full H1 for crawlers and screen readers; the visible mark is "Daniela."
+    heading: "Daniela Silva — Front-End Developer and Design Engineer",
     intro:
       "I build *user-centered* web experiences, bridging the gap between technology and the people using it.",
     meta: {
@@ -98,7 +109,6 @@ const en = {
     traits: ["Proactive", "Empathic", "Collaborative", "Innovative"],
     chronology: "chronology",
     badges: { work: "work", study: "study" },
-    mediaAlt: "{org} — media",
     timeline: {
       dyn: {
         title: "Full-Stack Developer · Project Manager",
@@ -248,6 +258,7 @@ const en = {
   },
 
   footer: {
+    navLabel: "Site",
     development: "development",
     builtBy: "Designed & built by Daniela Silva.",
     edition: "edition",

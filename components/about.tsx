@@ -14,7 +14,6 @@ import {
 } from "framer-motion";
 import { AutoplayVideo, whenDecoded } from "./autoplay-video";
 import { useI18n } from "./i18n-provider";
-import { fmt } from "@/lib/i18n/format";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type MediaSize = "tall" | "med" | "short";
@@ -372,6 +371,7 @@ function ChronologySlide({
       {entry.media.length > 0 && (
         <div
           ref={galleryRef}
+          aria-hidden="true"
           className="chronology-gallery relative z-0 shrink-0 h-[min(36%,18rem)] sm:h-[42%] overflow-hidden mx-[calc(50%-50vw)] transition-opacity duration-500 ease-editorial"
           style={{ opacity: galleryReady ? 1 : 0 }}
         >
@@ -398,7 +398,6 @@ function ChronologySlide({
                 {load && (
                   <MediaTile
                     src={item.src}
-                    alt={fmt(t.story.mediaAlt, { org: copy.org })}
                     // Videos wait for the images/posters (galleryReady) so they
                     // don't compete for bandwidth with what's about to show.
                     play={visible && onScreen && galleryReady}
@@ -427,9 +426,11 @@ function isVideo(src: string): boolean {
 // phones or ~42vh on larger screens.
 const TILE_SIZES = "(max-width: 639px) 320px, 42vh";
 
+// Gallery media is decorative (the slide text carries the information, and
+// the marquee repeats every tile), so tiles use alt="" and the strip is
+// aria-hidden.
 type TileProps = {
   src: string;
-  alt: string;
   play: boolean;
   galleryRef: RefObject<HTMLDivElement | null>;
   onReady: () => void;
@@ -442,7 +443,7 @@ function MediaTile(props: TileProps) {
 // A video tile only mounts its <video> while it's inside (or about to enter)
 // the gallery's visible strip — marquee clones parked off to the side show
 // their poster, so each clip is fetched/decoded once instead of per clone.
-function VideoTile({ src, alt, play, galleryRef, onReady }: TileProps) {
+function VideoTile({ src, play, galleryRef, onReady }: TileProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inStrip = useInView(ref, { root: galleryRef, margin: "0px 25% 0px 25%" });
   return (
@@ -450,7 +451,7 @@ function VideoTile({ src, alt, play, galleryRef, onReady }: TileProps) {
       <AutoplayVideo
         src={src}
         poster={src.replace(/\.[^.]+$/, "-poster.jpg")}
-        alt={alt}
+        alt=""
         sizes={TILE_SIZES}
         play={play && inStrip}
         eager
@@ -464,11 +465,11 @@ function VideoTile({ src, alt, play, galleryRef, onReady }: TileProps) {
   );
 }
 
-function ImageTile({ src, alt, onReady }: TileProps) {
+function ImageTile({ src, onReady }: TileProps) {
   return (
     <Image
       src={src}
-      alt={alt}
+      alt=""
       fill
       sizes={TILE_SIZES}
       // Rendering is already gated by the slide's load window; native lazy
@@ -573,7 +574,7 @@ export function About() {
         <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
           {/* Header line */}
           <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-            <span className="eyebrow">{t.story.eyebrow}</span>
+            <h2 className="eyebrow">{t.story.eyebrow}</h2>
             <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
 

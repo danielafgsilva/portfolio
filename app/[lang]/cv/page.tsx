@@ -4,6 +4,9 @@ import { Github, Linkedin, Mail, Phone, Globe, MapPin } from "lucide-react";
 import { DownloadCVButton } from "./download-button";
 import { AnimatedSection } from "./animated-section";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { JsonLd } from "@/components/json-ld";
+import { cvJsonLd } from "@/lib/seo/structured-data";
 import { alternatesFor, isLocale, localePath, ogLocale, SITE_URL, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 
@@ -18,11 +21,16 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     description: t.cvDescription,
     alternates: alternatesFor(lang, "/cv"),
     openGraph: {
+      type: "profile",
+      siteName: "Daniela Silva",
       title: t.cvTitle,
       description: t.cvDescription,
       url: alternatesFor(lang, "/cv").canonical,
       locale: ogLocale[lang],
+      firstName: "Daniela",
+      lastName: "Silva",
     },
+    twitter: { card: "summary_large_image", title: t.cvTitle, description: t.cvDescription },
   };
 }
 
@@ -102,10 +110,20 @@ export default async function CVPage({ params }: { params: Params }) {
   const tools = t.toolbox.tools;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
+    <main className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
+      <JsonLd data={cvJsonLd(locale)} />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 no-print">
-        <LanguageSwitcher />
-        <DownloadCVButton />
+        <Breadcrumbs
+          label={t.breadcrumb.label}
+          items={[
+            { name: t.breadcrumb.home, href: localePath(locale) },
+            { name: t.breadcrumb.cv, href: localePath(locale, "/cv") },
+          ]}
+        />
+        <div className="flex flex-wrap items-center gap-4">
+          <LanguageSwitcher />
+          <DownloadCVButton />
+        </div>
       </div>
 
       <div id="cv-print-content">
@@ -261,6 +279,6 @@ export default async function CVPage({ params }: { params: Params }) {
           </div>
         </AnimatedSection>
       </div>
-    </div>
+    </main>
   );
 }

@@ -22,7 +22,7 @@ export function AnimatedSection({
           transition={{ duration: 0.55, ease: EASE }}
           className="flex items-baseline gap-3 flex-1"
         >
-          <span className="eyebrow">{title}</span>
+          <h2 className="eyebrow">{title}</h2>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </motion.div>
       </div>

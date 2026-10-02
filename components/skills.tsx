@@ -188,7 +188,7 @@ export function Skills() {
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
         <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-          <span className="eyebrow">{t.toolbox.eyebrow}</span>
+          <h2 className="eyebrow">{t.toolbox.eyebrow}</h2>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
 

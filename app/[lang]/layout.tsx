@@ -57,6 +57,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       locale: ogLocale[lang],
       alternateLocale: locales.filter((l) => l !== lang).map((l) => ogLocale[l]),
     },
+    twitter: { card: "summary_large_image", title: t.title, description: t.description },
+    authors: [{ name: "Daniela Silva", url: SITE_URL }],
+    creator: "Daniela Silva",
   }
 }
 

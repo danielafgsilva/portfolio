@@ -8,10 +8,15 @@ import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 import { SceneProgress } from "@/components/scene-progress"
 import { BackToTop } from "@/components/back-to-top"
+import { JsonLd } from "@/components/json-ld"
+import { homeJsonLd } from "@/lib/seo/structured-data"
+import type { Locale } from "@/lib/i18n/config"
 
-export default function PortfolioPage() {
+export default async function PortfolioPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
   return (
     <div className="bg-background text-foreground">
+      <JsonLd data={homeJsonLd(lang as Locale)} />
       <Header />
       <main>
         {/* Index */}

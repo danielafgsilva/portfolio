@@ -7,12 +7,21 @@ import type { Dictionary } from "./en"
 
 const pt: Dictionary = {
   meta: {
-    title: "Daniela Silva — Front-End & Full-Stack Developer",
+    title: "Daniela Silva — Programadora Front-End & Full-Stack",
     description:
-      "Portefólio de Daniela Silva — programadora full-stack com foco no front-end, baseada em Portugal. Trabalho selecionado em Next.js, React, Vue e Laravel.",
-    cvTitle: "CV — Daniela Silva",
-    cvDescription: "Curriculum Vitae de Daniela Silva.",
+      "Portefólio de Daniela Silva — programadora full-stack com foco no front-end, baseada no Porto. Trabalho selecionado em Next.js, React, Vue e Laravel.",
+    cvTitle: "CV — Daniela Silva, Programadora Front-End",
+    cvDescription:
+      "Curriculum vitae de Daniela Silva, programadora front-end no Porto: experiência na Dyn-Link e na Bliss Applications, projetos, formação, prémios e competências.",
     notFoundTitle: "Página não encontrada — Daniela Silva",
+    ogImageAlt: "Daniela Silva — Front-End Developer e Design Engineer",
+    cvOgImageAlt: "Curriculum vitae — Daniela Silva",
+  },
+
+  breadcrumb: {
+    label: "Navegação estrutural",
+    home: "Início",
+    cv: "CV",
   },
 
   nav: {
@@ -40,6 +49,7 @@ const pt: Dictionary = {
   },
 
   hero: {
+    heading: "Daniela Silva — Front-End Developer e Design Engineer",
     intro:
       "Crio experiências web *centradas no utilizador*, aproximando a tecnologia das pessoas que a usam.",
     meta: {
@@ -99,7 +109,6 @@ const pt: Dictionary = {
     traits: ["Proativa", "Empática", "Colaborativa", "Inovadora"],
     chronology: "cronologia",
     badges: { work: "trabalho", study: "formação" },
-    mediaAlt: "{org} — multimédia",
     timeline: {
       dyn: {
         title: "Full-Stack Developer · Project Manager",
@@ -248,6 +257,7 @@ const pt: Dictionary = {
   },
 
   footer: {
+    navLabel: "Site",
     development: "desenvolvimento",
     builtBy: "Desenhado e desenvolvido por Daniela Silva.",
     edition: "edição",

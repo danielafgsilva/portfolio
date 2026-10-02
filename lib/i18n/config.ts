@@ -25,9 +25,13 @@ export function localePath(locale: Locale, path = "/") {
   return path === "/" ? `/${locale}` : `/${locale}${path}`
 }
 
-/** Strips the public locale prefix: "/pt/cv" → "/cv", "/pt" → "/". */
+/**
+ * Strips any locale prefix: "/pt/cv" → "/cv", "/pt" → "/". Also "/en/..." —
+ * during SSR usePathname() returns the middleware's internal rewrite ("/en"),
+ * not the public URL.
+ */
 export function stripLocale(pathname: string) {
-  const stripped = pathname.replace(/^\/pt(?=\/|$)/, "")
+  const stripped = pathname.replace(/^\/(en|pt)(?=\/|$)/, "")
   return stripped === "" ? "/" : stripped
 }
 

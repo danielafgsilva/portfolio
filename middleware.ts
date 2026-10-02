@@ -30,6 +30,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Pages only: skip API routes, Next internals, metadata routes and any file with an extension.
-  matcher: ["/((?!api|_next|icon|favicon.ico|.*\\..*).*)"],
+  // Pages only: skip API routes, Next internals, metadata image routes
+  // (icons, per-locale opengraph-image) and any file with an extension
+  // (robots.txt, sitemap.xml, llms.txt, manifest.webmanifest, media).
+  matcher: ["/((?!api|_next|icon|apple-icon|favicon.ico|.*opengraph-image|.*\\..*).*)"],
 }
