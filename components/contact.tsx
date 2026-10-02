@@ -4,14 +4,18 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { ArrowUpRight, Download, Mail, Github, Linkedin } from "lucide-react"
 import { Accent } from "./chapter"
+import { useI18n } from "./i18n-provider"
+import { rich } from "@/lib/i18n/rich"
+import { localePath } from "@/lib/i18n/config"
 
 const EMAIL = "danif.gsilva2000@gmail.com"
 
+// Channel names are brands; the mailto subject is filled in per locale below.
 const channels = [
   {
     label: "Email",
     handle: EMAIL,
-    href: `mailto:${EMAIL}?subject=Hello%20Daniela`,
+    href: `mailto:${EMAIL}`,
     icon: Mail,
   },
   {
@@ -29,6 +33,8 @@ const channels = [
 ]
 
 export function Contact() {
+  const { locale, t } = useI18n()
+  const copy = t.contact
   return (
     <section id="contact" className="relative py-12 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
@@ -40,7 +46,7 @@ export function Contact() {
         >
           {/* Header line */}
           <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-            <span className="eyebrow">Get in Touch</span>
+            <span className="eyebrow">{copy.eyebrow}</span>
             <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
 
@@ -51,29 +57,28 @@ export function Contact() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
                 </span>
-                Currently open to opportunities
+                {copy.status}
               </div>
 
               <h2 className="font-display font-semibold text-display-sm sm:text-display-md text-foreground leading-[0.95] tracking-[-0.035em] text-balance">
-                Let&apos;s build <Accent>something</Accent> worth shipping.
+                {rich(copy.title, (c) => <Accent>{c}</Accent>)}
               </h2>
 
               <p className="mt-8 max-w-2xl text-base sm:text-lg leading-relaxed text-ink-muted">
-                Looking for a junior front-end developer or design engineer who cares about the craft?
-                I&apos;d love to hear about the role, the team, and what you&apos;re building!
+                {copy.body}
               </p>
             </div>
 
             <div className="lg:col-span-5 lg:border-l lg:border-rule lg:pl-8">
-              <p className="eyebrow mb-4">download</p>
+              <p className="eyebrow mb-4">{copy.download}</p>
               <Link
-                href="/cv"
+                href={localePath(locale, "/cv")}
                 target="_blank"
                 className="group inline-flex w-full items-center justify-between gap-3 border border-foreground rounded-md px-5 py-4 mono text-sm text-foreground transition-colors duration-200 ease-editorial hover:bg-foreground hover:text-paper"
               >
                 <span className="flex items-center gap-3">
                   <Download size={16} strokeWidth={1.75} />
-                  View / Download CV
+                  {copy.cv}
                 </span>
                 <ArrowUpRight size={16} strokeWidth={1.75} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
@@ -82,7 +87,7 @@ export function Contact() {
 
           {/* Channels — equal weight tiles */}
           <div className="mt-16">
-            <p className="eyebrow mb-5">channels</p>
+            <p className="eyebrow mb-5">{copy.channels}</p>
             <ul className="grid gap-3 md:grid-cols-3">
               {channels.map((c, i) => {
                 const Icon = c.icon
@@ -95,7 +100,11 @@ export function Contact() {
                     transition={{ duration: 0.5, delay: i * 0.08 }}
                   >
                     <Link
-                      href={c.href}
+                      href={
+                        c.label === "Email"
+                          ? `${c.href}?subject=${encodeURIComponent(copy.emailSubject)}`
+                          : c.href
+                      }
                       target={c.label === "Email" ? undefined : "_blank"}
                       rel="noopener noreferrer"
                       className="group flex h-full items-start justify-between gap-4 border border-rule rounded-md p-5 sm:p-6 transition-all duration-300 ease-editorial hover:border-cyan hover:bg-cyan/5"

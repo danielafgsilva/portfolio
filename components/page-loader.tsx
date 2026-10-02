@@ -4,22 +4,38 @@ import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
+import { useI18n } from "@/components/i18n-provider"
+import { SKIP_INTRO_KEY } from "@/components/language-switcher"
+import { stripLocale } from "@/lib/i18n/config"
 
 const EASE = [0.22, 1, 0.36, 1] as const
 const HOLD_MS = 3200
 
 export function PageLoader() {
   const pathname = usePathname()
-  const skip = pathname?.startsWith("/cv")
+  const { t } = useI18n()
+  // The intro belongs to the home page only (not the CV, 404s, etc.).
+  const skip = stripLocale(pathname || "/") !== "/"
   const [visible, setVisible] = useState(!skip)
+  // Coming from the language switcher: the visitor already saw the intro.
+  const [instant, setInstant] = useState(false)
 
-  // Skip on CV / covers etc.
   useEffect(() => {
     if (skip) {
       setVisible(false)
       loaderSignal.signal()
     }
   }, [skip])
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(SKIP_INTRO_KEY)) {
+        sessionStorage.removeItem(SKIP_INTRO_KEY)
+        setInstant(true)
+        setVisible(false)
+      }
+    } catch {}
+  }, [])
 
   // Play the intro, then dismiss
   useEffect(() => {
@@ -34,12 +50,15 @@ export function PageLoader() {
   }, [visible])
 
   return (
-    <AnimatePresence>
+    // `custom` reaches the exiting child, so the switcher's skip is instant
+    // (an exiting element keeps the props it had before being removed).
+    <AnimatePresence custom={instant}>
       {visible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: EASE }}
+          custom={instant}
+          variants={{ exit: (skip: boolean) => ({ opacity: 0, transition: { duration: skip ? 0 : 0.7, ease: EASE } }) }}
+          exit="exit"
           className="fixed inset-0 z-[100] bg-background flex flex-col"
           aria-hidden="true"
         >
@@ -61,7 +80,7 @@ export function PageLoader() {
                 transition={{ duration: 0.5, delay: 0.5, ease: EASE }}
                 className="font-mono text-xs sm:text-sm text-cyan uppercase tracking-[0.18em] mb-6 sm:mb-8"
               >
-                Hi <span aria-hidden="true">👋🏻</span>
+                {t.loader.hi} <span aria-hidden="true">👋🏻</span>
               </motion.p>
 
               {/* I'm Daniela. — mask reveal */}
@@ -72,7 +91,7 @@ export function PageLoader() {
                   transition={{ duration: 0.9, delay: 0.65, ease: EASE }}
                   className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground leading-[0.9] tracking-[-0.03em]"
                 >
-                  I&apos;m Daniela<span className="text-cyan">.</span>
+                  {t.loader.name}<span className="text-cyan">.</span>
                 </motion.h1>
               </div>
 
@@ -84,7 +103,7 @@ export function PageLoader() {
                   transition={{ duration: 0.9, delay: 1.15, ease: EASE }}
                   className="font-display font-bold text-xl sm:text-xl md:text-xl lg:text-xl text-ink-muted leading-[0.95] tracking-[-0.02em]"
                 >
-                  Find out what I&apos;m up to <span aria-hidden="true">👀</span>
+                  {t.loader.findOut} <span aria-hidden="true">👀</span>
                 </motion.h2>
               </div>
 
@@ -95,7 +114,7 @@ export function PageLoader() {
                 transition={{ duration: 0.5, delay: 1.9, ease: EASE }}
                 className="mt-8 sm:mt-10 font-mono text-xs sm:text-sm uppercase tracking-[0.18em] text-ink-subtle"
               >
-                Front-End Developer <span className="text-cyan">|</span> Design Engineer
+                {t.loader.roles[0]} <span className="text-cyan">|</span> {t.loader.roles[1]}
               </motion.p>
             </div>
           </div>

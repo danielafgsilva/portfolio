@@ -13,6 +13,9 @@ import {
 } from "framer-motion";
 import Image, { getImageProps } from "next/image";
 import { AutoplayVideo } from "./autoplay-video";
+import { useI18n } from "./i18n-provider";
+import { fmt } from "@/lib/i18n/format";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -23,17 +26,17 @@ import {
   Play,
 } from "lucide-react";
 
+// Structural data only — role, description and awards are translated in the
+// dictionary (projects.items[id]). Titles are proper names, not translated.
 type Project = {
+  id: keyof Dictionary["projects"]["items"];
   index: string;
   title: string;
   year: string;
-  role: string;
-  description: string;
   image: string;
   tech: string[];
   status?: "live" | "in-progress";
   liveUrl?: string;
-  awards?: { title: string; issuer: string }[];
   video?: string;
   /** Scales the video up, anchored to the bottom, so the top edge gets cropped
    *  (useful when a screen recording has a browser URL bar at the top). */
@@ -42,36 +45,22 @@ type Project = {
 
 const projects: Project[] = [
   {
+    id: "twovest",
     index: "01",
     title: "Twovest",
     year: "2024",
-    role: "UI/UX Design & Front-End Development",
-    description:
-      "A second-hand fashion platform built to make sustainable consumption the obvious choice. Designed the full experience in Figma, then shipped the interface in Next.js with Supabase as the backbone. Won two awards for design and execution.",
     image: "/images/twovest-cover.jpg",
     video: "/videos/twovest-video.mp4",
     videoZoom: 1.12,
     tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
     status: "live",
     liveUrl: "https://twovest.com/",
-    awards: [
-      {
-        title: "Academy Award · Media Play",
-        issuer: "University of Aveiro, 2024",
-      },
-      {
-        title: "Best Project 2023/2024",
-        issuer: "Mindera × Master's Programme",
-      },
-    ],
   },
   {
+    id: "gomes",
     index: "02",
     title: "Gomes Rego & Associados",
     year: "2024",
-    role: "Web Design & Development",
-    description:
-      "A professional site for a law firm needing to signal credibility online. Designed for clarity — clean information architecture, considered typography, responsive across every breakpoint, and clear calls-to-action that translated into measurable inquiry lift.",
     image: "/images/gomes-rego-cover.jpg",
     video: "/videos/gomes-video.mp4",
     tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
@@ -79,12 +68,10 @@ const projects: Project[] = [
     liveUrl: "https://grasroc.pt/",
   },
   {
+    id: "dogwarts",
     index: "03",
     title: "Dogwarts",
     year: "2025",
-    role: "Full-Stack Development",
-    description:
-      "A canine-care marketplace connecting dog owners with service providers. Role-based UI built with Next.js and TypeScript, with Sanity CMS powering editorial content. Currently in active development.",
     image: "/images/dogwarts-cover.jpg",
     video: "/videos/dogwarts-video.mp4",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
@@ -98,6 +85,8 @@ const COVER_SIZES = "(min-width: 1440px) 780px, (min-width: 1024px) 55vw, 100vw"
 const AUTO_ADVANCE_MS = 8000;
 
 function ProjectInfo({ project }: { project: Project }) {
+  const { t } = useI18n();
+  const copy = t.projects.items[project.id];
   return (
     <>
       {/* Take shot log */}
@@ -111,17 +100,17 @@ function ProjectInfo({ project }: { project: Project }) {
       </h3>
 
       {/* Role */}
-      <p className="mt-2 mono text-sm text-cyan">{project.role}</p>
+      <p className="mt-2 mono text-sm text-cyan">{copy.role}</p>
 
       {/* Description */}
       <p className="mt-5 text-base leading-relaxed text-ink-muted text-pretty">
-        {project.description}
+        {copy.description}
       </p>
 
       {/* Awards */}
-      {project.awards && (
+      {copy.awards.length > 0 && (
         <ul className="mt-5 space-y-2 border-l-2 border-cyan pl-4">
-          {project.awards.map((a) => (
+          {copy.awards.map((a) => (
             <li
               key={a.title}
               className="text-sm flex items-baseline gap-2"
@@ -144,7 +133,7 @@ function ProjectInfo({ project }: { project: Project }) {
 
       {/* Stack */}
       <div className="mt-6">
-        <p className="eyebrow mb-3">stack</p>
+        <p className="eyebrow mb-3">{t.projects.stack}</p>
         <ul className="flex flex-wrap gap-1.5">
           {project.tech.map((t) => (
             <li key={t} className="badge">
@@ -162,7 +151,7 @@ function ProjectInfo({ project }: { project: Project }) {
           rel="noopener noreferrer"
           className="mt-6 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
         >
-          Visit site
+          {t.projects.visitSite}
           <ArrowUpRight size={14} strokeWidth={2} />
         </Link>
       )}
@@ -175,6 +164,7 @@ export function Projects() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const progress = useMotionValue(0);
   const [paused, setPaused] = useState(false);
+  const { t } = useI18n();
   const total = projects.length;
   const current = projects[currentIndex];
 
@@ -254,7 +244,7 @@ export function Projects() {
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
         <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-          <span className="eyebrow">Selected Work</span>
+          <span className="eyebrow">{t.projects.eyebrow}</span>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
 
@@ -329,7 +319,7 @@ export function Projects() {
                           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-75" />
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
                         </span>
-                        <span className="hidden sm:inline">live</span>
+                        <span className="hidden sm:inline">{t.projects.live}</span>
                       </span>
                     )}
                     {current.status === "in-progress" && (
@@ -341,7 +331,7 @@ export function Projects() {
                           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
                         </span>
-                        <span className="hidden sm:inline">in progress</span>
+                        <span className="hidden sm:inline">{t.projects.inProgress}</span>
                       </span>
                     )}
                   </div>
@@ -354,7 +344,7 @@ export function Projects() {
                       key={current.video}
                       src={current.video}
                       poster={current.image}
-                      alt={`${current.title} project cover`}
+                      alt={fmt(t.projects.coverAlt, { title: current.title })}
                       sizes={COVER_SIZES}
                       play={onScreen}
                       className="object-cover object-top"
@@ -370,7 +360,7 @@ export function Projects() {
                   ) : (
                     <Image
                       src={current.image || "/placeholder.svg"}
-                      alt={`${current.title} project cover`}
+                      alt={fmt(t.projects.coverAlt, { title: current.title })}
                       fill
                       className="object-cover object-top"
                       sizes={COVER_SIZES}
@@ -389,7 +379,7 @@ export function Projects() {
             type="button"
             onClick={handlePrev}
             className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            aria-label="Previous project"
+            aria-label={t.projects.previous}
           >
             <ArrowLeft size={16} strokeWidth={1.5} />
           </button>
@@ -404,7 +394,7 @@ export function Projects() {
                   type="button"
                   onClick={() => goTo(i)}
                   className="group flex-1 flex items-center gap-2"
-                  aria-label={`Go to project ${i + 1}: ${p.title}`}
+                  aria-label={fmt(t.projects.goTo, { n: i + 1, title: p.title })}
                 >
                   <span
                     className={`chapter-number text-xs shrink-0 transition-colors duration-200 hidden sm:inline ${
@@ -433,7 +423,7 @@ export function Projects() {
             type="button"
             onClick={() => setPaused((p) => !p)}
             className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            aria-label={paused ? "Resume auto-play" : "Pause auto-play"}
+            aria-label={paused ? t.projects.resume : t.projects.pause}
           >
             {paused ? (
               <Play size={14} strokeWidth={1.5} />
@@ -446,7 +436,7 @@ export function Projects() {
             type="button"
             onClick={handleNext}
             className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            aria-label="Next project"
+            aria-label={t.projects.next}
           >
             <ArrowRight size={16} strokeWidth={1.5} />
           </button>

@@ -3,23 +3,11 @@
 import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
+import { useI18n } from "@/components/i18n-provider"
+import { rich } from "@/lib/i18n/rich"
 
-// Middot separators are glued to the preceding word with a non-breaking
-// space ( ) — the browser can still break at the regular space after
-// the middot, so on narrow viewports "Developer ·" wraps as a unit rather
-// than leaving "·" orphaned on its own line.
-const meta = [
-  {
-    label: "ROLE",
-    value: "Front-End Developer · Design Engineer",
-  },
-  { label: "BASED", value: "Porto, Portugal" },
-  { label: "STATUS", value: "Open to opportunities", live: true },
-  {
-    label: "STACK",
-    value: "Next.js · React · Vue · Laravel",
-  },
-]
+// Meta rows; copy lives in the dictionary (hero.meta).
+const META_KEYS = ["role", "based", "status", "stack"] as const
 
 const REPLAY_INTERVAL_MS = 60_000
 
@@ -27,6 +15,7 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const [animKey, setAnimKey] = useState(0)
   const [ready, setReady] = useState(false)
+  const { t } = useI18n()
 
   // Wait for loader to finish before starting typewriter
   useEffect(() => {
@@ -157,8 +146,9 @@ export function Hero() {
               className="lg:col-span-7"
             >
               <p className="text-xl sm:text-2xl lg:text-3xl text-ink-muted leading-snug text-balance max-w-2xl">
-                I build <span className="text-foreground font-medium">user-centered</span> web
-                experiences, bridging the gap between technology and the people using it.
+                {rich(t.hero.intro, (c) => (
+                  <span className="text-foreground font-medium">{c}</span>
+                ))}
               </p>
             </motion.div>
 
@@ -168,17 +158,17 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="lg:col-span-4 lg:col-start-9 grid grid-cols-2 lg:grid-cols-1 gap-y-4 gap-x-6 w-full"
             >
-              {meta.map((m) => (
-                <div key={m.label} className="border-t border-rule pt-3">
-                  <dt className="eyebrow">{m.label}</dt>
+              {META_KEYS.map((key) => (
+                <div key={key} className="border-t border-rule pt-3">
+                  <dt className="eyebrow">{t.hero.meta[key].label}</dt>
                   <dd className="mt-1.5 mono text-foreground flex items-center gap-2">
-                    {m.live && (
+                    {key === "status" && (
                       <span className="relative flex h-2 w-2" aria-hidden="true">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
                       </span>
                     )}
-                    <span className="text-foreground">{m.value}</span>
+                    <span className="text-foreground">{t.hero.meta[key].value}</span>
                   </dd>
                 </div>
               ))}

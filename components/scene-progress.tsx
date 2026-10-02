@@ -2,18 +2,22 @@
 
 import { useEffect, useState } from "react"
 import { motion, useScroll, useSpring } from "framer-motion"
+import { useI18n } from "./i18n-provider"
+import { fmt } from "@/lib/i18n/format"
 
+// `key` → nav.chapters in the dictionary.
 const CHAPTERS = [
-  { num: "01", id: "home", label: "Index" },
-  { num: "02", id: "work", label: "Work" },
-  { num: "03", id: "story", label: "Story" },
-  { num: "04", id: "toolbox", label: "Toolbox" },
-  { num: "05", id: "off-duty", label: "Off Duty" },
-  { num: "06", id: "contact", label: "Contact" },
-]
+  { num: "01", id: "home", key: "home" },
+  { num: "02", id: "work", key: "work" },
+  { num: "03", id: "story", key: "story" },
+  { num: "04", id: "toolbox", key: "toolbox" },
+  { num: "05", id: "off-duty", key: "offDuty" },
+  { num: "06", id: "contact", key: "contact" },
+] as const
 
 export function SceneProgress() {
   const [active, setActive] = useState("home")
+  const { t } = useI18n()
   const { scrollYProgress } = useScroll()
   // Spring-smoothed so the fill glides instead of stepping per wheel tick.
   const smoothProgress = useSpring(scrollYProgress, {
@@ -45,7 +49,7 @@ export function SceneProgress() {
         // Pick the last chapter (in document order) that has any visibility
         // above the viewport-top threshold — the visible section that has
         // travelled the furthest into the pane.
-        let current = CHAPTERS[0].id
+        let current: string = CHAPTERS[0].id
         for (const c of CHAPTERS) {
           if (intersecting.has(c.id)) current = c.id
         }
@@ -87,7 +91,7 @@ export function SceneProgress() {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="fixed right-6 top-[calc(50%-2.5rem)] -translate-y-1/2 z-30 hidden lg:block"
-      aria-label="Section navigation"
+      aria-label={t.nav.sections}
     >
       <div className="relative flex flex-col items-center gap-10 py-2">
         {/* Track */}
@@ -103,13 +107,14 @@ export function SceneProgress() {
         />
         {CHAPTERS.map((c) => {
           const isActive = active === c.id
+          const label = t.nav.chapters[c.key]
           return (
             <a
               key={c.id}
               href={`#${c.id}`}
               onClick={(e) => handleNavigate(e, c.id)}
               className="group relative z-10 flex items-center"
-              aria-label={`Chapter ${c.num} — ${c.label}`}
+              aria-label={fmt(t.nav.chapter, { num: c.num, label })}
             >
               <span
                 className={`block h-2 w-2 rounded-full border transition-all duration-300 ease-editorial ${
@@ -125,7 +130,7 @@ export function SceneProgress() {
                     : "opacity-0 text-ink-subtle translate-x-1 group-hover:opacity-80 group-hover:translate-x-0"
                 }`}
               >
-                {c.num} · {c.label}
+                {c.num} · {label}
               </span>
             </a>
           )

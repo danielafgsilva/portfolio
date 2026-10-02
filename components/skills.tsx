@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { StackIcon } from "./stack-icon";
 import type { StackIconName } from "@/lib/stack-icon-svgs";
+import { useI18n } from "./i18n-provider";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import {
   Layers,
   Package,
@@ -22,26 +24,27 @@ type LucideIcon = ComponentType<{
   className?: string;
 }>;
 
+type ToolKey = keyof Dictionary["toolbox"]["tools"];
+
+// Technologies keep their product `name`; concepts use a dictionary `key`.
 type Tool = {
-  name: string;
+  name?: string;
+  key?: ToolKey;
   stack?: StackIconName; // Brand icon (see lib/stack-icon-svgs.ts)
   Icon?: LucideIcon; // Fallback for concept icons
   letter?: string; // Short letter mark (e.g., "PT" / "EN")
 };
 
 type Group = {
+  id: keyof Dictionary["toolbox"]["groups"];
   index: string;
-  label: string;
-  description: string;
   tools: Tool[];
 };
 
 const groups: Group[] = [
   {
+    id: "frontend",
     index: "01",
-    label: "Front-End",
-    description:
-      "The layer where craft meets code — components, motion, and pixel-precise interfaces.",
     tools: [
       { name: "Next.js", stack: "nextjs" },
       { name: "React", stack: "react" },
@@ -56,24 +59,20 @@ const groups: Group[] = [
     ],
   },
   {
+    id: "design",
     index: "02",
-    label: "Design & UX",
-    description:
-      "Where thinking starts before code — research, prototypes, and the systems that hold a product together.",
     tools: [
       { name: "Figma", stack: "figma" },
-      { name: "Design Systems", Icon: Layers },
-      { name: "Component Libraries", Icon: Package },
-      { name: "User Research", Icon: Users },
-      { name: "Prototyping", Icon: PenTool },
-      { name: "Accessibility", Icon: Accessibility },
+      { key: "designSystems", Icon: Layers },
+      { key: "componentLibraries", Icon: Package },
+      { key: "userResearch", Icon: Users },
+      { key: "prototyping", Icon: PenTool },
+      { key: "accessibility", Icon: Accessibility },
     ],
   },
   {
+    id: "backend",
     index: "03",
-    label: "Back-End & Tools",
-    description:
-      "The scaffolding that makes shipping possible — APIs, data, deploys, and the environments in between.",
     tools: [
       { name: "PHP", stack: "php" },
       { name: "Laravel", stack: "laravel" },
@@ -92,12 +91,11 @@ const groups: Group[] = [
     ],
   },
   {
+    id: "languages",
     index: "04",
-    label: "Languages",
-    description: "Communication is a craft too — for people and for machines.",
     tools: [
-      { name: "Portuguese (Native)", letter: "PT" },
-      { name: "English (Professional)", letter: "EN" },
+      { key: "portuguese", letter: "PT" },
+      { key: "english", letter: "EN" },
     ],
   },
 ];
@@ -128,6 +126,8 @@ function TechTile({
   tool: Tool;
   variant: "light" | "dark";
 }) {
+  const { t } = useI18n();
+  const name = tool.name ?? t.toolbox.tools[tool.key!];
   return (
     <li className="group flex flex-col items-center gap-3 w-24 sm:w-28 lg:w-32">
       <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-md border border-rule bg-paper-tint/40 transition-all duration-200 ease-editorial group-hover:border-cyan group-hover:bg-cyan/5">
@@ -147,12 +147,12 @@ function TechTile({
           />
         ) : (
           <span className="font-display font-semibold text-xl text-foreground">
-            {tool.name.charAt(0)}
+            {name.charAt(0)}
           </span>
         )}
       </div>
       <span className="font-mono text-[11px] sm:text-xs text-center text-ink-muted leading-tight group-hover:text-foreground transition-colors duration-200">
-        {tool.name}
+        {name}
       </span>
     </li>
   );
@@ -161,6 +161,7 @@ function TechTile({
 export function Skills() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const variant = useIconVariant();
+  const { t } = useI18n();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 0.9", "start 0.2"],
@@ -187,7 +188,7 @@ export function Skills() {
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
         <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-          <span className="eyebrow">Toolbox</span>
+          <span className="eyebrow">{t.toolbox.eyebrow}</span>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
 
@@ -195,7 +196,7 @@ export function Skills() {
         <div>
           {groups.map((group, i) => (
             <motion.div
-              key={group.label}
+              key={group.id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
@@ -205,10 +206,10 @@ export function Skills() {
               {/* Left — number + label + description */}
               <div className="lg:col-span-4">
                 <h3 className="font-display font-semibold text-3xl lg:text-[2.5rem] text-foreground leading-[1.05] tracking-tight">
-                  {group.label}
+                  {t.toolbox.groups[group.id].label}
                 </h3>
                 <p className="mt-4 text-sm sm:text-base text-ink-muted leading-relaxed max-w-sm">
-                  {group.description}
+                  {t.toolbox.groups[group.id].description}
                 </p>
               </div>
 
@@ -216,7 +217,7 @@ export function Skills() {
               <div className="lg:col-span-8 flex items-center">
                 <ul className="flex flex-wrap gap-x-4 gap-y-6 sm:gap-x-5 sm:gap-y-7">
                   {group.tools.map((tool) => (
-                    <TechTile key={tool.name} tool={tool} variant={variant} />
+                    <TechTile key={tool.name ?? tool.key} tool={tool} variant={variant} />
                   ))}
                 </ul>
               </div>

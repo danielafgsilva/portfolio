@@ -13,17 +13,18 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { AutoplayVideo, whenDecoded } from "./autoplay-video";
+import { useI18n } from "./i18n-provider";
+import { fmt } from "@/lib/i18n/format";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 
 type MediaSize = "tall" | "med" | "short";
 type MediaItem = { src: string; size: MediaSize };
 
+// Structural data only — title, org, location, years and bullets are
+// translated in the dictionary (story.timeline[id]).
 type TimelineEntry = {
+  id: keyof Dictionary["story"]["timeline"];
   type: "work" | "study";
-  title: string;
-  org: string;
-  location?: string;
-  bullets: string[];
-  displayYear: string;
   /** Media (images or videos) to feature in the timeline gallery below the
    *  chronology. Vertical/portrait items should be "tall", horizontal images
    *  "med", and videos "short" (helps hide the URL bar crop). */
@@ -33,17 +34,8 @@ type TimelineEntry = {
 const timeline: TimelineEntry[] = [
   // Work — reverse chronological
   {
+    id: "dyn",
     type: "work",
-    title: "Full-Stack Developer · Project Manager",
-    org: "Dyn-Link",
-    location: "Aveiro, Portugal",
-    bullets: [
-      "Designed and shipped Plan4Marketing — a multi-tenant SaaS with a drag-and-drop email builder, campaigns, and contacts, served by one component library across many client brands.",
-      "Led SEAC's migration to a component-first TypeScript architecture on the Front-End and shipped a Google Calendar integration.",
-      "Rescued a broken Stripe integration on Scopphu — production payments stabilised.",
-      "Stepped into Project Manager for the company's core software, running product workshops for international clients.",
-    ],
-    displayYear: "2025 - now",
     media: [
       // vertical / horizontal image / video / vertical / video / vertical
       { src: "/timeline/dyn/team - building.jpg", size: "tall" },
@@ -55,16 +47,8 @@ const timeline: TimelineEntry[] = [
     ],
   },
   {
+    id: "bliss",
     type: "work",
-    title: "Front-End Developer Internship",
-    org: "Bliss Applications",
-    location: "Porto, Portugal",
-    bullets: [
-      "Shipped every block of the marketing site from Figma design to pixel-perfect production — Hero, Why Bliss, Where We've Been, Scandinavian office, Quotes, and Brands.",
-      "Rebuilt the project-card component pattern across the Projects pages for consistency and reuse.",
-      "Documented every implementation to keep the component library maintainable for the team.",
-    ],
-    displayYear: "2024 — 2025",
     media: [
       // all horizontal here — vary med/short to keep rhythm
       { src: "/timeline/bliss/introducao.png", size: "med" },
@@ -74,17 +58,8 @@ const timeline: TimelineEntry[] = [
     ],
   },
   {
+    id: "digimedia",
     type: "work",
-    title: "Research · Immersive Web",
-    org: "Digital Media & Interaction Research Centre",
-    location: "Aveiro, Portugal",
-    bullets: [
-      "Pitched the immersive-web education concept to the research centre and set up the codebase.",
-      "Ran baseline user-research interviews and shaped the learning-experience blocks.",
-      "Designed and prototyped the immersive VR environment for the StudySphere platform. Presented at Students@DigiMedia#03.",
-      "Conducted manual VR usability testing across the experience.",
-    ],
-    displayYear: "2023 - 2024",
     media: [
       // all 16:9 screenshots — alternate med / short for rhythm
       { src: "/timeline/studysphere/1.png", size: "med" },
@@ -95,16 +70,8 @@ const timeline: TimelineEntry[] = [
   },
   // Study — reverse chronological
   {
+    id: "mctw",
     type: "study",
-    title: "Master's, Web Communication & Technologies",
-    org: "Universidade de Aveiro",
-    location: "Aveiro, Portugal",
-    bullets: [
-      "Focused on immersive environments, interaction design, and the human side of the web.",
-      "Where Twovest grew from a brief into an award-winning platform — 2× recognition for design and execution.",
-      "Trained the instincts that make me useful in the seam between design and code.",
-    ],
-    displayYear: "2023 - 2025",
     media: [
       // 1 vertical (tall) + 3 horizontals — anchor tall between shorter ones
       { src: "/timeline/mctw/file cover - 2.jpg", size: "tall" },
@@ -114,15 +81,8 @@ const timeline: TimelineEntry[] = [
     ],
   },
   {
+    id: "tcav",
     type: "study",
-    title: "Licentiate, Audiovisual & Communication Technology",
-    org: "Escola Superior de Media Artes e Design",
-    location: "Vila do Conde, Portugal",
-    bullets: [
-      "Where the eye for composition started — design, video, photography, sound.",
-      "The foundation underneath every interface I build now: timing, hierarchy, rhythm.",
-    ],
-    displayYear: "2020 - 2023",
     media: [
       // 1 vertical anchor + horizontals + 1 video, alternating heights
       { src: "/timeline/tcav/3a631b88-bbf6-4fb7-86c2-9643d336b9b0.JPG", size: "tall" },
@@ -133,8 +93,6 @@ const timeline: TimelineEntry[] = [
     ],
   },
 ];
-
-const traits = ["Proactive", "Empathic", "Collaborative", "Innovative"];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -157,10 +115,9 @@ function ReadingWord({
   );
 }
 
-const QUOTE_TEXT =
-  "Bridging technology and user experience — creating digital solutions that feel as considered as they look.";
-
 function CinematicQuote() {
+  const { t } = useI18n();
+  const QUOTE_TEXT = t.story.quote;
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -172,7 +129,7 @@ function CinematicQuote() {
       {/* Intertitle label — sits above, no line beside it */}
       <div className="mb-4 sm:mb-5">
         <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.18em] text-cyan">
-          intertitle
+          {t.story.intertitle}
         </span>
       </div>
 
@@ -221,6 +178,8 @@ function ChronologySlide({
   /** Chronology stage is on screen — gates video playback. */
   onScreen: boolean;
 }) {
+  const { t } = useI18n();
+  const copy = t.story.timeline[entry.id];
   const slice = 1 / total;
   const start = index * slice;
   const end = start + slice;
@@ -357,25 +316,25 @@ function ChronologySlide({
               aria-hidden="true"
               className="chronology-year pointer-events-none select-none font-display font-bold leading-[0.9] tracking-[-0.045em] text-cyan/55 text-4xl sm:text-6xl lg:text-7xl xl:text-8xl"
             >
-              {entry.displayYear}
+              {copy.years}
             </span>
             <span
               className={`chronology-badge mt-2 sm:mt-4 self-start w-fit badge ${entry.type === "work" ? "badge-accent" : ""}`}
             >
-              {entry.type === "work" ? "work" : "study"}
+              {t.story.badges[entry.type]}
             </span>
           </div>
 
           {/* Content — right column */}
           <div className="lg:col-span-8 flex flex-col min-h-0">
             <h3 className="chronology-title font-display font-semibold text-lg sm:text-2xl lg:text-3xl text-foreground leading-tight tracking-tight">
-              {entry.title}
+              {copy.title}
             </h3>
 
             <p className="chronology-org mt-1 mono text-xs sm:text-sm text-cyan">
-              {entry.org}
-              {entry.location && (
-                <span className="text-ink-subtle"> · {entry.location}</span>
+              {copy.org}
+              {copy.location && (
+                <span className="text-ink-subtle"> · {copy.location}</span>
               )}
             </p>
 
@@ -383,7 +342,7 @@ function ChronologySlide({
                 sm+ where the stage has room. On short viewports of any
                 width the same rule kicks in (see globals.css). */}
             <ul className="chronology-bullets mt-2 sm:mt-3 lg:mt-5 space-y-1 sm:space-y-2 text-[11px] sm:text-sm lg:text-base text-ink-muted leading-snug sm:leading-relaxed max-w-3xl">
-              {entry.bullets.map((b, i) => (
+              {copy.bullets.map((b, i) => (
                 <li
                   key={i}
                   className={`chronology-bullet flex gap-2 sm:gap-3 ${i >= 2 ? "hidden sm:flex" : ""}`}
@@ -439,7 +398,7 @@ function ChronologySlide({
                 {load && (
                   <MediaTile
                     src={item.src}
-                    alt={`${entry.org} — media`}
+                    alt={fmt(t.story.mediaAlt, { org: copy.org })}
                     // Videos wait for the images/posters (galleryReady) so they
                     // don't compete for bandwidth with what's about to show.
                     play={visible && onScreen && galleryReady}
@@ -523,6 +482,7 @@ function ImageTile({ src, alt, onReady }: TileProps) {
 }
 
 function ChronologyPath() {
+  const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress: rawProgress } = useScroll({
     target: ref,
@@ -559,7 +519,7 @@ function ChronologyPath() {
       <div className="sticky top-14 sm:top-16 lg:top-20 flex flex-col h-[calc(90dvh-3.5rem)] sm:h-[calc(90vh-4rem)] lg:h-[calc(90vh-5rem)] bg-background pt-4 sm:pt-5 lg:pt-6 pb-4 sm:pb-5 lg:pb-6">
         {/* Section label — pinned to the top of the sticky area */}
         <div className="flex items-baseline gap-3 mb-3 sm:mb-4 lg:mb-5 shrink-0">
-          <span className="eyebrow">chronology</span>
+          <span className="eyebrow">{t.story.chronology}</span>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
         </div>
 
@@ -567,7 +527,7 @@ function ChronologyPath() {
         <div className="relative flex-1 min-h-0">
           {timeline.map((entry, i) => (
             <ChronologySlide
-              key={entry.title + entry.displayYear}
+              key={entry.id}
               entry={entry}
               index={i}
               total={total}
@@ -586,6 +546,7 @@ function ChronologyPath() {
 // Three independent full-width blocks, wrapped in one <section id="story">
 // so SceneProgress / SceneCounter still track the chapter.
 export function About() {
+  const { t } = useI18n();
   const sectionRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -612,7 +573,7 @@ export function About() {
         <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
           {/* Header line */}
           <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
-            <span className="eyebrow">The Story</span>
+            <span className="eyebrow">{t.story.eyebrow}</span>
             <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
 
@@ -629,22 +590,13 @@ export function About() {
             transition={{ duration: 0.6, delay: 0.4, ease: EASE }}
             className="mt-10 lg:mt-14 max-w-3xl space-y-5 text-base sm:text-lg leading-relaxed text-ink-muted text-pretty"
           >
-            <p>
-              Hi — I&apos;m a junior full-stack developer with a strong
-              front-end orientation. I build web experiences that pay attention
-              to the person on the other side of the screen, and I lean on
-              design literacy to do it well.
-            </p>
-            <p>
-              My academic background runs through audiovisual technology and web
-              communication — so I came into code already thinking in
-              compositions, hierarchies, and rhythm. My internships have
-              stretched that into shipping real software in real teams.
-            </p>
+            {t.story.bio.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
             <ul className="flex flex-wrap gap-2 pt-4">
-              {traits.map((t) => (
-                <li key={t} className="badge">
-                  {t}
+              {t.story.traits.map((trait) => (
+                <li key={trait} className="badge">
+                  {trait}
                 </li>
               ))}
             </ul>

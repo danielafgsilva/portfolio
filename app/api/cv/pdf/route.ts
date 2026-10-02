@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import puppeteer from "puppeteer-core"
 import chromium from "@sparticuz/chromium"
+import { getDictionary } from "@/lib/i18n/dictionaries"
+import { isLocale, localePath } from "@/lib/i18n/config"
 
 export const maxDuration = 60;
 
@@ -17,6 +19,8 @@ function getLocalChromeExecutablePath(): string {
 }
 export async function GET(request: NextRequest) {
   let browser
+  const langParam = request.nextUrl.searchParams.get("lang")
+  const locale = isLocale(langParam) ? langParam : "en"
   try {
     const isVercel = process.env.VERCEL === "1"
     let executablePath: string | undefined
@@ -46,7 +50,7 @@ export async function GET(request: NextRequest) {
     browser = await puppeteer.launch(launchOptions)
     const page = await browser.newPage()
     const baseUrl = request.nextUrl.origin
-    await page.goto(`${baseUrl}/cv`, {
+    await page.goto(`${baseUrl}${localePath(locale, "/cv")}`, {
       waitUntil: "networkidle0",
       timeout: 30000,
     })
@@ -72,7 +76,7 @@ export async function GET(request: NextRequest) {
     return new Response(pdf as unknown as BodyInit, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": 'attachment; filename="Daniela_Silva_CV.pdf"',
+        "Content-Disposition": `attachment; filename="${getDictionary(locale).cv.pdfFilename}"`,
       },
     })
   } catch (error) {
