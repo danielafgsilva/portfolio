@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 import { ArrowUp } from "lucide-react"
 import { useI18n } from "./i18n-provider"
+import { EASE_EDITORIAL } from "@/lib/motion"
 
-const EASE = [0.22, 1, 0.36, 1] as const
 const SCROLL_THRESHOLD = 200
 
 /**
@@ -45,7 +45,7 @@ export function BackToTop() {
   const shouldShow = pastThreshold && !footerVisible
 
   return (
-    <motion.button
+    <m.button
       type="button"
       onClick={() =>
         window.scrollTo({ top: 0, behavior: "smooth" })
@@ -55,7 +55,7 @@ export function BackToTop() {
         opacity: shouldShow ? 1 : 0,
         y: shouldShow ? 0 : 12,
       }}
-      transition={{ duration: 0.35, ease: EASE }}
+      transition={{ duration: 0.35, ease: EASE_EDITORIAL }}
       style={{ pointerEvents: shouldShow ? "auto" : "none" }}
       // inert (not aria-hidden) so the hidden pill also leaves the tab order.
       inert={!shouldShow}
@@ -75,6 +75,6 @@ export function BackToTop() {
           {t.nav.backToTopShort}
         </span>
       </span>
-    </motion.button>
+    </m.button>
   )
 }

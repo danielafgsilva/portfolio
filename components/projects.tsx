@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  motion,
+  m,
   AnimatePresence,
   animate,
   useInView,
@@ -25,10 +25,10 @@ import {
   Pause,
   Play,
 } from "lucide-react";
+import { EASE_EDITORIAL } from "@/lib/motion";
 
 // Structural project data is shared with the JSON-LD (lib/content/projects.ts).
 
-const EASE = [0.22, 1, 0.36, 1] as const;
 // Browser frame is 7/12 of the ≤1440px container on lg+, full width below.
 const COVER_SIZES = "(min-width: 1440px) 780px, (min-width: 1024px) 55vw, 100vw";
 const AUTO_ADVANCE_MS = 8000;
@@ -199,7 +199,7 @@ export function Projects() {
   const handleNext = () => goTo(currentIndex + 1);
 
   return (
-    <motion.section
+    <m.section
       ref={sectionRef}
       id="work"
       style={{ opacity: sectionOpacity, y: sectionLift }}
@@ -230,15 +230,15 @@ export function Projects() {
             ))}
             <div className="col-start-1 row-start-1">
               <AnimatePresence mode="wait">
-                <motion.div
+                <m.div
                   key={currentIndex}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -16 }}
-                  transition={{ duration: 0.5, ease: EASE }}
+                  transition={{ duration: 0.5, ease: EASE_EDITORIAL }}
                 >
                   <ProjectInfo project={current} />
-                </motion.div>
+                </m.div>
               </AnimatePresence>
             </div>
           </div>
@@ -246,12 +246,12 @@ export function Projects() {
           {/* Browser frame — RIGHT (rotates through projects) */}
           <div ref={frameColRef} className="lg:col-span-7 xl:col-span-7">
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={currentIndex}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.5, ease: EASE }}
+                transition={{ duration: 0.5, ease: EASE_EDITORIAL }}
                 className="overflow-hidden rounded-md border border-rule bg-paper shadow-sm"
               >
                 {/* Browser chrome */}
@@ -349,7 +349,7 @@ export function Projects() {
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         </div>
@@ -389,7 +389,7 @@ export function Projects() {
                   </span>
                   <div className="relative h-[2px] flex-1 bg-rule overflow-hidden">
                     {isCurrent && (
-                      <motion.div
+                      <m.div
                         className="absolute inset-0 bg-cyan origin-left"
                         style={{ scaleX: progress }}
                       />
@@ -424,6 +424,6 @@ export function Projects() {
           </button>
         </div>
       </div>
-    </motion.section>
+    </m.section>
   );
 }

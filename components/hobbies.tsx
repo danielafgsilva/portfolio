@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, Camera, Music, Dribbble, HeartHandshake } from "lucide-react"
@@ -8,6 +8,7 @@ import { Chapter, Accent } from "./chapter"
 import { useI18n } from "./i18n-provider"
 import { rich } from "@/lib/i18n/rich"
 import type { Dictionary } from "@/lib/i18n/dictionaries"
+import { EASE_EDITORIAL } from "@/lib/motion"
 
 // Structural data only — name, kicker and detail live in the dictionary
 // (offDuty.pursuits[id]).
@@ -61,11 +62,11 @@ export function Hobbies() {
       intro={<p>{copy.intro}</p>}
     >
       {/* Volunteering block */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: EASE_EDITORIAL }}
         className="border border-rule rounded-md p-5 sm:p-6 mb-10 bg-paper-tint/50"
       >
         <div className="flex items-start gap-4 sm:gap-5">
@@ -80,14 +81,14 @@ export function Hobbies() {
             <p className="mt-2 mono text-xs text-ink-subtle">{copy.volunteering.location}</p>
           </div>
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Featured photography */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, ease: EASE_EDITORIAL }}
         className="mb-6"
       >
         <Link
@@ -127,12 +128,12 @@ export function Hobbies() {
             </div>
           </div>
         </Link>
-      </motion.div>
+      </m.div>
 
       {/* Rest of pursuits */}
       <ol className="grid gap-3 sm:grid-cols-3">
         {rest.map((p, i) => (
-          <motion.li
+          <m.li
             key={p.id}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -159,7 +160,7 @@ export function Hobbies() {
               </div>
               <p className="text-sm text-ink-muted leading-relaxed">{copy.pursuits[p.id].detail}</p>
             </Link>
-          </motion.li>
+          </m.li>
         ))}
       </ol>
     </Chapter>

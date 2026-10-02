@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ComponentType } from "react";
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useRef, type ComponentType } from "react";
+import { m, useScroll, useSpring, useTransform } from "framer-motion";
 import { StackIcon } from "./stack-icon";
 import type { StackIconName } from "@/lib/stack-icon-svgs";
 import { useI18n } from "./i18n-provider";
@@ -17,6 +17,7 @@ import {
   Sprout,
   Blocks,
 } from "lucide-react";
+import { EASE_EDITORIAL } from "@/lib/motion";
 
 type LucideIcon = ComponentType<{
   size?: number;
@@ -100,32 +101,8 @@ const groups: Group[] = [
   },
 ];
 
-const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Theme-aware variant so StackIcon picks the right colour set.
-function useIconVariant(): "light" | "dark" {
-  const [isDark, setIsDark] = useState(false);
-  useEffect(() => {
-    const check = () =>
-      setIsDark(document.documentElement.classList.contains("dark"));
-    check();
-    const observer = new MutationObserver(check);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
-  return isDark ? "dark" : "light";
-}
-
-function TechTile({
-  tool,
-  variant,
-}: {
-  tool: Tool;
-  variant: "light" | "dark";
-}) {
+function TechTile({ tool }: { tool: Tool }) {
   const { t } = useI18n();
   const name = tool.name ?? t.toolbox.tools[tool.key!];
   return (
@@ -133,7 +110,7 @@ function TechTile({
       <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-md border border-rule bg-paper-tint/40 transition-all duration-200 ease-editorial group-hover:border-cyan group-hover:bg-cyan/5">
         {tool.stack ? (
           <span className="h-8 w-8 flex items-center justify-center [&_svg]:h-full [&_svg]:w-full transition-transform duration-200 group-hover:scale-110">
-            <StackIcon name={tool.stack} variant={variant} />
+            <StackIcon name={tool.stack} />
           </span>
         ) : tool.letter ? (
           <span className="font-mono font-semibold text-base sm:text-lg text-foreground tracking-tight transition-transform duration-200 group-hover:scale-110">
@@ -160,7 +137,6 @@ function TechTile({
 
 export function Skills() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const variant = useIconVariant();
   const { t } = useI18n();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -179,11 +155,13 @@ export function Skills() {
   const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
 
   return (
-    <motion.section
+    <m.section
       ref={sectionRef}
       id="toolbox"
       style={{ opacity: sectionOpacity, y: sectionLift }}
-      className="relative py-12 sm:py-16 lg:py-24"
+      // No bottom padding: the last group's rule closes the section and Off
+      // Duty's own top padding provides the gap.
+      className="relative pt-12 sm:pt-16 lg:pt-24"
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
         {/* Header line */}
@@ -195,12 +173,12 @@ export function Skills() {
         {/* Categories */}
         <div>
           {groups.map((group, i) => (
-            <motion.div
+            <m.div
               key={group.id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.6, delay: i * 0.05, ease: EASE }}
+              transition={{ duration: 0.6, delay: i * 0.05, ease: EASE_EDITORIAL }}
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 py-10 lg:py-14 border-b border-rule"
             >
               {/* Left — number + label + description */}
@@ -217,14 +195,14 @@ export function Skills() {
               <div className="lg:col-span-8 flex items-center">
                 <ul className="flex flex-wrap gap-x-4 gap-y-6 sm:gap-x-5 sm:gap-y-7">
                   {group.tools.map((tool) => (
-                    <TechTile key={tool.name ?? tool.key} tool={tool} variant={variant} />
+                    <TechTile key={tool.name ?? tool.key} tool={tool} />
                   ))}
                 </ul>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>
-    </motion.section>
+    </m.section>
   );
 }

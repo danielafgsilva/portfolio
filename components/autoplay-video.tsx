@@ -8,7 +8,7 @@ type NetworkInformation = { saveData?: boolean; effectiveType?: string }
 
 /** False for reduced-motion users, Data Saver, and 2G connections — they get
  *  the poster only. Starts false so SSR and first paint never fetch video. */
-export function useCanAutoplayVideo() {
+function useCanAutoplayVideo() {
   const reduceMotion = useReducedMotion()
   const [networkOk, setNetworkOk] = useState(false)
   useEffect(() => {

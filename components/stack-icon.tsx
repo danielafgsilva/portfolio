@@ -20,17 +20,15 @@ function scopeIds(svg: string, prefix: string) {
 
 export function StackIcon({
   name,
-  variant = "light",
   className,
   style,
 }: {
   name: StackIconName
-  variant?: "light" | "dark"
   className?: string
   style?: CSSProperties
 }) {
   const id = useId()
-  const html = scopeIds(stackIconSvgs[name][variant], id).replace(
+  const html = scopeIds(stackIconSvgs[name], id).replace(
     /<svg([^>]*)>/,
     '<svg$1 style="width: 100%; height: 100%; display: block;">',
   )

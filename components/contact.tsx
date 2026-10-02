@@ -1,12 +1,13 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 import Link from "next/link"
 import { ArrowUpRight, Download, Mail, Github, Linkedin } from "lucide-react"
 import { Accent } from "./chapter"
 import { useI18n } from "./i18n-provider"
 import { rich } from "@/lib/i18n/rich"
 import { localePath } from "@/lib/i18n/config"
+import { EASE_EDITORIAL } from "@/lib/motion"
 
 const EMAIL = "danif.gsilva2000@gmail.com"
 
@@ -38,11 +39,11 @@ export function Contact() {
   return (
     <section id="contact" className="relative py-12 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, ease: EASE_EDITORIAL }}
         >
           {/* Header line */}
           <div className="flex items-baseline gap-3 mb-6 sm:mb-8 lg:mb-10">
@@ -93,7 +94,7 @@ export function Contact() {
               {channels.map((c, i) => {
                 const Icon = c.icon
                 return (
-                  <motion.li
+                  <m.li
                     key={c.label}
                     initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -125,12 +126,12 @@ export function Contact() {
                         className="shrink-0 text-ink-subtle group-hover:text-cyan transition-all duration-200 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                       />
                     </Link>
-                  </motion.li>
+                  </m.li>
                 )
               })}
             </ul>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

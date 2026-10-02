@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og"
 // Share images and app icons, drawn with the site's dark editorial palette
 // (--paper, --ink, --cyan … in globals.css) and Space Grotesk.
 export const OG_SIZE = { width: 1200, height: 630 }
-export const BRAND = {
+const BRAND = {
   paper: "#080C16",
   ink: "#F2F5F8",
   subtle: "#7D8A9E",
@@ -94,7 +94,7 @@ export async function renderShareImage({
   )
 }
 
-/** Square brand mark (dark tile, "D", cyan dot) — same design as app/icon.svg. */
+/** Square brand mark (dark tile, "D", cyan dot) — same design as app/icon0.svg. */
 export async function renderIcon(size: number) {
   const bold = await spaceGrotesk(700, "D")
   return new ImageResponse(

@@ -14,7 +14,9 @@ Personal portfolio of Daniela Silva, front-end developer and design engineer bas
 
 - `app/[lang]/` — localized routes (home, `/cv`, 404, error); the middleware maps `/` → English and `/pt` → Portuguese
 - `lib/i18n/` — locale config and typed dictionaries (`en.ts` is the source shape, `pt.ts` must match)
+- `lib/content/` — structural data for projects and the chronology (copy lives in the dictionaries)
 - `lib/seo/` — JSON-LD and share-image rendering
+- `lib/motion.ts` — shared easing; animations use framer-motion via `LazyMotion` + `m` components
 - `app/sitemap.ts`, `app/robots.ts`, `app/llms.txt/`, `app/manifest.ts` — discovery files
 - `app/api/cv/pdf/` — CV PDF export (Puppeteer)
 

@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { motion } from "framer-motion"
+import { m } from "framer-motion"
 import { loaderSignal } from "@/lib/loader-signal"
 import { useI18n } from "@/components/i18n-provider"
 import { rich } from "@/lib/i18n/rich"
+import { EASE_EDITORIAL } from "@/lib/motion"
 
 // Meta rows; copy lives in the dictionary (hero.meta).
 const META_KEYS = ["role", "based", "status", "stack"] as const
@@ -71,7 +72,7 @@ export function Hero() {
         <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 pb-12 sm:pb-16 lg:pb-24">
           <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 items-end">
             <div className="lg:col-span-12">
-              <motion.h1
+              <m.h1
                 key={`${animKey}-${ready ? "go" : "wait"}`}
                 className="font-display font-bold text-display-xl text-foreground leading-[0.88] tracking-[-0.045em]"
                 initial="hidden"
@@ -85,7 +86,7 @@ export function Hero() {
                 <span className="sr-only">{t.hero.heading} </span>
                 <span className="inline-flex items-baseline" aria-hidden="true">
                   {Array.from("Daniela").map((char, i) => (
-                    <motion.span
+                    <m.span
                       key={i}
                       variants={{
                         hidden: { opacity: 0 },
@@ -96,9 +97,9 @@ export function Hero() {
                       aria-hidden="true"
                     >
                       {char}
-                    </motion.span>
+                    </m.span>
                   ))}
-                  <motion.span
+                  <m.span
                     variants={{
                       hidden: { opacity: 0 },
                       visible: { opacity: 1 },
@@ -109,7 +110,7 @@ export function Hero() {
                   >
                     {/* Inner span: little bounce right after the typewriter
                         finishes writing "Daniela." — a subtle punctuation. */}
-                    <motion.span
+                    <m.span
                       className="inline-block"
                       initial={{ y: 0 }}
                       animate={ready ? { y: [0, -18, 0, -6, 0] } : { y: 0 }}
@@ -121,9 +122,9 @@ export function Hero() {
                       }}
                     >
                       .
-                    </motion.span>
-                  </motion.span>
-                  <motion.span
+                    </m.span>
+                  </m.span>
+                  <m.span
                     initial={{ opacity: 0 }}
                     animate={ready ? { opacity: [0, 1, 1, 0, 0, 1, 1, 0] } : { opacity: 0 }}
                     transition={{
@@ -136,13 +137,13 @@ export function Hero() {
                     aria-hidden="true"
                   />
                 </span>
-              </motion.h1>
+              </m.h1>
             </div>
 
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.7, delay: 0.3, ease: EASE_EDITORIAL }}
               className="lg:col-span-7"
             >
               <p className="text-xl sm:text-2xl lg:text-3xl text-ink-muted leading-snug text-balance max-w-2xl">
@@ -150,9 +151,9 @@ export function Hero() {
                   <span className="text-foreground font-medium">{c}</span>
                 ))}
               </p>
-            </motion.div>
+            </m.div>
 
-            <motion.dl
+            <m.dl
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}
@@ -172,7 +173,7 @@ export function Hero() {
                   </dd>
                 </div>
               ))}
-            </motion.dl>
+            </m.dl>
           </div>
         </div>
       </div>

@@ -110,7 +110,7 @@ export default async function CVPage({ params }: { params: Params }) {
   const tools = t.toolbox.tools;
 
   return (
-    <main id="main" className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
+    <main id="main" className="cv-root max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
       <JsonLd data={cvJsonLd(locale)} />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 no-print">
         <Breadcrumbs
@@ -191,7 +191,7 @@ export default async function CVPage({ params }: { params: Params }) {
         </header>
 
         {/* About */}
-        <AnimatedSection title={cv.sections.about}>
+        <AnimatedSection title={cv.sections.about} reveal={false}>
           <p className="text-base leading-relaxed text-ink-muted text-pretty max-w-3xl">{cv.about}</p>
         </AnimatedSection>
 

@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, useScroll, useSpring } from "framer-motion"
+import { m, useScroll, useSpring } from "framer-motion"
 import { useI18n } from "./i18n-provider"
 import { fmt } from "@/lib/i18n/format"
+import { EASE_EDITORIAL } from "@/lib/motion"
 
 // `key` → nav.chapters in the dictionary.
 const CHAPTERS = [
@@ -86,10 +87,10 @@ export function SceneProgress() {
   }
 
   return (
-    <motion.nav
+    <m.nav
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: 2, duration: 0.6, ease: EASE_EDITORIAL }}
       className="fixed right-6 top-[calc(50%-2.5rem)] -translate-y-1/2 z-30 hidden lg:block"
       aria-label={t.nav.sections}
     >
@@ -100,7 +101,7 @@ export function SceneProgress() {
           aria-hidden="true"
         />
         {/* Progress fill — transform-only (scaleY), so no layout per frame. */}
-        <motion.div
+        <m.div
           className="absolute top-3 bottom-3 w-px bg-cyan origin-top"
           style={{ scaleY: smoothProgress }}
           aria-hidden="true"
@@ -137,6 +138,6 @@ export function SceneProgress() {
           )
         })}
       </div>
-    </motion.nav>
+    </m.nav>
   )
 }

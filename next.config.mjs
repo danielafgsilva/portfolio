@@ -45,6 +45,10 @@ const SECURITY_HEADERS = [
 
 const nextConfig = {
   poweredByHeader: false,
+  // Explicit (also Next's default): no public browser source maps in production
+  // builds. No error-monitoring tool is configured that would need them; dev
+  // keeps its own source maps.
+  productionBrowserSourceMaps: false,
   images: {
     // next/image serves AVIF/WebP at the width each device needs.
     formats: ["image/avif", "image/webp"],
