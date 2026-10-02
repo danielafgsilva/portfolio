@@ -9,32 +9,12 @@ export const metadata: Metadata = {
   description: "Curriculum Vitae for Daniela Silva.",
 };
 
-const Section = ({
-  number,
-  title,
-  children,
-}: {
-  number: string
-  title: string
-  children: React.ReactNode
-}) => (
-  <section className="mb-10 print:mb-7">
-    <div className="flex items-baseline gap-3 mb-5 print:mb-4">
-      <span className="chapter-number text-sm">{number}</span>
-      <span className="eyebrow">// {title}</span>
-      <span className="h-px flex-1 bg-rule" aria-hidden="true" />
-    </div>
-    {children}
-  </section>
-)
-
 const ExperienceItem = ({
   role,
   company,
   date,
   location,
   description,
-  link,
   status,
   stack,
 }: {
@@ -161,7 +141,7 @@ export default function CVPage() {
         <AnimatedSection title="about">
           <p className="text-base leading-relaxed text-ink-muted text-pretty max-w-3xl">
             Front-End developer who thinks like a designer and edits like a
-            filmmaker. My audiovisual background isn't a past life — it's how I
+            filmmaker. My audiovisual background isn&apos;t a past life — it&apos;s how I
             reason about timing, rhythm, and hierarchy, the same instincts that
             make a scene land make a component land. I ship pixel-perfect,
             component-first UI in Next.js, React, and TypeScript, live in Figma,
@@ -284,7 +264,7 @@ export default function CVPage() {
             <div className="space-y-5">
               <div>
                 <h3 className="font-display font-semibold text-base text-foreground leading-tight">
-                  Master's, Web Communication &amp; Technologies
+                  Master&apos;s, Web Communication &amp; Technologies
                 </h3>
                 <p className="mt-1 mono text-xs text-cyan">
                   Universidade de Aveiro

@@ -45,8 +45,8 @@ const timeline: TimelineEntry[] = [
       { src: "/timeline/dyn/IMG_0272.jpg", size: "med" },
       { src: "/timeline/dyn/P4M - convention.mp4", size: "short" },
       { src: "/timeline/dyn/IMG_2389.jpg", size: "tall" },
-      { src: "/timeline/dyn/Screen Recording 2026-08-20 at 15.22.23.mov", size: "short" },
-      { src: "/timeline/dyn/post-dyn.png", size: "med" },
+      { src: "/timeline/dyn/Screen Recording 2026-08-20 at 15.22.23.mp4", size: "short" },
+      { src: "/timeline/dyn/post-dyn.jpg", size: "med" },
     ],
   },
   {
@@ -63,7 +63,7 @@ const timeline: TimelineEntry[] = [
     media: [
       // all horizontal here — vary med/short to keep rhythm
       { src: "/timeline/bliss/2. Introdução.png", size: "med" },
-      { src: "/timeline/bliss/Screen Recording 2026-08-20 at 13.40.06.mov", size: "short" },
+      { src: "/timeline/bliss/Screen Recording 2026-08-20 at 13.40.06.mp4", size: "short" },
       { src: "/timeline/bliss/IMG_1287.jpeg", size: "med" },
       { src: "/timeline/bliss/IMG_1288.JPG", size: "short" },
     ],
@@ -102,10 +102,10 @@ const timeline: TimelineEntry[] = [
     displayYear: "2023 - 2025",
     media: [
       // 1 vertical (tall) + 3 horizontals — anchor tall between shorter ones
-      { src: "/timeline/mctw/file cover - 2.png", size: "tall" },
+      { src: "/timeline/mctw/file cover - 2.jpg", size: "tall" },
       { src: "/timeline/mctw/IMG_2573.jpg", size: "short" },
       { src: "/timeline/mctw/IMG_0122.jpeg", size: "med" },
-      { src: "/timeline/mctw/Imagem WhatsApp 2024-05-29 às 20.42 1.png", size: "short" },
+      { src: "/timeline/mctw/Imagem WhatsApp 2024-05-29 às 20.42 1.jpg", size: "short" },
     ],
   },
   {

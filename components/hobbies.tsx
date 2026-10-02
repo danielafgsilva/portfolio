@@ -116,7 +116,7 @@ export function Hobbies() {
           <div className="grid sm:grid-cols-5 gap-0">
             <div className="sm:col-span-2 relative overflow-hidden border-b sm:border-b-0 sm:border-r border-rule bg-black min-h-[240px] sm:min-h-[280px] lg:min-h-[320px]">
               <Image
-                src="/images/photography-cover.png"
+                src="/images/photography-cover.jpg"
                 alt="Daniela's photography portfolio cover — 'Hello, welcome to my corner of the world'"
                 fill
                 className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03]"

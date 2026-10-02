@@ -44,7 +44,7 @@ const projects: Project[] = [
     role: "UI/UX Design & Front-End Development",
     description:
       "A second-hand fashion platform built to make sustainable consumption the obvious choice. Designed the full experience in Figma, then shipped the interface in Next.js with Supabase as the backbone. Won two awards for design and execution.",
-    image: "/images/twovest-cover.png",
+    image: "/images/twovest-cover.jpg",
     video: "/videos/twovest-video.mp4",
     videoZoom: 1.12,
     tech: ["Next.js", "Tailwind CSS", "Redux Toolkit", "Supabase", "Figma"],
@@ -68,7 +68,7 @@ const projects: Project[] = [
     role: "Web Design & Development",
     description:
       "A professional site for a law firm needing to signal credibility online. Designed for clarity — clean information architecture, considered typography, responsive across every breakpoint, and clear calls-to-action that translated into measurable inquiry lift.",
-    image: "/images/gomes-rego-cover.png",
+    image: "/images/gomes-rego-cover.jpg",
     video: "/videos/gomes-video.mp4",
     tech: ["Next.js", "React", "Framer Motion", "Tailwind CSS"],
     status: "live",
@@ -81,7 +81,7 @@ const projects: Project[] = [
     role: "Full-Stack Development",
     description:
       "A canine-care marketplace connecting dog owners with service providers. Role-based UI built with Next.js and TypeScript, with Sanity CMS powering editorial content. Currently in active development.",
-    image: "/images/dogwarts-cover.png",
+    image: "/images/dogwarts-cover.jpg",
     video: "/videos/dogwarts-video.mp4",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity CMS"],
     status: "in-progress",

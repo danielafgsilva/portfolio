@@ -55,12 +55,12 @@ export function Contact() {
               </div>
 
               <h2 className="font-display font-semibold text-display-sm sm:text-display-md text-foreground leading-[0.95] tracking-[-0.035em] text-balance">
-                Let's build <Accent>something</Accent> worth shipping.
+                Let&apos;s build <Accent>something</Accent> worth shipping.
               </h2>
 
               <p className="mt-8 max-w-2xl text-base sm:text-lg leading-relaxed text-ink-muted">
                 Looking for a junior front-end developer or design engineer who cares about the craft?
-                I'd love to hear about the role, the team, and what you're building!
+                I&apos;d love to hear about the role, the team, and what you&apos;re building!
               </p>
             </div>
 

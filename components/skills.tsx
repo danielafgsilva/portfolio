@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, type ComponentType } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import StackIcon from "tech-stack-icons";
-import type { IconName } from "tech-stack-icons";
+import { StackIcon } from "./stack-icon";
+import type { StackIconName } from "@/lib/stack-icon-svgs";
 import {
   Layers,
   Package,
@@ -15,7 +15,6 @@ import {
   Sprout,
   Blocks,
 } from "lucide-react";
-import { Accent } from "./chapter";
 
 type LucideIcon = ComponentType<{
   size?: number;
@@ -25,7 +24,7 @@ type LucideIcon = ComponentType<{
 
 type Tool = {
   name: string;
-  stack?: IconName; // Icon from tech-stack-icons library
+  stack?: StackIconName; // Brand icon (see lib/stack-icon-svgs.ts)
   Icon?: LucideIcon; // Fallback for concept icons
   letter?: string; // Short letter mark (e.g., "PT" / "EN")
 };
@@ -105,7 +104,7 @@ const groups: Group[] = [
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-// Theme-aware variant so tech-stack-icons picks the right colour set.
+// Theme-aware variant so StackIcon picks the right colour set.
 function useIconVariant(): "light" | "dark" {
   const [isDark, setIsDark] = useState(false);
   useEffect(() => {

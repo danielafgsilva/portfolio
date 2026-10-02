@@ -84,7 +84,7 @@ export function PageLoader() {
                   transition={{ duration: 0.9, delay: 1.15, ease: EASE }}
                   className="font-display font-bold text-xl sm:text-xl md:text-xl lg:text-xl text-ink-muted leading-[0.95] tracking-[-0.02em]"
                 >
-                  Find out what I'm up to <span aria-hidden="true">👀</span>
+                  Find out what I&apos;m up to <span aria-hidden="true">👀</span>
                 </motion.h2>
               </div>
 
