@@ -5,12 +5,14 @@ import {
   motion,
   AnimatePresence,
   animate,
+  useInView,
   useMotionValue,
   useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
+import { AutoplayVideo } from "./autoplay-video";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -91,7 +93,82 @@ const projects: Project[] = [
 ];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+// Browser frame is 7/12 of the ≤1440px container on lg+, full width below.
+const COVER_SIZES = "(min-width: 1440px) 780px, (min-width: 1024px) 55vw, 100vw";
 const AUTO_ADVANCE_MS = 8000;
+
+function ProjectInfo({ project }: { project: Project }) {
+  return (
+    <>
+      {/* Take shot log */}
+      <div className="flex items-baseline gap-3 mb-6">
+        <span className="eyebrow">{project.year}</span>
+      </div>
+
+      {/* Title */}
+      <h3 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-foreground leading-tight tracking-tight text-balance">
+        {project.title}
+      </h3>
+
+      {/* Role */}
+      <p className="mt-2 mono text-sm text-cyan">{project.role}</p>
+
+      {/* Description */}
+      <p className="mt-5 text-base leading-relaxed text-ink-muted text-pretty">
+        {project.description}
+      </p>
+
+      {/* Awards */}
+      {project.awards && (
+        <ul className="mt-5 space-y-2 border-l-2 border-cyan pl-4">
+          {project.awards.map((a) => (
+            <li
+              key={a.title}
+              className="text-sm flex items-baseline gap-2"
+            >
+              <Award
+                size={13}
+                className="shrink-0 text-cyan translate-y-0.5"
+                strokeWidth={1.75}
+              />
+              <div>
+                <span className="font-medium text-foreground">
+                  {a.title}
+                </span>
+                <span className="text-ink-subtle"> — {a.issuer}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Stack */}
+      <div className="mt-6">
+        <p className="eyebrow mb-3">stack</p>
+        <ul className="flex flex-wrap gap-1.5">
+          {project.tech.map((t) => (
+            <li key={t} className="badge">
+              {t}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Visit link */}
+      {project.liveUrl && (
+        <Link
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
+        >
+          Visit site
+          <ArrowUpRight size={14} strokeWidth={2} />
+        </Link>
+      )}
+    </>
+  );
+}
 
 export function Projects() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -114,6 +191,28 @@ export function Projects() {
   });
   const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
   const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
+
+  // Video only loads/plays while the browser frame itself is on screen (it
+  // sits below the fold on every viewport). Once the section is within a
+  // viewport, warm every project's cover (low priority) so the poster is
+  // ready before the frame scrolls in and when rotating projects.
+  const frameColRef = useRef<HTMLDivElement | null>(null);
+  const onScreen = useInView(frameColRef);
+  const near = useInView(sectionRef, { once: true, margin: "100% 0px 100% 0px" });
+  useEffect(() => {
+    if (!near) return;
+    // A detached <img> with the same srcset/sizes warms exactly the variant
+    // next/image will request (a <link rel=preload> would warn when the later
+    // projects aren't shown within a few seconds).
+    for (const p of projects) {
+      const { props } = getImageProps({ src: p.image, alt: "", fill: true, sizes: COVER_SIZES });
+      const img = new window.Image();
+      img.fetchPriority = "low";
+      img.sizes = props.sizes ?? "";
+      img.srcset = props.srcSet ?? "";
+      img.src = props.src;
+    }
+  }, [near]);
 
   // Auto-advance timer — resets on index change or pause change.
   // Progress is a motion value driving scaleX on the track below, so the bar
@@ -165,88 +264,33 @@ export function Projects() {
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Info panel — LEFT (stays on the left, updates per project) */}
-          <div className="lg:col-span-5 xl:col-span-5 relative lg:min-h-[28rem]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.5, ease: EASE }}
-              >
-                {/* Take shot log */}
-                <div className="flex items-baseline gap-3 mb-6">
-                  <span className="eyebrow">{current.year}</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="font-display font-semibold text-3xl sm:text-4xl lg:text-5xl text-foreground leading-tight tracking-tight text-balance">
-                  {current.title}
-                </h3>
-
-                {/* Role */}
-                <p className="mt-2 mono text-sm text-cyan">{current.role}</p>
-
-                {/* Description */}
-                <p className="mt-5 text-base leading-relaxed text-ink-muted text-pretty">
-                  {current.description}
-                </p>
-
-                {/* Awards */}
-                {current.awards && (
-                  <ul className="mt-5 space-y-2 border-l-2 border-cyan pl-4">
-                    {current.awards.map((a) => (
-                      <li
-                        key={a.title}
-                        className="text-sm flex items-baseline gap-2"
-                      >
-                        <Award
-                          size={13}
-                          className="shrink-0 text-cyan translate-y-0.5"
-                          strokeWidth={1.75}
-                        />
-                        <div>
-                          <span className="font-medium text-foreground">
-                            {a.title}
-                          </span>
-                          <span className="text-ink-subtle"> — {a.issuer}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {/* Stack */}
-                <div className="mt-6">
-                  <p className="eyebrow mb-3">stack</p>
-                  <ul className="flex flex-wrap gap-1.5">
-                    {current.tech.map((t) => (
-                      <li key={t} className="badge">
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Visit link */}
-                {current.liveUrl && (
-                  <Link
-                    href={current.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-flex items-center gap-2 mono text-sm text-foreground border border-rule rounded-md px-3 py-2 hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
-                  >
-                    Visit site
-                    <ArrowUpRight size={14} strokeWidth={2} />
-                  </Link>
-                )}
-              </motion.div>
-            </AnimatePresence>
+          {/* Info panel — LEFT (stays on the left, updates per project).
+              Every project's info is stacked invisibly in the same grid cell
+              so the panel always reserves the tallest one — rotating projects
+              never changes its height or shifts the page below (CLS). */}
+          <div className="lg:col-span-5 xl:col-span-5 relative lg:min-h-[28rem] grid">
+            {projects.map((p) => (
+              <div key={p.index} aria-hidden="true" className="invisible col-start-1 row-start-1">
+                <ProjectInfo project={p} />
+              </div>
+            ))}
+            <div className="col-start-1 row-start-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.5, ease: EASE }}
+                >
+                  <ProjectInfo project={current} />
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Browser frame — RIGHT (rotates through projects) */}
-          <div className="lg:col-span-7 xl:col-span-7">
+          <div ref={frameColRef} className="lg:col-span-7 xl:col-span-7">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -306,15 +350,14 @@ export function Projects() {
                 {/* Screenshot */}
                 <div className="relative aspect-[5/3] bg-paper-tint overflow-hidden">
                   {current.video ? (
-                    <video
+                    <AutoplayVideo
                       key={current.video}
                       src={current.video}
                       poster={current.image}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      className="absolute inset-0 h-full w-full object-cover object-top"
+                      alt={`${current.title} project cover`}
+                      sizes={COVER_SIZES}
+                      play={onScreen}
+                      className="object-cover object-top"
                       style={
                         current.videoZoom
                           ? {
@@ -329,9 +372,8 @@ export function Projects() {
                       src={current.image || "/placeholder.svg"}
                       alt={`${current.title} project cover`}
                       fill
-                      priority={currentIndex === 0}
                       className="object-cover object-top"
-                      sizes="(min-width: 1024px) 60vw, 100vw"
+                      sizes={COVER_SIZES}
                     />
                   )}
                 </div>

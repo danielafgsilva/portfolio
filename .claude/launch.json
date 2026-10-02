@@ -6,6 +6,12 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [".claude/dev.sh"],
       "port": 3000
+    },
+    {
+      "name": "portfolio-prod",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [".claude/prod.sh"],
+      "port": 3001
     }
   ]
 }

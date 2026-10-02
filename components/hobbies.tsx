@@ -120,7 +120,7 @@ export function Hobbies() {
                 alt="Daniela's photography portfolio cover — 'Hello, welcome to my corner of the world'"
                 fill
                 className="object-contain transition-transform duration-500 ease-editorial group-hover:scale-[1.03]"
-                sizes="(min-width: 640px) 40vw, 100vw"
+                sizes="(min-width: 1440px) 560px, (min-width: 640px) 40vw, 100vw"
               />
             </div>
             <div className="sm:col-span-3 p-5 sm:p-6 lg:p-8 flex flex-col justify-between gap-4">

@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
+import Image from "next/image";
 import {
   motion,
+  useInView,
+  useMotionValueEvent,
   useScroll,
   useSpring,
   useTransform,
   useReducedMotion,
   type MotionValue,
 } from "framer-motion";
+import { AutoplayVideo, whenDecoded } from "./autoplay-video";
 
 type MediaSize = "tall" | "med" | "short";
 type MediaItem = { src: string; size: MediaSize };
@@ -63,7 +67,7 @@ const timeline: TimelineEntry[] = [
     displayYear: "2024 — 2025",
     media: [
       // all horizontal here — vary med/short to keep rhythm
-      { src: "/timeline/bliss/2. Introdução.png", size: "med" },
+      { src: "/timeline/bliss/introducao.png", size: "med" },
       { src: "/timeline/bliss/Screen Recording 2026-08-20 at 13.40.06.mp4", size: "short" },
       { src: "/timeline/bliss/IMG_1287.jpeg", size: "med" },
       { src: "/timeline/bliss/IMG_1288.JPG", size: "short" },
@@ -106,7 +110,7 @@ const timeline: TimelineEntry[] = [
       { src: "/timeline/mctw/file cover - 2.jpg", size: "tall" },
       { src: "/timeline/mctw/IMG_2573.jpg", size: "short" },
       { src: "/timeline/mctw/IMG_0122.jpeg", size: "med" },
-      { src: "/timeline/mctw/Imagem WhatsApp 2024-05-29 às 20.42 1.jpg", size: "short" },
+      { src: "/timeline/mctw/whatsapp-2024-05-29.jpg", size: "short" },
     ],
   },
   {
@@ -205,11 +209,17 @@ function ChronologySlide({
   index,
   total,
   progress,
+  load,
+  onScreen,
 }: {
   entry: TimelineEntry;
   index: number;
   total: number;
   progress: MotionValue<number>;
+  /** Fetch this slide's media (current or next two — see ChronologyPath). */
+  load: boolean;
+  /** Chronology stage is on screen — gates video playback. */
+  onScreen: boolean;
 }) {
   const slice = 1 / total;
   const start = index * slice;
@@ -242,6 +252,9 @@ function ChronologySlide({
   // view. `pointer-events` follows so hidden slides don't intercept touch.
   const visibility = useTransform(opacity, (o) => (o < 0.01 ? "hidden" : "visible"));
   const pointerEvents = useTransform(opacity, (o) => (o < 0.01 ? "none" : "auto"));
+  // React state only flips at the visibility threshold, not every frame.
+  const [visible, setVisible] = useState(() => opacity.get() >= 0.01);
+  useMotionValueEvent(opacity, "change", (o) => setVisible(o >= 0.01));
 
   // Tile classes — driven by row height + aspect ratio so widths follow
   // heights (no fixed min-widths that fight the rhythm on small phones).
@@ -258,6 +271,7 @@ function ChronologySlide({
   // on ESMAD, e.g.) leaves visible dead space on wide screens where you can
   // see the "end" of the loop before the next copy comes in.
   const rowRef = useRef<HTMLUListElement | null>(null);
+  const galleryRef = useRef<HTMLDivElement | null>(null);
   const [copies, setCopies] = useState(2);
 
   useEffect(() => {
@@ -289,6 +303,22 @@ function ChronologySlide({
   }, [copies, entry.media.length]);
 
   const marqueeItems = Array.from({ length: copies }, () => entry.media).flat();
+
+  // The gallery stays transparent until every tile (clones included) has its
+  // image or poster decoded, then fades in — the marquee never shows an empty
+  // tile. Clones reuse the same URLs, so they resolve from cache. Sticky once
+  // revealed; an 8s fallback guarantees it never stays hidden on a bad network.
+  const [loadedTiles, setLoadedTiles] = useState(0);
+  const [galleryReady, setGalleryReady] = useState(false);
+  const onTileReady = () => setLoadedTiles((n) => n + 1);
+  useEffect(() => {
+    if (!galleryReady && loadedTiles >= marqueeItems.length && marqueeItems.length > 0) setGalleryReady(true);
+  }, [loadedTiles, marqueeItems.length, galleryReady]);
+  useEffect(() => {
+    if (!load || galleryReady) return;
+    const t = setTimeout(() => setGalleryReady(true), 8000);
+    return () => clearTimeout(t);
+  }, [load, galleryReady]);
   const shiftPct = 100 / copies;
   // Marquee animates the `transform` string (not `x`) so framer-motion hands it
   // to WAAPI and it runs on the compositor — `x` would tick on the main thread
@@ -381,7 +411,11 @@ function ChronologySlide({
           mx-[calc(50%-50vw)] bleeds it to the viewport edges at any width,
           including ultrawide where the 1440px container leaves side gutters. */}
       {entry.media.length > 0 && (
-        <div className="chronology-gallery relative z-0 shrink-0 h-[min(36%,18rem)] sm:h-[42%] overflow-hidden mx-[calc(50%-50vw)]">
+        <div
+          ref={galleryRef}
+          className="chronology-gallery relative z-0 shrink-0 h-[min(36%,18rem)] sm:h-[42%] overflow-hidden mx-[calc(50%-50vw)] transition-opacity duration-500 ease-editorial"
+          style={{ opacity: galleryReady ? 1 : 0 }}
+        >
           <motion.ul
             ref={rowRef}
             className="flex items-end h-full"
@@ -400,9 +434,19 @@ function ChronologySlide({
             {marqueeItems.map((item, i) => (
               <li
                 key={`${item.src}-${i}`}
-                className={`shrink-0 ${TILE_CLASS[item.size]} ${i > 0 ? "-ml-3 sm:-ml-4 lg:-ml-6" : ""} rounded-xl overflow-hidden border border-rule bg-paper-tint shadow-sm`}
+                className={`relative shrink-0 ${TILE_CLASS[item.size]} ${i > 0 ? "-ml-3 sm:-ml-4 lg:-ml-6" : ""} rounded-xl overflow-hidden border border-rule bg-paper-tint shadow-sm`}
               >
-                <MediaTile src={item.src} alt={`${entry.org} — media`} />
+                {load && (
+                  <MediaTile
+                    src={item.src}
+                    alt={`${entry.org} — media`}
+                    // Videos wait for the images/posters (galleryReady) so they
+                    // don't compete for bandwidth with what's about to show.
+                    play={visible && onScreen && galleryReady}
+                    galleryRef={galleryRef}
+                    onReady={onTileReady}
+                  />
+                )}
               </li>
             ))}
           </motion.ul>
@@ -419,33 +463,61 @@ function isVideo(src: string): boolean {
   return VIDEO_EXTS.has(ext);
 }
 
-function MediaTile({ src, alt }: { src: string; alt: string }) {
-  const url = encodeURI(src);
-  if (isVideo(src)) {
-    return (
-      <video
-        src={url}
-        autoPlay
-        muted
-        loop
-        playsInline
+// Tiles are sized by the gallery's height (≤18rem on phones, ~42% of the
+// stage elsewhere) × aspect ratio, so they're never wider than ~320px on
+// phones or ~42vh on larger screens.
+const TILE_SIZES = "(max-width: 639px) 320px, 42vh";
+
+type TileProps = {
+  src: string;
+  alt: string;
+  play: boolean;
+  galleryRef: RefObject<HTMLDivElement | null>;
+  onReady: () => void;
+};
+
+function MediaTile(props: TileProps) {
+  return isVideo(props.src) ? <VideoTile {...props} /> : <ImageTile {...props} />;
+}
+
+// A video tile only mounts its <video> while it's inside (or about to enter)
+// the gallery's visible strip — marquee clones parked off to the side show
+// their poster, so each clip is fetched/decoded once instead of per clone.
+function VideoTile({ src, alt, play, galleryRef, onReady }: TileProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inStrip = useInView(ref, { root: galleryRef, margin: "0px 25% 0px 25%" });
+  return (
+    <div ref={ref} className="absolute inset-0">
+      <AutoplayVideo
+        src={src}
+        poster={src.replace(/\.[^.]+$/, "-poster.jpg")}
+        alt={alt}
+        sizes={TILE_SIZES}
+        play={play && inStrip}
+        eager
+        onPosterReady={onReady}
         // Screen recordings usually have a browser URL bar at the top —
         // scale up from the bottom edge so only the site content is shown
         // and the chrome gets clipped by the tile's overflow-hidden.
         style={{ transform: "scale(1.14)", transformOrigin: "center bottom" }}
-        className="block h-full w-full object-cover"
       />
-    );
-  }
+    </div>
+  );
+}
+
+function ImageTile({ src, alt, onReady }: TileProps) {
   return (
-    // Native <img> — the tile itself now dictates aspect ratio + height, so
-    // the image just fills the tile with object-cover.
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={url}
+    <Image
+      src={src}
       alt={alt}
-      loading="lazy"
-      className="block h-full w-full object-cover"
+      fill
+      sizes={TILE_SIZES}
+      // Rendering is already gated by the slide's load window; native lazy
+      // loading would never fetch marquee clones parked off to the side.
+      loading="eager"
+      className="object-cover"
+      onLoad={(e) => whenDecoded(e.currentTarget, onReady)}
+      onError={onReady}
     />
   );
 }
@@ -466,6 +538,18 @@ function ChronologyPath() {
   });
   const total = timeline.length;
   const scrollHeightVh = total * 55;
+
+  // Media loading window: nothing until the chronology is within a viewport
+  // of the screen, then the current slide + the next two (images are ~150KB
+  // per slide as AVIF, so a fast scroll never outruns them). `reached` only
+  // grows, so slides already loaded stay loaded when scrolling back.
+  const near = useInView(ref, { once: true, margin: "100% 0px 100% 0px" });
+  const onScreen = useInView(ref);
+  const [reached, setReached] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    const i = Math.min(total - 1, Math.floor(p * total));
+    setReached((r) => Math.max(r, i));
+  });
   return (
     <div
       ref={ref}
@@ -488,6 +572,8 @@ function ChronologyPath() {
               index={i}
               total={total}
               progress={scrollYProgress}
+              load={near && i <= reached + 2}
+              onScreen={onScreen}
             />
           ))}
         </div>
