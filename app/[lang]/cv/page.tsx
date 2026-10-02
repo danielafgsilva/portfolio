@@ -110,7 +110,7 @@ export default async function CVPage({ params }: { params: Params }) {
   const tools = t.toolbox.tools;
 
   return (
-    <main className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
+    <main id="main" className="max-w-5xl mx-auto p-6 sm:p-10 lg:p-14 bg-background text-foreground font-sans">
       <JsonLd data={cvJsonLd(locale)} />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 no-print">
         <Breadcrumbs
@@ -141,7 +141,7 @@ export default async function CVPage({ params }: { params: Params }) {
             <li>
               <a
                 href="mailto:danif.gsilva2000@gmail.com"
-                className="inline-flex items-center justify-end gap-2 hover:text-cyan transition-colors"
+                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
               >
                 <Mail size={12} strokeWidth={1.75} /> danif.gsilva2000@gmail.com
               </a>
@@ -149,7 +149,7 @@ export default async function CVPage({ params }: { params: Params }) {
             <li>
               <a
                 href="tel:+351918763080"
-                className="inline-flex items-center justify-end gap-2 hover:text-cyan transition-colors"
+                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
               >
                 <Phone size={12} strokeWidth={1.75} /> +351 918 763 080
               </a>
@@ -162,7 +162,7 @@ export default async function CVPage({ params }: { params: Params }) {
                 href={`${SITE_URL}${localePath(locale)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-end gap-2 hover:text-cyan transition-colors"
+                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
               >
                 <Globe size={12} strokeWidth={1.75} /> {cv.contactPortfolio}
               </a>
@@ -172,7 +172,7 @@ export default async function CVPage({ params }: { params: Params }) {
                 href="https://github.com/danielafgsilva"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-end gap-2 hover:text-cyan transition-colors"
+                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
               >
                 <Github size={12} strokeWidth={1.75} /> @danielafgsilva
               </a>
@@ -182,7 +182,7 @@ export default async function CVPage({ params }: { params: Params }) {
                 href="https://linkedin.com/in/danielafgsilva"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-end gap-2 hover:text-cyan transition-colors"
+                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
               >
                 <Linkedin size={12} strokeWidth={1.75} /> @danielafgsilva
               </a>

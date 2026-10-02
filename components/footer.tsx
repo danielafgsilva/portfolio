@@ -20,16 +20,16 @@ export function Footer() {
     <footer className="border-t border-rule">
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16 py-8 sm:py-10">
         <nav aria-label={t.footer.navLabel} className="mb-8 sm:mb-10">
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-[11px] sm:text-xs uppercase tracking-[0.14em] text-ink-subtle">
+          <ul className="flex flex-wrap gap-x-5 font-mono text-[11px] sm:text-xs uppercase tracking-[0.14em] text-ink-subtle">
             {SECTIONS.map((s) => (
               <li key={s.id}>
-                <Link href={`${home}#${s.id}`} className="hover:text-cyan transition-colors duration-200">
+                <Link href={`${home}#${s.id}`} className="inline-block py-1 hover:text-cyan transition-colors duration-200">
                   {t.nav.chapters[s.key]}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href={localePath(locale, "/cv")} className="hover:text-cyan transition-colors duration-200">
+              <Link href={localePath(locale, "/cv")} className="inline-block py-1 hover:text-cyan transition-colors duration-200">
                 {t.breadcrumb.cv}
               </Link>
             </li>

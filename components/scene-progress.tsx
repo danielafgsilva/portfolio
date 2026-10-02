@@ -86,7 +86,7 @@ export function SceneProgress() {
   }
 
   return (
-    <motion.aside
+    <motion.nav
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -113,7 +113,8 @@ export function SceneProgress() {
               key={c.id}
               href={`#${c.id}`}
               onClick={(e) => handleNavigate(e, c.id)}
-              className="group relative z-10 flex items-center"
+              // p-2/-m-2: 24x24 hit area around the 8px dot, same layout.
+              className="group relative z-10 flex items-center p-2 -m-2"
               aria-label={fmt(t.nav.chapter, { num: c.num, label })}
             >
               <span
@@ -136,6 +137,6 @@ export function SceneProgress() {
           )
         })}
       </div>
-    </motion.aside>
+    </motion.nav>
   )
 }

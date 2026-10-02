@@ -22,7 +22,7 @@ export function StatusPage({
   children: ReactNode
 }) {
   return (
-    <main className="min-h-[100dvh] flex items-center bg-background text-foreground">
+    <main id="main" className="min-h-[100dvh] flex items-center bg-background text-foreground">
       {documentTitle && <title>{documentTitle}</title>}
       <div className="mx-auto max-w-[1440px] w-full px-6 sm:px-10 lg:px-16 py-24">
         <div className="flex items-baseline gap-3 mb-6 sm:mb-8">

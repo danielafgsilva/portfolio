@@ -18,8 +18,8 @@
     --paper-tint: 210 17% 95%;    /* #EFF2F6 */
     --ink: 222 47% 11%;           /* #0F172A slate-900 */
     --ink-muted: 215 25% 27%;     /* #334155 slate-700 */
-    --ink-subtle: 215 16% 47%;    /* #64748B slate-500 */
-    --cyan: 199 89% 48%;          /* #0EA5E9 sky-500 */
+    --ink-subtle: 215 18% 42%;    /* #58687E — 5.4:1 on paper (slate-500 was 4.49) */
+    --cyan: 200 98% 33%;          /* sky-700-ish — 4.5:1+ as text on paper (WCAG AA) */
     --teal: 173 80% 40%;          /* #14B8A6 teal-500 */
     --green: 142 71% 40%;         /* #16A34A green-600 */
     --rule: 215 16% 88%;          /* #DBE2EB */
@@ -85,6 +85,10 @@
   }
   html {
     scroll-behavior: smooth;
+    /* WCAG 2.4.11: keep focused elements and #anchors clear of the fixed
+       header (top) and the back-to-top pill (bottom). */
+    scroll-padding-top: 6rem;
+    scroll-padding-bottom: 4.5rem;
   }
   html,
   body {
@@ -110,10 +114,11 @@
     background-color: hsl(var(--cyan));
     color: hsl(var(--paper));
   }
+  /* The outline follows each element's own radius — no border-radius here, it
+     would reshape pills/circles while focused. */
   :focus-visible {
     outline: 2px solid hsl(var(--cyan));
     outline-offset: 3px;
-    border-radius: 4px;
   }
 }
 
@@ -232,8 +237,8 @@ body.cv-page {
   --paper-tint: 210 17% 95%;
   --ink: 222 47% 11%;
   --ink-muted: 215 25% 27%;
-  --ink-subtle: 215 16% 47%;
-  --cyan: 199 89% 48%;
+  --ink-subtle: 215 18% 42%; /* AA as small text on the light paper */
+  --cyan: 200 98% 33%; /* AA as text on the light paper (sky-500 was 2.7:1) */
   --teal: 173 80% 40%;
   --green: 142 71% 40%;
   --rule: 215 16% 88%;

@@ -298,7 +298,8 @@ export function Projects() {
                       poster={current.image}
                       alt={fmt(t.projects.coverAlt, { title: current.title })}
                       sizes={COVER_SIZES}
-                      play={onScreen}
+                      // Pause (WCAG 2.2.2) also stops the video, not just auto-advance.
+                      play={onScreen && !paused}
                       className="object-cover object-top"
                       style={
                         current.videoZoom
@@ -345,7 +346,7 @@ export function Projects() {
                   key={p.title}
                   type="button"
                   onClick={() => goTo(i)}
-                  className="group flex-1 flex items-center gap-2"
+                  className="group flex-1 flex items-center gap-2 min-h-6"
                   aria-label={fmt(t.projects.goTo, { n: i + 1, title: p.title })}
                 >
                   <span

@@ -57,7 +57,8 @@ export function BackToTop() {
       }}
       transition={{ duration: 0.35, ease: EASE }}
       style={{ pointerEvents: shouldShow ? "auto" : "none" }}
-      aria-hidden={!shouldShow}
+      // inert (not aria-hidden) so the hidden pill also leaves the tab order.
+      inert={!shouldShow}
       className="group fixed bottom-6 right-6 z-40 flex flex-row-reverse items-center gap-2 h-10 rounded-full border border-rule bg-background/80 backdrop-blur-md px-3 mono text-sm text-foreground hover:border-cyan hover:text-cyan transition-colors duration-200 ease-editorial"
       aria-label={t.nav.backToTop}
     >

@@ -18,7 +18,10 @@ export default async function PortfolioPage({ params }: { params: Promise<{ lang
     <div className="bg-background text-foreground">
       <JsonLd data={homeJsonLd(lang as Locale)} />
       <Header />
-      <main>
+      {/* Fixed-position side nav: placed after the header in the DOM so it
+          comes early in the tab order (visually it's unaffected). */}
+      <SceneProgress />
+      <main id="main">
         {/* Index */}
         <Hero />
         {/* Selected Work */}
@@ -33,7 +36,6 @@ export default async function PortfolioPage({ params }: { params: Promise<{ lang
         <Contact />
       </main>
       <Footer />
-      <SceneProgress />
       <BackToTop />
     </div>
   )

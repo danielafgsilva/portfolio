@@ -77,6 +77,13 @@ export default async function RootLayout({
   return (
     <html lang={htmlLang[locale]} className={`dark ${spaceGrotesk.variable} ${inter.variable} ${jetbrains.variable}`}>
       <body className="font-sans antialiased">
+        {/* Skip link: first Tab stop, visible only while focused. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-foreground focus:border focus:border-cyan"
+        >
+          {getDictionary(locale).nav.skip}
+        </a>
         <I18nProvider locale={locale} dictionary={getDictionary(locale)}>
           <MotionProvider>
             <PageLoader />

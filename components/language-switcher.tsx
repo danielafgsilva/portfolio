@@ -45,14 +45,15 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
                 href={localePath(l, path)}
                 hrefLang={htmlLang[l]}
                 lang={htmlLang[l]}
-                aria-label={t.nav.languageNames[l]}
                 aria-current={active ? "true" : undefined}
                 onClick={(e) => choose(e, l)}
-                className={`py-1 transition-colors duration-200 ${
+                className={`inline-block min-w-6 py-1 text-center transition-colors duration-200 ${
                   active ? "text-cyan" : "text-ink-subtle hover:text-foreground"
                 }`}
               >
                 {l}
+                {/* Name = visible code + full language (WCAG 2.5.3 label in name). */}
+                <span className="sr-only"> — {t.nav.languageNames[l]}</span>
               </a>
             </li>
           )

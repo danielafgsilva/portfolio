@@ -15,7 +15,7 @@ export function Breadcrumbs({ label, items }: { label: string; items: { name: st
                   {item.name}
                 </span>
               ) : (
-                <Link href={item.href} className="hover:text-cyan transition-colors duration-200">
+                <Link href={item.href} className="inline-block py-1 -my-1 hover:text-cyan transition-colors duration-200">
                   {item.name}
                 </Link>
               )}

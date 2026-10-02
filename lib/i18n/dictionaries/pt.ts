@@ -37,6 +37,7 @@ const pt: Dictionary = {
       offDuty: "Fora de Horas",
       contact: "Contacto",
     },
+    skip: "Saltar para o conteúdo",
     backToTop: "Voltar ao topo",
     backToTopShort: "voltar ao topo",
   },
@@ -108,6 +109,7 @@ const pt: Dictionary = {
     ],
     traits: ["Proativa", "Empática", "Colaborativa", "Inovadora"],
     chronology: "cronologia",
+    pauseMotion: "Pausar o movimento da galeria",
     badges: { work: "trabalho", study: "formação" },
     timeline: {
       dyn: {

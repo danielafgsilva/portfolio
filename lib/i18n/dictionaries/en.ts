@@ -36,6 +36,7 @@ const en = {
       offDuty: "Off Duty",
       contact: "Contact",
     },
+    skip: "Skip to content",
     backToTop: "Back to top",
     backToTopShort: "back to top",
   },
@@ -108,6 +109,7 @@ const en = {
     ],
     traits: ["Proactive", "Empathic", "Collaborative", "Innovative"],
     chronology: "chronology",
+    pauseMotion: "Pause gallery motion",
     badges: { work: "work", study: "study" },
     timeline: {
       dyn: {

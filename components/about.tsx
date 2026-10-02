@@ -12,6 +12,7 @@ import {
   useReducedMotion,
   type MotionValue,
 } from "framer-motion";
+import { Pause, Play } from "lucide-react";
 import { AutoplayVideo, whenDecoded } from "./autoplay-video";
 import { useI18n } from "./i18n-provider";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
@@ -136,8 +137,8 @@ function CinematicQuote() {
       <div className="border-l-2 border-cyan pl-6 sm:pl-8 lg:pl-12">
         <p
           className="font-display font-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground"
-          aria-label={QUOTE_TEXT}
         >
+          <span className="sr-only">{QUOTE_TEXT}</span>
           <span aria-hidden="true">
             {words.map((word, i) => {
               const start = i / words.length;
@@ -167,6 +168,7 @@ function ChronologySlide({
   progress,
   load,
   onScreen,
+  paused,
 }: {
   entry: TimelineEntry;
   index: number;
@@ -176,6 +178,8 @@ function ChronologySlide({
   load: boolean;
   /** Chronology stage is on screen — gates video playback. */
   onScreen: boolean;
+  /** Visitor paused gallery motion (WCAG 2.2.2). */
+  paused: boolean;
 }) {
   const { t } = useI18n();
   const copy = t.story.timeline[entry.id];
@@ -282,6 +286,13 @@ function ChronologySlide({
   // to WAAPI and it runs on the compositor — `x` would tick on the main thread
   // every frame for all five slides. Reduced-motion users get a static row.
   const reduceMotion = useReducedMotion();
+  // The marquee runs as WAAPI animations on the row; pause/resume them in place.
+  useEffect(() => {
+    for (const a of rowRef.current?.getAnimations() ?? []) {
+      if (paused) a.pause();
+      else a.play();
+    }
+  }, [paused, shiftPct, reduceMotion]);
 
   return (
     <motion.div
@@ -326,9 +337,9 @@ function ChronologySlide({
 
           {/* Content — right column */}
           <div className="lg:col-span-8 flex flex-col min-h-0">
-            <h3 className="chronology-title font-display font-semibold text-lg sm:text-2xl lg:text-3xl text-foreground leading-tight tracking-tight">
+            <p className="chronology-title font-display font-semibold text-lg sm:text-2xl lg:text-3xl text-foreground leading-tight tracking-tight">
               {copy.title}
-            </h3>
+            </p>
 
             <p className="chronology-org mt-1 mono text-xs sm:text-sm text-cyan">
               {copy.org}
@@ -400,7 +411,7 @@ function ChronologySlide({
                     src={item.src}
                     // Videos wait for the images/posters (galleryReady) so they
                     // don't compete for bandwidth with what's about to show.
-                    play={visible && onScreen && galleryReady}
+                    play={visible && onScreen && galleryReady && !paused}
                     galleryRef={galleryRef}
                     onReady={onTileReady}
                   />
@@ -483,6 +494,8 @@ function ImageTile({ src, onReady }: TileProps) {
 }
 
 function ChronologyPath() {
+  const [paused, setPaused] = useState(false);
+  const reduceMotion = useReducedMotion();
   const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress: rawProgress } = useScroll({
@@ -522,10 +535,45 @@ function ChronologyPath() {
         <div className="flex items-baseline gap-3 mb-3 sm:mb-4 lg:mb-5 shrink-0">
           <span className="eyebrow">{t.story.chronology}</span>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
+          {!reduceMotion && (
+            <button
+              type="button"
+              onClick={() => setPaused((p) => !p)}
+              aria-pressed={paused}
+              aria-label={t.story.pauseMotion}
+              // -my-2 keeps the label row's height, so the stage below doesn't move.
+              className="self-center -my-2 flex h-8 w-8 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
+            >
+              {paused ? <Play size={12} strokeWidth={1.75} /> : <Pause size={12} strokeWidth={1.75} />}
+            </button>
+          )}
         </div>
 
-        {/* Stage — slides fill the remaining sticky area */}
-        <div className="relative flex-1 min-h-0">
+        {/* Screen-reader copy of the whole chronology: the visual stage shows
+            one slide at a time (the rest are visibility:hidden), which would
+            leave all but one entry unreachable without scrolling. */}
+        <ol className="sr-only">
+          {timeline.map((entry) => {
+            const copy = t.story.timeline[entry.id];
+            return (
+              <li key={entry.id}>
+                <h3>{copy.title}</h3>
+                <p>
+                  {copy.org} · {copy.location} · {copy.years} · {t.story.badges[entry.type]}
+                </p>
+                <ul>
+                  {copy.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ol>
+
+        {/* Stage — slides fill the remaining sticky area (visual only; the
+            list above carries the content for assistive tech). */}
+        <div className="relative flex-1 min-h-0" aria-hidden="true">
           {timeline.map((entry, i) => (
             <ChronologySlide
               key={entry.id}
@@ -535,6 +583,7 @@ function ChronologyPath() {
               progress={scrollYProgress}
               load={near && i <= reached + 2}
               onScreen={onScreen}
+              paused={paused}
             />
           ))}
         </div>
