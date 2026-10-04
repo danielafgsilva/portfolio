@@ -1,7 +1,5 @@
 import type { Dictionary } from "@/lib/i18n/dictionaries"
 
-// Chronology structure (id, type, media). Titles, orgs, years and bullets are
-// translated in the dictionary (story.timeline[id]).
 export type MediaSize = "tall" | "med" | "short";
 export type MediaItem = { src: string; size: MediaSize };
 

@@ -7,10 +7,8 @@ import {
   animate,
   useInView,
   useMotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
 } from "framer-motion";
+import { PulseDot } from "./pulse-dot";
 import Image, { getImageProps } from "next/image";
 import { AutoplayVideo } from "./autoplay-video";
 import { useI18n } from "./i18n-provider";
@@ -26,12 +24,13 @@ import {
   Play,
 } from "lucide-react";
 import { EASE_EDITORIAL } from "@/lib/motion";
-
-// Structural project data is shared with the JSON-LD (lib/content/projects.ts).
+import { useSectionReveal } from "@/lib/use-section-reveal";
 
 // Browser frame is 7/12 of the ≤1440px container on lg+, full width below.
 const COVER_SIZES = "(min-width: 1440px) 780px, (min-width: 1024px) 55vw, 100vw";
 const AUTO_ADVANCE_MS = 8000;
+const ROUND_BUTTON =
+  "group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200";
 
 // `ghost` renders the invisible height-reservation copies: same box, but no
 // heading element so the page outline lists each project once.
@@ -131,19 +130,7 @@ export function Projects() {
   const total = projects.length;
   const current = projects[currentIndex];
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.9", "start 0.2"],
-  });
-  // Spring-smoothed so the reveal glides even when the trackpad jitters.
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 220,
-    damping: 40,
-    mass: 0.4,
-    restDelta: 0.0005,
-  });
-  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
+  const reveal = useSectionReveal(sectionRef);
 
   // Video only loads/plays while the browser frame itself is on screen (it
   // sits below the fold on every viewport). Once the section is within a
@@ -195,14 +182,12 @@ export function Projects() {
     setCurrentIndex(next);
     progress.set(0);
   };
-  const handlePrev = () => goTo(currentIndex - 1);
-  const handleNext = () => goTo(currentIndex + 1);
 
   return (
     <m.section
       ref={sectionRef}
       id="work"
-      style={{ opacity: sectionOpacity, y: sectionLift }}
+      style={reveal}
       className="relative py-12 sm:py-16 lg:py-24"
     >
       <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
@@ -222,9 +207,9 @@ export function Projects() {
               Every project's info is stacked invisibly in the same grid cell
               so the panel always reserves the tallest one — rotating projects
               never changes its height or shifts the page below (CLS). */}
-          <div className="lg:col-span-5 xl:col-span-5 relative lg:min-h-[28rem] grid">
+          <div className="lg:col-span-5 relative lg:min-h-[28rem] grid">
             {projects.map((p) => (
-              <div key={p.index} aria-hidden="true" className="invisible col-start-1 row-start-1">
+              <div key={p.id} aria-hidden="true" className="invisible col-start-1 row-start-1">
                 <ProjectInfo project={p} ghost />
               </div>
             ))}
@@ -244,7 +229,7 @@ export function Projects() {
           </div>
 
           {/* Browser frame — RIGHT (rotates through projects) */}
-          <div ref={frameColRef} className="lg:col-span-7 xl:col-span-7">
+          <div ref={frameColRef} className="lg:col-span-7">
             <AnimatePresence mode="wait">
               <m.div
                 key={currentIndex}
@@ -276,25 +261,13 @@ export function Projects() {
                   <div className="shrink-0 flex items-center">
                     {current.status === "live" && (
                       <span className="inline-flex items-center gap-1.5 mono text-[11px] sm:text-xs text-foreground">
-                        <span
-                          className="relative flex h-2 w-2"
-                          aria-hidden="true"
-                        >
-                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green opacity-75" />
-                          <span className="relative inline-flex h-2 w-2 rounded-full bg-green" />
-                        </span>
+                        <PulseDot color="bg-green" />
                         <span className="hidden sm:inline">{t.projects.live}</span>
                       </span>
                     )}
                     {current.status === "in-progress" && (
                       <span className="inline-flex items-center gap-1.5 mono text-[11px] sm:text-xs text-foreground">
-                        <span
-                          className="relative flex h-2 w-2"
-                          aria-hidden="true"
-                        >
-                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-                          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
-                        </span>
+                        <PulseDot />
                         <span className="hidden sm:inline lowercase">{t.projects.inDevelopment}</span>
                       </span>
                     )}
@@ -340,10 +313,7 @@ export function Projects() {
                         {current.title}
                       </span>
                       <span className="inline-flex items-center gap-2 mono text-xs text-ink-subtle bg-paper-tint px-2 lowercase">
-                        <span className="relative flex h-2 w-2">
-                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-                          <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
-                        </span>
+                        <PulseDot />
                         {t.projects.inDevelopment}
                       </span>
                     </div>
@@ -359,8 +329,8 @@ export function Projects() {
           {/* Prev */}
           <button
             type="button"
-            onClick={handlePrev}
-            className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
+            onClick={() => goTo(currentIndex - 1)}
+            className={ROUND_BUTTON}
             aria-label={t.projects.previous}
           >
             <ArrowLeft size={16} strokeWidth={1.5} />
@@ -372,7 +342,7 @@ export function Projects() {
               const isCurrent = i === currentIndex;
               return (
                 <button
-                  key={p.title}
+                  key={p.id}
                   type="button"
                   onClick={() => goTo(i)}
                   className="group flex-1 flex items-center gap-2 min-h-6"
@@ -404,7 +374,7 @@ export function Projects() {
           <button
             type="button"
             onClick={() => setPaused((p) => !p)}
-            className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
+            className={ROUND_BUTTON}
             aria-label={paused ? t.projects.resume : t.projects.pause}
           >
             {paused ? (
@@ -416,8 +386,8 @@ export function Projects() {
 
           <button
             type="button"
-            onClick={handleNext}
-            className="group flex h-10 w-10 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
+            onClick={() => goTo(currentIndex + 1)}
+            className={ROUND_BUTTON}
             aria-label={t.projects.next}
           >
             <ArrowRight size={16} strokeWidth={1.5} />

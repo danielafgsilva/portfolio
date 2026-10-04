@@ -1,8 +1,7 @@
 "use client"
 
-import { Download } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { Download } from "lucide-react"
 import { useI18n } from "@/components/i18n-provider"
 
 export function DownloadCVButton() {
@@ -35,9 +34,14 @@ export function DownloadCVButton() {
   }
 
   return (
-    <Button onClick={handleDownload} size="lg" className="gap-2" disabled={isLoading}>
-      <Download className="h-4 w-4" />
+    <button
+      type="button"
+      onClick={handleDownload}
+      disabled={isLoading}
+      className="inline-flex items-center justify-center gap-2 h-11 px-8 whitespace-nowrap rounded-md bg-primary text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+    >
+      <Download className="h-4 w-4 shrink-0 pointer-events-none" />
       {isLoading ? t.cv.generating : t.cv.download}
-    </Button>
+    </button>
   )
 }

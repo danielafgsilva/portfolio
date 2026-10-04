@@ -1,6 +1,7 @@
 "use client"
 
 import { m } from "framer-motion"
+import { PulseDot } from "./pulse-dot"
 import Link from "next/link"
 import { ArrowUpRight, Download, Mail, Github, Linkedin } from "lucide-react"
 import { Accent } from "./chapter"
@@ -8,8 +9,7 @@ import { useI18n } from "./i18n-provider"
 import { rich } from "@/lib/i18n/rich"
 import { localePath } from "@/lib/i18n/config"
 import { EASE_EDITORIAL } from "@/lib/motion"
-
-const EMAIL = "danif.gsilva2000@gmail.com"
+import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/content/contact"
 
 // Channel names are brands; the mailto subject is filled in per locale below.
 const channels = [
@@ -22,13 +22,13 @@ const channels = [
   {
     label: "LinkedIn",
     handle: "/in/danielafgsilva",
-    href: "https://linkedin.com/in/danielafgsilva",
+    href: LINKEDIN_URL,
     icon: Linkedin,
   },
   {
     label: "GitHub",
     handle: "@danielafgsilva",
-    href: "https://github.com/danielafgsilva",
+    href: GITHUB_URL,
     icon: Github,
   },
 ]
@@ -54,10 +54,7 @@ export function Contact() {
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-x-10">
             <div className="lg:col-span-7">
               <div className="inline-flex items-center gap-2 mono text-xs text-cyan mb-6">
-                <span className="relative flex h-2 w-2" aria-hidden="true">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
-                </span>
+                <PulseDot />
                 {copy.status}
               </div>
 

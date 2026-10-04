@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { m } from "framer-motion"
+import { PulseDot } from "@/components/pulse-dot"
 import { loaderSignal } from "@/lib/loader-signal"
 import { useI18n } from "@/components/i18n-provider"
 import { rich } from "@/lib/i18n/rich"
@@ -12,21 +13,21 @@ const META_KEYS = ["role", "based", "status", "stack"] as const
 
 const REPLAY_INTERVAL_MS = 60_000
 
+// Typewriter: each letter of "Daniela." pops in, staggered by the h1.
+const LETTER = { hidden: { opacity: 0 }, visible: { opacity: 1 } }
+const TYPE_START = 0.15
+const TYPE_STAGGER = 0.085
+const TYPED_AT = TYPE_START + "Daniela".length * TYPE_STAGGER
+
 export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const [animKey, setAnimKey] = useState(0)
   const [ready, setReady] = useState(false)
   const { t } = useI18n()
 
-  // Wait for loader to finish before starting typewriter
-  useEffect(() => {
-    if (loaderSignal.isDone()) {
-      setReady(true)
-      return
-    }
-    const unsubscribe = loaderSignal.subscribe(() => setReady(true))
-    return unsubscribe
-  }, [])
+  // Wait for the loader to finish before starting the typewriter (fires
+  // immediately if it already has).
+  useEffect(() => loaderSignal.subscribe(() => setReady(true)), [])
 
   // Re-animate every 60s while in view (only after loader done)
   useEffect(() => {
@@ -79,7 +80,7 @@ export function Hero() {
                 animate={ready ? "visible" : "hidden"}
                 variants={{
                   visible: {
-                    transition: { delayChildren: 0.15, staggerChildren: 0.085 },
+                    transition: { delayChildren: TYPE_START, staggerChildren: TYPE_STAGGER },
                   },
                 }}
               >
@@ -88,10 +89,7 @@ export function Hero() {
                   {Array.from("Daniela").map((char, i) => (
                     <m.span
                       key={i}
-                      variants={{
-                        hidden: { opacity: 0 },
-                        visible: { opacity: 1 },
-                      }}
+                      variants={LETTER}
                       transition={{ duration: 0.01 }}
                       className="inline-block"
                       aria-hidden="true"
@@ -100,10 +98,7 @@ export function Hero() {
                     </m.span>
                   ))}
                   <m.span
-                    variants={{
-                      hidden: { opacity: 0 },
-                      visible: { opacity: 1 },
-                    }}
+                    variants={LETTER}
                     transition={{ duration: 0.01 }}
                     className="inline-block text-cyan"
                     aria-hidden="true"
@@ -115,7 +110,7 @@ export function Hero() {
                       initial={{ y: 0 }}
                       animate={ready ? { y: [0, -18, 0, -6, 0] } : { y: 0 }}
                       transition={{
-                        delay: 0.15 + "Daniela".length * 0.085 + 0.35,
+                        delay: TYPED_AT + 0.35,
                         duration: 0.75,
                         times: [0, 0.3, 0.6, 0.82, 1],
                         ease: "easeOut",
@@ -128,7 +123,7 @@ export function Hero() {
                     initial={{ opacity: 0 }}
                     animate={ready ? { opacity: [0, 1, 1, 0, 0, 1, 1, 0] } : { opacity: 0 }}
                     transition={{
-                      delay: 0.15 + "Daniela".length * 0.085 + 0.18,
+                      delay: TYPED_AT + 0.18,
                       duration: 1.8,
                       times: [0, 0.04, 0.28, 0.30, 0.52, 0.54, 0.76, 1],
                       ease: "linear",
@@ -164,10 +159,7 @@ export function Hero() {
                   <dt className="eyebrow">{t.hero.meta[key].label}</dt>
                   <dd className="mt-1.5 mono text-foreground flex items-center gap-2">
                     {key === "status" && (
-                      <span className="relative flex h-2 w-2" aria-hidden="true">
-                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan opacity-75" />
-                        <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan" />
-                      </span>
+                      <PulseDot />
                     )}
                     <span className="text-foreground">{t.hero.meta[key].value}</span>
                   </dd>

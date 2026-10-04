@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/json-ld";
 import { cvJsonLd } from "@/lib/seo/structured-data";
 import { alternatesFor, isLocale, localePath, ogLocale, SITE_URL, type Locale } from "@/lib/i18n/config";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, PHONE } from "@/lib/content/contact";
 
 type Params = Promise<{ lang: string }>;
 
@@ -47,6 +48,8 @@ const SKILLS = {
   backend: ["PHP", "Laravel", "Supabase", "MySQL", "DBeaver", "WordPress", "Bedrock", "Blade", "Sage", "Gutenberg", "GitHub", "Vercel", "Docker", "Azure DevOps"],
 };
 
+const CONTACT_LINK = "inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors";
+
 const ExperienceItem = ({
   role,
   company,
@@ -61,7 +64,6 @@ const ExperienceItem = ({
   date: string;
   location: string;
   description: string[];
-  link?: string;
   status?: string;
   stack?: string[];
 }) => (
@@ -140,16 +142,16 @@ export default async function CVPage({ params }: { params: Params }) {
           <ul className="space-y-1.5 mono text-xs text-ink-muted sm:text-right">
             <li>
               <a
-                href="mailto:danif.gsilva2000@gmail.com"
-                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
+                href={`mailto:${EMAIL}`}
+                className={CONTACT_LINK}
               >
-                <Mail size={12} strokeWidth={1.75} /> danif.gsilva2000@gmail.com
+                <Mail size={12} strokeWidth={1.75} /> {EMAIL}
               </a>
             </li>
             <li>
               <a
-                href="tel:+351918763080"
-                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
+                href={`tel:${PHONE}`}
+                className={CONTACT_LINK}
               >
                 <Phone size={12} strokeWidth={1.75} /> +351 918 763 080
               </a>
@@ -162,27 +164,27 @@ export default async function CVPage({ params }: { params: Params }) {
                 href={`${SITE_URL}${localePath(locale)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
+                className={CONTACT_LINK}
               >
                 <Globe size={12} strokeWidth={1.75} /> {cv.contactPortfolio}
               </a>
             </li>
             <li>
               <a
-                href="https://github.com/danielafgsilva"
+                href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
+                className={CONTACT_LINK}
               >
                 <Github size={12} strokeWidth={1.75} /> @danielafgsilva
               </a>
             </li>
             <li>
               <a
-                href="https://linkedin.com/in/danielafgsilva"
+                href={LINKEDIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-end gap-2 py-1 -my-1 hover:text-cyan transition-colors"
+                className={CONTACT_LINK}
               >
                 <Linkedin size={12} strokeWidth={1.75} /> @danielafgsilva
               </a>
