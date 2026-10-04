@@ -17,6 +17,16 @@ import { AutoplayVideo, whenDecoded } from "./autoplay-video";
 import { useI18n } from "./i18n-provider";
 import { timeline, type MediaSize, type TimelineEntry } from "@/lib/content/timeline";
 
+// Tile classes — driven by row height + aspect ratio so widths follow
+// heights (no fixed min-widths that fight the rhythm on small phones).
+// Med/short use `self-end` so their tops rise from a shared bottom
+// baseline for the Pixelmatters staircase feel.
+const TILE_CLASS: Record<MediaSize, string> = {
+  tall: "h-full aspect-[3/4]",
+  med: "h-[80%] aspect-[4/3] self-end",
+  short: "h-[62%] aspect-[16/9] self-end",
+};
+
 // Sticky-scroll chronology — one experience at a time inside a pinned viewport.
 function ChronologySlide({
   entry,
@@ -74,16 +84,6 @@ function ChronologySlide({
   // React state only flips at the visibility threshold, not every frame.
   const [visible, setVisible] = useState(() => opacity.get() >= 0.01);
   useMotionValueEvent(opacity, "change", (o) => setVisible(o >= 0.01));
-
-  // Tile classes — driven by row height + aspect ratio so widths follow
-  // heights (no fixed min-widths that fight the rhythm on small phones).
-  // Med/short use `self-end` so their tops rise from a shared bottom
-  // baseline for the Pixelmatters staircase feel.
-  const TILE_CLASS: Record<MediaSize, string> = {
-    tall: "h-full aspect-[3/4]",
-    med: "h-[80%] aspect-[4/3] self-end",
-    short: "h-[62%] aspect-[16/9] self-end",
-  };
 
   // Marquee copies — measured at runtime so the row is always at least twice
   // as wide as the gallery viewport. Otherwise a short media list (5 tiles
@@ -346,7 +346,6 @@ function ImageTile({ src, onReady }: TileProps) {
 
 export function ChronologyPath() {
   const [paused, setPaused] = useState(false);
-  const reduceMotion = useReducedMotion();
   const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress: rawProgress } = useScroll({
@@ -386,18 +385,18 @@ export function ChronologyPath() {
         <div className="flex items-baseline gap-3 mb-3 sm:mb-4 lg:mb-5 shrink-0">
           <span className="eyebrow">{t.story.chronology}</span>
           <span className="h-px flex-1 bg-rule" aria-hidden="true" />
-          {!reduceMotion && (
-            <button
-              type="button"
-              onClick={() => setPaused((p) => !p)}
-              aria-pressed={paused}
-              aria-label={t.story.pauseMotion}
-              // -my-2 keeps the label row's height, so the stage below doesn't move.
-              className="self-center -my-2 flex h-8 w-8 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
-            >
-              {paused ? <Play size={12} strokeWidth={1.75} /> : <Pause size={12} strokeWidth={1.75} />}
-            </button>
-          )}
+          {/* Hidden by CSS for reduced motion (the marquee is static then).
+              A JS check would differ between server and client and break
+              hydration. -my-2 keeps the row height, so the stage doesn't move. */}
+          <button
+            type="button"
+            onClick={() => setPaused((p) => !p)}
+            aria-pressed={paused}
+            aria-label={t.story.pauseMotion}
+            className="self-center -my-2 flex motion-reduce:hidden h-8 w-8 items-center justify-center border border-rule rounded-full text-ink-subtle hover:text-cyan hover:border-cyan transition-colors duration-200"
+          >
+            {paused ? <Play size={12} strokeWidth={1.75} /> : <Pause size={12} strokeWidth={1.75} />}
+          </button>
         </div>
 
         {/* Screen-reader copy of the whole chronology: the visual stage shows

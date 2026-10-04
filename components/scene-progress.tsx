@@ -27,10 +27,6 @@ export function SceneProgress() {
     mass: 0.3,
     restDelta: 0.0005,
   })
-  // scaleY drives the fill via a compositor-only transform (no layout each
-  // frame). Full-height bar → transform-origin: top → scaleY(0…1) reveals
-  // top-down exactly like the old height animation did.
-
   // Position-based active detection via IntersectionObserver — one browser
   // callback per crossing rather than a full DOM sweep per scroll event.
   // Feels lighter under fast scroll and keeps the main thread free for the
@@ -80,10 +76,8 @@ export function SceneProgress() {
     if (!el) return
     const y = el.getBoundingClientRect().top + window.scrollY
     window.scrollTo({ top: y, behavior: "smooth" })
-    // Update history without triggering a hashchange scroll jump
-    if (typeof history !== "undefined") {
-      history.replaceState(null, "", `#${id}`)
-    }
+    // Update the URL without triggering a hashchange scroll jump
+    history.replaceState(null, "", `#${id}`)
   }
 
   return (

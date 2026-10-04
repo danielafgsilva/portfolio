@@ -15,6 +15,11 @@ export const LOCALE_COOKIE = "NEXT_LOCALE"
 
 export const SITE_URL = "https://daniela-silva.vercel.app"
 
+/** "/cv" → "https://daniela-silva.vercel.app/cv" ("/" → the bare origin). */
+export function absoluteUrl(path: string) {
+  return `${SITE_URL}${path === "/" ? "" : path}`
+}
+
 export function isLocale(value: unknown): value is Locale {
   return typeof value === "string" && (locales as readonly string[]).includes(value)
 }

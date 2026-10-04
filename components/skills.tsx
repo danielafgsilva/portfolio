@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, type ComponentType } from "react";
-import { m, useScroll, useSpring, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { m } from "framer-motion";
 import { StackIcon } from "./stack-icon";
 import type { StackIconName } from "@/lib/stack-icon-svgs";
 import { useI18n } from "./i18n-provider";
@@ -16,14 +16,10 @@ import {
   FileCode,
   Sprout,
   Blocks,
+  type LucideIcon,
 } from "lucide-react";
 import { EASE_EDITORIAL } from "@/lib/motion";
-
-type LucideIcon = ComponentType<{
-  size?: number;
-  strokeWidth?: number;
-  className?: string;
-}>;
+import { useSectionReveal } from "@/lib/use-section-reveal";
 
 type ToolKey = keyof Dictionary["toolbox"]["tools"];
 
@@ -38,14 +34,12 @@ type Tool = {
 
 type Group = {
   id: keyof Dictionary["toolbox"]["groups"];
-  index: string;
   tools: Tool[];
 };
 
 const groups: Group[] = [
   {
     id: "frontend",
-    index: "01",
     tools: [
       { name: "Next.js", stack: "nextjs" },
       { name: "React", stack: "react" },
@@ -61,7 +55,6 @@ const groups: Group[] = [
   },
   {
     id: "design",
-    index: "02",
     tools: [
       { name: "Figma", stack: "figma" },
       { key: "designSystems", Icon: Layers },
@@ -73,7 +66,6 @@ const groups: Group[] = [
   },
   {
     id: "backend",
-    index: "03",
     tools: [
       { name: "PHP", stack: "php" },
       { name: "Laravel", stack: "laravel" },
@@ -93,14 +85,12 @@ const groups: Group[] = [
   },
   {
     id: "languages",
-    index: "04",
     tools: [
       { key: "portuguese", letter: "PT" },
       { key: "english", letter: "EN" },
     ],
   },
 ];
-
 
 function TechTile({ tool }: { tool: Tool }) {
   const { t } = useI18n();
@@ -116,16 +106,14 @@ function TechTile({ tool }: { tool: Tool }) {
           <span className="font-mono font-semibold text-base sm:text-lg text-foreground tracking-tight transition-transform duration-200 group-hover:scale-110">
             {tool.letter}
           </span>
-        ) : tool.Icon ? (
-          <tool.Icon
-            size={32}
-            strokeWidth={1.5}
-            className="text-foreground transition-transform duration-200 group-hover:scale-110"
-          />
         ) : (
-          <span className="font-display font-semibold text-xl text-foreground">
-            {name.charAt(0)}
-          </span>
+          tool.Icon && (
+            <tool.Icon
+              size={32}
+              strokeWidth={1.5}
+              className="text-foreground transition-transform duration-200 group-hover:scale-110"
+            />
+          )
         )}
       </div>
       <span className="font-mono text-[11px] sm:text-xs text-center text-ink-muted leading-tight group-hover:text-foreground transition-colors duration-200">
@@ -138,27 +126,13 @@ function TechTile({ tool }: { tool: Tool }) {
 export function Skills() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const { t } = useI18n();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.9", "start 0.2"],
-  });
-  // Spring-smoothed so the reveal glides like the other sections — otherwise
-  // this one would jitter under trackpad micro-movements while the rest stay
-  // buttery.
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 220,
-    damping: 40,
-    mass: 0.4,
-    restDelta: 0.0005,
-  });
-  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
+  const reveal = useSectionReveal(sectionRef);
 
   return (
     <m.section
       ref={sectionRef}
       id="toolbox"
-      style={{ opacity: sectionOpacity, y: sectionLift }}
+      style={reveal}
       // No bottom padding: the last group's rule closes the section and Off
       // Duty's own top padding provides the gap.
       className="relative pt-12 sm:pt-16 lg:pt-24"

@@ -17,22 +17,9 @@
 
     --background: var(--paper);
     --foreground: var(--ink);
-    --card: var(--paper);
-    --card-foreground: var(--ink);
-    --popover: var(--paper);
-    --popover-foreground: var(--ink);
     --primary: var(--ink);
     --primary-foreground: var(--paper);
-    --secondary: var(--paper-tint);
-    --secondary-foreground: var(--ink);
-    --muted: var(--paper-tint);
-    --muted-foreground: var(--ink-subtle);
-    --accent: var(--cyan);
-    --accent-foreground: var(--paper);
-    --destructive: 0 70% 50%;
-    --destructive-foreground: var(--paper);
     --border: var(--rule);
-    --input: var(--rule);
     --ring: var(--cyan);
 
     --radius: 0.375rem;
@@ -52,20 +39,9 @@
 
     --background: var(--paper);
     --foreground: var(--ink);
-    --card: var(--paper-tint);
-    --card-foreground: var(--ink);
-    --popover: var(--paper);
-    --popover-foreground: var(--ink);
     --primary: var(--ink);
     --primary-foreground: var(--paper);
-    --secondary: var(--paper-tint);
-    --secondary-foreground: var(--ink);
-    --muted: var(--paper-tint);
-    --muted-foreground: var(--ink-subtle);
-    --accent: var(--cyan);
-    --accent-foreground: var(--paper);
     --border: var(--rule);
-    --input: var(--rule);
     --ring: var(--cyan);
   }
 }
@@ -128,15 +104,6 @@
   }
   .chapter-number {
     @apply font-mono uppercase tracking-[0.18em] text-cyan;
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  .text-pretty {
-    text-wrap: pretty;
   }
 }
 
@@ -205,31 +172,10 @@ around 720px tall keep the desktop type: their two-column layout has room. */
   .chronology-text > .grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     column-gap: 2rem;
-  }  .chronology-gallery {
+  }
+  .chronology-gallery {
     min-height: 18% !important;
   }
-}
-
-/* Auto-scroll marquee (right → left). The child row must be duplicated so
-   translating -50% brings the second half exactly where the first started,
-   creating a seamless loop. */
-@keyframes marquee-x {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-.animate-marquee-x {
-  animation: marquee-x 40s linear infinite;
-  will-change: transform;
-}
-
-/* Cursor blink used in hero — kept as a separate keyframe for legibility. */
-@keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -260,12 +206,7 @@ body:has(.cv-root) {
   --rule: 215 16% 88%;
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: var(--paper);
-  --card-foreground: var(--ink);
-  --muted: var(--paper-tint);
-  --muted-foreground: var(--ink-subtle);
   --border: var(--rule);
-  --input: var(--rule);
 }
 
 @media print {

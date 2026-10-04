@@ -30,10 +30,7 @@ export function BackToTop() {
   // Watch the footer so we can hide the pill when the user reaches it.
   useEffect(() => {
     const footer = document.querySelector("footer")
-    if (!footer) {
-      setFooterVisible(false)
-      return
-    }
+    if (!footer) return
     const observer = new IntersectionObserver(
       ([entry]) => setFooterVisible(entry.isIntersecting),
       { threshold: 0.01 },

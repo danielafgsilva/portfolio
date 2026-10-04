@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next"
-import { alternatesFor, locales, SITE_URL } from "@/lib/i18n/config"
+import { absoluteUrl, alternatesFor, locales } from "@/lib/i18n/config"
 
 // Every page in every locale, each with its hreflang alternates. Regenerated on
 // every build, so lastModified tracks the latest deploy.
@@ -8,7 +8,6 @@ const PAGES = [
   { path: "/cv", priority: 0.8 },
 ]
 
-const abs = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
@@ -16,12 +15,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     locales.map((locale) => {
       const { canonical, languages } = alternatesFor(locale, path)
       return {
-        url: abs(canonical),
+        url: absoluteUrl(canonical),
         lastModified,
         changeFrequency: "monthly" as const,
         priority,
         alternates: {
-          languages: Object.fromEntries(Object.entries(languages).map(([lang, href]) => [lang, abs(href)])),
+          languages: Object.fromEntries(Object.entries(languages).map(([lang, href]) => [lang, absoluteUrl(href)])),
         },
       }
     }),

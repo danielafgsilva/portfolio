@@ -7,9 +7,6 @@ let done = false
 const listeners = new Set<() => void>()
 
 export const loaderSignal = {
-  isDone(): boolean {
-    return done
-  },
   signal(): void {
     if (done) return
     done = true

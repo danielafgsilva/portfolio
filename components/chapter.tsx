@@ -2,11 +2,10 @@
 
 import type React from "react"
 import { useRef } from "react"
-import { m, useScroll, useSpring, useTransform } from "framer-motion"
-// clsx, not cn(): these are conditional picks with no conflicting classes, and
-// skipping tailwind-merge keeps ~19 KB out of the home page bundle.
-import { clsx as cn } from "clsx"
+import { m } from "framer-motion"
+import clsx from "clsx"
 import { EASE_EDITORIAL } from "@/lib/motion"
+import { useSectionReveal } from "@/lib/use-section-reveal"
 
 interface ChapterProps {
   id?: string
@@ -50,29 +49,14 @@ export function Chapter({
 }: ChapterProps) {
   const sectionRef = useRef<HTMLElement | null>(null)
 
-  // Section reveal — subtle lift + fade as the chapter scrolls into view.
-  // The raw scroll progress reacts to every wheel/trackpad micro-movement;
-  // running it through a spring smooths jitter without adding perceivable
-  // lag (high stiffness + high damping = fast catch-up, no wobble).
-  const { scrollYProgress: sectionProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.9", "start 0.2"],
-  })
-  const smoothSectionProgress = useSpring(sectionProgress, {
-    stiffness: 220,
-    damping: 40,
-    mass: 0.4,
-    restDelta: 0.0005,
-  })
-  const sectionOpacity = useTransform(smoothSectionProgress, [0, 1], [0.4, 1])
-  const sectionLift = useTransform(smoothSectionProgress, [0, 1], [24, 0])
+  const reveal = useSectionReveal(sectionRef)
 
   return (
     <m.section
       ref={sectionRef}
       id={id}
-      style={{ opacity: sectionOpacity, y: sectionLift }}
-      className={cn(
+      style={reveal}
+      className={clsx(
         "relative",
         bleed ? "py-14 sm:py-20 lg:py-28" : "py-12 sm:py-16 lg:py-24",
         className,
@@ -85,7 +69,7 @@ export function Chapter({
             initial="hidden"
             whileInView="shown"
             viewport={{ once: true, amount: 0.3 }}
-            className={cn(
+            className={clsx(
               "lg:sticky lg:top-28 lg:self-start",
               reverse
                 ? "lg:col-start-10 lg:col-span-3 lg:row-start-1"
@@ -121,7 +105,7 @@ export function Chapter({
             )}
           </m.header>
           <div
-            className={cn(
+            className={clsx(
               reverse
                 ? "lg:col-start-4 lg:col-span-6 lg:row-start-1"
                 : "lg:col-span-8",

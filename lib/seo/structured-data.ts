@@ -1,5 +1,6 @@
+import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/content/contact"
 import { projects } from "@/lib/content/projects"
-import { htmlLang, localePath, SITE_URL, type Locale } from "@/lib/i18n/config"
+import { absoluteUrl, htmlLang, localePath, SITE_URL, type Locale } from "@/lib/i18n/config"
 import { getDictionary } from "@/lib/i18n/dictionaries"
 
 // Schema.org JSON-LD built only from facts already published on the site.
@@ -11,11 +12,10 @@ import { getDictionary } from "@/lib/i18n/dictionaries"
 
 const PERSON_ID = `${SITE_URL}/#person`
 const WEBSITE_ID = `${SITE_URL}/#website`
-const abs = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`
 
 const SAME_AS = [
-  "https://github.com/danielafgsilva",
-  "https://linkedin.com/in/danielafgsilva",
+  GITHUB_URL,
+  LINKEDIN_URL,
   "https://danielapv.myportfolio.com/",
   "https://www.instagram.com/danizmusic/",
 ]
@@ -41,10 +41,10 @@ function person(locale: Locale) {
     "@type": "Person",
     "@id": PERSON_ID,
     name: "Daniela Silva",
-    url: abs(localePath(locale)),
+    url: absoluteUrl(localePath(locale)),
     jobTitle: "Front-End Developer",
     description: t.meta.description,
-    email: "mailto:danif.gsilva2000@gmail.com",
+    email: `mailto:${EMAIL}`,
     address: { "@type": "PostalAddress", addressLocality: "Porto", addressCountry: "PT" },
     worksFor: { "@type": "Organization", name: "Dyn-Link" },
     alumniOf: t.cv.education.map((e) => ({ "@type": "CollegeOrUniversity", name: e.school })),
@@ -69,7 +69,7 @@ function website() {
 
 export function homeJsonLd(locale: Locale) {
   const t = getDictionary(locale)
-  const url = abs(localePath(locale))
+  const url = absoluteUrl(localePath(locale))
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -90,7 +90,7 @@ export function homeJsonLd(locale: Locale) {
           ...(p.liveUrl && { url: p.liveUrl }),
           description: t.projects.items[p.id].description,
           dateCreated: p.year,
-          ...(p.image && { image: abs(p.image) }),
+          ...(p.image && { image: absoluteUrl(p.image) }),
           keywords: p.tech.join(", "),
           creator: { "@id": PERSON_ID },
           ...(p.status === "in-progress" && { creativeWorkStatus: "In progress" }),
@@ -102,8 +102,8 @@ export function homeJsonLd(locale: Locale) {
 
 export function cvJsonLd(locale: Locale) {
   const t = getDictionary(locale)
-  const home = abs(localePath(locale))
-  const url = abs(localePath(locale, "/cv"))
+  const home = absoluteUrl(localePath(locale))
+  const url = absoluteUrl(localePath(locale, "/cv"))
   return {
     "@context": "https://schema.org",
     "@graph": [

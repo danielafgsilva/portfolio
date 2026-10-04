@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { m, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { m, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { useI18n } from "./i18n-provider";
 import { ChronologyPath } from "./chronology";
 import { EASE_EDITORIAL } from "@/lib/motion";
-
+import { useSectionReveal } from "@/lib/use-section-reveal";
 
 // Scroll-linked word reveal — each word "lights up" as the user reads.
 function ReadingWord({
@@ -28,13 +28,12 @@ function ReadingWord({
 
 function CinematicQuote() {
   const { t } = useI18n();
-  const QUOTE_TEXT = t.story.quote;
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 0.85", "start 0.25"],
   });
-  const words = QUOTE_TEXT.split(" ");
+  const words = t.story.quote.split(" ");
   return (
     <div ref={ref}>
       {/* Intertitle label — sits above, no line beside it */}
@@ -49,7 +48,7 @@ function CinematicQuote() {
         <p
           className="font-display font-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-foreground"
         >
-          <span className="sr-only">{QUOTE_TEXT}</span>
+          <span className="sr-only">{t.story.quote}</span>
           <span aria-hidden="true">
             {words.map((word, i) => {
               const start = i / words.length;
@@ -71,33 +70,21 @@ function CinematicQuote() {
   );
 }
 
-// --- The Story chapter ---
-// Three independent full-width blocks, wrapped in one <section id="story">
-// so SceneProgress / SceneCounter still track the chapter.
+// The Story chapter: quote + bio, then the chronology, in one <section
+// id="story"> so the side nav tracks them as a single chapter.
 export function About() {
   const { t } = useI18n();
   const sectionRef = useRef<HTMLElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.9", "start 0.2"],
-  });
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 220,
-    damping: 40,
-    mass: 0.4,
-    restDelta: 0.0005,
-  });
-  const sectionOpacity = useTransform(smoothProgress, [0, 1], [0.4, 1]);
-  const sectionLift = useTransform(smoothProgress, [0, 1], [24, 0]);
+  const reveal = useSectionReveal(sectionRef);
 
   return (
     <m.section
       ref={sectionRef}
       id="story"
-      style={{ opacity: sectionOpacity, y: sectionLift }}
+      style={reveal}
       className="relative"
     >
-      {/* Block 1 — Chapter opener + Bio */}
+      {/* Quote + bio */}
       <div className="py-12 sm:py-16 lg:py-24">
         <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
           {/* Header line */}
@@ -106,7 +93,7 @@ export function About() {
             <span className="h-px flex-1 bg-rule" aria-hidden="true" />
           </div>
 
-          {/* Block — Intertitle (aligned to container edge) */}
+          {/* Intertitle */}
           <div className="py-4 sm:py-8 lg:py-12">
             <CinematicQuote />
           </div>
@@ -133,8 +120,7 @@ export function About() {
         </div>
       </div>
 
-      {/* Block 3 — Chronology (full container width). Each entry contains its
-          own bottom-aligned Pixelmatters-style gallery of media. */}
+      {/* Chronology — each entry has its own media gallery. */}
       <div className="py-4 sm:py-8 lg:py-12">
         <div className="mx-auto max-w-[1440px] px-6 sm:px-10 lg:px-16">
           <ChronologyPath />

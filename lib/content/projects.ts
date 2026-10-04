@@ -5,7 +5,6 @@ import type { Dictionary } from "@/lib/i18n/dictionaries"
 // Shared by the Projects section and the JSON-LD.
 export type Project = {
   id: keyof Dictionary["projects"]["items"]
-  index: string
   title: string
   year: string
   /** Cover / video poster. Optional: projects without one get a styled
@@ -25,7 +24,6 @@ export type Project = {
 export const projects: Project[] = [
   {
     id: "twovest",
-    index: "01",
     title: "Twovest",
     year: "2024",
     image: "/images/twovest-cover.jpg",
@@ -37,7 +35,6 @@ export const projects: Project[] = [
   },
   {
     id: "gomes",
-    index: "02",
     title: "Gomes Rego & Associados",
     year: "2024",
     image: "/images/gomes-rego-cover.jpg",
@@ -48,7 +45,6 @@ export const projects: Project[] = [
   },
   {
     id: "dogwarts",
-    index: "03",
     title: "Dogwarts",
     year: "2025",
     image: "/images/dogwarts-cover.jpg",
@@ -58,7 +54,6 @@ export const projects: Project[] = [
   },
   {
     id: "eperfil",
-    index: "04",
     title: "e+Perfil",
     year: "2026",
     image: "/images/eperfil-cover.jpg",
@@ -69,7 +64,6 @@ export const projects: Project[] = [
   {
     // No definitive URL yet — no link and no cover until there is one.
     id: "officium",
-    index: "05",
     title: "Offici'um",
     year: "2026",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Motion"],

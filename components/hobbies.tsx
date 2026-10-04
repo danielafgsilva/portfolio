@@ -58,7 +58,7 @@ export function Hobbies() {
       id="off-duty"
       number="05"
       eyebrow={copy.eyebrow}
-      title={<>{rich(copy.title, (c) => <Accent>{c}</Accent>)}</>}
+      title={rich(copy.title, (c) => <Accent>{c}</Accent>)}
       intro={<p>{copy.intro}</p>}
     >
       {/* Volunteering block */}
